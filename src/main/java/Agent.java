@@ -97,7 +97,7 @@ public class Agent {
 	 * @return True if goal was removed successfully, false if not.
 	 */
 	public boolean removeGoal(Goal g) {
-		return this.goals.remove(g.name) != null;
+		return g != null && this.goals.remove(g.name) != null;
 	}
 
 	/**
@@ -107,7 +107,7 @@ public class Agent {
 	 * @return True if Agent has goal, false if not.
 	 */
 	public boolean hasGoal(Goal g) {
-		return this.goals.containsKey(g.name);
+		return g != null && this.goals.containsKey(g.name);
 	}
 
 	public void getGoalByName() {
