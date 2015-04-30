@@ -113,6 +113,8 @@ public class Gamygdala {
 			// Check if goal already exists
 			if (goal != null) {
 
+				// Update isMaintenanceGoal
+				// XXX: Currently, this updates this attribute for every goal with this name registered to all agents. Do we want this?
 				if (isMaintenanceGoal) {
 					goal.isMaintenanceGoal = isMaintenanceGoal;
 				}
@@ -142,9 +144,9 @@ public class Gamygdala {
 	 * @param goal The goal to be registered.
 	 */
 	public void registerGoal(Goal goal) {
-		if (!this.goals.containsKey(goal.name))
+		if (!this.goals.containsKey(goal.name)) {
 			this.goals.put(goal.name, goal);
-		else {
+		} else {
 			Gamygdala.debug("Warning: failed adding a second goal with the same name: " + goal.name);
 		}
 	}
@@ -189,10 +191,24 @@ public class Gamygdala {
 	 */
 	public Goal getGoalByName(String goalName) {
 		if (this.goals.containsKey(goalName)) {
-			return this.goals.get(goalName);
+			return new Goal(this.goals.get(goalName));
 		}
 		debug("Warning: goal \"" + goalName + "\" not found.");
 		return null;
+	}
+
+	/**
+	 * This method is the main emotional interpretation logic entry point. It performs the complete appraisal of a single event (belief) for all agents (affectedAgent=null) or for only one agent (affectedAgent=true)
+	 * if affectedAgent is set, then the complete appraisal logic is executed including the effect on relations (possibly influencing the emotional state of other agents),
+	 * but only if the affected agent (the one owning the goal) == affectedAgent
+	 * this is sometimes needed for efficiency, if you as a game developer know that particular agents can never appraise an event, then you can force Gamygdala to only look at a subset of agents.
+	 * Gamygdala assumes that the affectedAgent is indeed the only goal owner affected, that the belief is well-formed, and will not perform any checks, nor use Gamygdala's list of known goals to find other agents that share this goal (!!!)
+	 * 
+	 * @param {TUDelft.Gamygdala.Belief} belief The current event, in the form of a Belief object, to be appraised
+	 * @param {TUDelft.Gamygdala.Agent} [affectedAgent] The reference to the agent who needs to appraise the event. If given, this is the appraisal perspective (see explanation above).
+	 */
+	public boolean appraise(Belief belief, Agent affectedAgent) {
+		return false;
 	}
 
 	/**
