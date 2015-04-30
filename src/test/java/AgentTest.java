@@ -1,12 +1,26 @@
 import static org.junit.Assert.*;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 public class AgentTest {
 
+	Agent a;
+	
+	@Before
+	public void setUp() {
+		a = new Agent("TestAgent");
+	}
+
+	@After
+	public void cleanUp() {
+		a = null;
+	}
+
+	
 	@Test
 	public void testAgent() {
-		Agent a = new Agent("TestAgent");
 
 		// Verify name
 		assertEquals("TestAgent", a.name);
@@ -22,7 +36,7 @@ public class AgentTest {
 
 	@Test
 	public void testAddRemoveHasGoal() {
-		Agent a = new Agent("TestAgent");
+		
 		Goal g = new Goal("TestGoal", 1, false);
 
 		// Clean start
@@ -38,7 +52,7 @@ public class AgentTest {
 
 	@Test
 	public void testAddRemoveHasNullGoal() {
-		Agent a = new Agent("TestAgent");
+		
 		Goal g2 = null;
 
 		// Assert that no NPE's are thrown
@@ -49,7 +63,7 @@ public class AgentTest {
 
 	@Test
 	public void testAddRemoveExistingGoal() {
-		Agent a = new Agent("TestAgent");
+		
 		Goal g1 = new Goal("TestGoal", 1, false);
 		Goal g2 = new Goal("TestGoal", 1, false);
 
@@ -70,12 +84,30 @@ public class AgentTest {
 
 	@Test
 	public void testGetGoalByName() {
-		fail("Not yet implemented");
+		
+		Goal g = new Goal("TestGoal", 1, true);
+		a.addGoal(g);
+		
+		assertNotNull(a.goals.get(g.name));
+		assertEquals(g, a.goals.get(g.name));
+		
 	}
 
 	@Test
 	public void testSetGain() {
-		fail("Not yet implemented");
+		
+		// Verify default gain is set
+		assertEquals(Agent.DEFAULT_GAIN, a.gain, 10E-15);
+		
+		// Set gain to allowed value and verify
+		a.setGain(2);
+		assertEquals(2, a.gain, 10E-15);
+		
+		// Set gain to disallowed value and verify the gain has not been changed
+		a.setGain(0);
+		a.setGain(20.01);
+		assertEquals(2, a.gain, 10E-15);
+		
 	}
 
 	@Test
@@ -155,6 +187,14 @@ public class AgentTest {
 
 		assertEquals(g, a.getGamygdalaInstance());
 
+	}
+	
+	@Test
+	public void testToString() {
+		
+		Agent a = new Agent("TestAgent");
+		assertEquals("<Agent[TestAgent]>", a.toString());
+		
 	}
 
 }
