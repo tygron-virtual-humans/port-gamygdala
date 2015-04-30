@@ -62,4 +62,24 @@ public class Relation {
 	    }
 	}
 	
+	/**
+	 * Compare two Relation objects.
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		
+		if(obj instanceof Relation) {
+			
+			Relation r = (Relation) obj;
+			
+			return r.agentName.equals(this.agentName) &&
+					Double.compare(this.like, r.like) == 0 &&
+					r.emotionList.equals(this.emotionList);
+			
+		}
+		
+		return false;
+		
+	}
+	
 }

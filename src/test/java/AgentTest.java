@@ -110,30 +110,30 @@ public class AgentTest {
 		
 	}
 
-	@Test
-	public void testAppraise() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testUpdateEmotionalState() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetEmotionalState() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetPADState() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testPrintEmotionalState() {
-		fail("Not yet implemented");
-	}
+//	@Test
+//	public void testAppraise() {
+//		fail("Not yet implemented");
+//	}
+//
+//	@Test
+//	public void testUpdateEmotionalState() {
+//		fail("Not yet implemented");
+//	}
+//
+//	@Test
+//	public void testGetEmotionalState() {
+//		fail("Not yet implemented");
+//	}
+//
+//	@Test
+//	public void testGetPADState() {
+//		fail("Not yet implemented");
+//	}
+//
+//	@Test
+//	public void testPrintEmotionalState() {
+//		fail("Not yet implemented");
+//	}
 
 	@Test
 	public void testUpdateRelation() {
@@ -166,15 +166,15 @@ public class AgentTest {
 
 	}
 
-	@Test
-	public void testPrintRelations() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testDecay() {
-		fail("Not yet implemented");
-	}
+//	@Test
+//	public void testPrintRelations() {
+//		fail("Not yet implemented");
+//	}
+//
+//	@Test
+//	public void testDecay() {
+//		fail("Not yet implemented");
+//	}
 
 	@Test
 	public void testGetSetGamygdalaInstance() {
