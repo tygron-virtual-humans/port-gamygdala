@@ -16,7 +16,7 @@ public class Agent {
   /**
    * Collection of relations for this Agent.
    */
-  public ArrayList<Relation> currentRelations;
+  public AgentRelations currentRelations;
 
   /**
    * Collection of emotions for this Agent.
@@ -52,7 +52,7 @@ public class Agent {
     this.goals = new GoalMap();
 
     // Init relation and emotion collections
-    this.currentRelations = new ArrayList<Relation>();
+    this.currentRelations = new AgentRelations();
     this.internalState = new AgentInternalState();
 
     // Set gain
@@ -159,10 +159,10 @@ public class Agent {
   }
 
   /**
-   * This function prints to the console either the state as is (gain=false) or a state based on
+   * This function prints to the console either the state as is (gain=null) or a state based on
    * gained limiter (limited between 0 and 1), of which the gain can be set by using setGain(gain).
    * A high gain factor works well when appraisals are small and rare, and you want to see the
-   * effect of these appraisals
+   * effect of these appraisals.
    * A low gain factor (close to 0 but in any case below 1) works well for high frequency and/or
    * large appraisals, so that the effect of these is dampened.
    * 
@@ -184,19 +184,7 @@ public class Agent {
    * @param like The relation (between -1 and 1).
    */
   public void updateRelation(String agentName, double like) {
-    if (!this.hasRelationWith(agentName)) {
-      // This relation does not exist, just add it.
-      this.currentRelations.add(new Relation(agentName, like));
-    } else {
-      // The relation already exists, update it.
-      Relation relation;
-      for (int i = 0; i < this.currentRelations.size(); i++) {
-        relation = this.currentRelations.get(i);
-        if (relation.agentName == agentName) {
-          relation.like = like;
-        }
-      }
-    }
+    this.currentRelations.updateRelation(agentName, like);
   }
 
   /**
@@ -206,7 +194,7 @@ public class Agent {
    * @param True if the relation exists, otherwise false.
    */
   public boolean hasRelationWith(String agentName) {
-    return (this.getRelation(agentName) != null);
+    return this.currentRelations.hasRelationWith(agentName);
   }
 
   /**
@@ -217,14 +205,7 @@ public class Agent {
    * @return Relation The relation object or null if non existing.
    */
   public Relation getRelation(String agentName) {
-    Relation relation;
-    for (int i = 0; i < this.currentRelations.size(); i++) {
-      relation = this.currentRelations.get(i);
-      if (relation.agentName == agentName) {
-        return relation;
-      }
-    }
-    return null;
+    return this.currentRelations.getRelation(agentName);
   }
 
   /**
@@ -235,28 +216,8 @@ public class Agent {
    */
   public void printRelations(String agentName) {
     String output = this.name + " has the following sentiments:\n   ";
-    boolean found = false;
-
-    for (int i = 0; i < this.currentRelations.size(); i++) {
-
-      if (agentName == null || this.currentRelations.get(i).agentName == agentName) {
-        for (int j = 0; j < this.currentRelations.get(i).emotionList.size(); j++) {
-          output += this.currentRelations.get(i).emotionList.get(j).name + "("
-              + this.currentRelations.get(i).emotionList.get(j).intensity + ") ";
-          found = true;
-        }
-      }
-
-      output += " for " + this.currentRelations.get(i).agentName;
-
-      if (i < this.currentRelations.size() - 1) {
-        output += ", and\n   ";
-      }
-    }
-
-    if (found) {
-      System.out.println(output);
-    }
+    output += this.currentRelations.printRelations(agentName);
+    System.out.println(output);
   }
 
   /**
