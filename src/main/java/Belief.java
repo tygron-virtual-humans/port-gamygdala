@@ -1,12 +1,12 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Belief {
 
-  public double likelihood;
-  public String causalAgentName;
-  public ArrayList<String> affectedGoalNames;
-  public ArrayList<Double> goalCongruences;
-  public boolean isIncremental;
+  private double likelihood;
+  private String causalAgentName;
+  private HashMap<String, Double> goalCongruenceMap;
+  private boolean isIncremental;
 
   /**
    * This class is a data structure to store one Belief for an agent
@@ -26,28 +26,93 @@ public class Belief {
   public Belief(double likelihood, String causalAgentName, ArrayList<String> affectedGoalNames,
       ArrayList<Double> goalCongruences, boolean isIncremental) {
     if (isIncremental) {
-      this.isIncremental = isIncremental;// incremental evidence enforces Gamygdala to use the
-                                         // likelihood as delta, i.e, it will add or subtract this
-                                         // belief's likelihood from the goal likelihood instead of
-                                         // using the belief as "state" defining the absolute
-                                         // likelihood.
+      // incremental evidence enforces Gamygdala to use the likelihood as delta, i.e, it will add or
+      // subtract this belief's likelihood from the goal likelihood instead of using the belief as
+      // "state" defining the absolute likelihood.
+      this.isIncremental = isIncremental;
     } else {
       this.isIncremental = false;
     }
 
     this.likelihood = Math.min(1, Math.max(-1, likelihood));
     this.causalAgentName = causalAgentName;
-    this.affectedGoalNames = new ArrayList<String>();
-    this.goalCongruences = new ArrayList<Double>();
 
-    // copy on keep
+    this.goalCongruenceMap = new HashMap<String, Double>();
+
+    if (affectedGoalNames.size() != goalCongruences.size()) {
+      Gamygdala.debug("Error: the congruence list is not of the same size "
+          + "as the affected goal list.");
+      return;
+    }
+    
+    // Add goals and congruences to Map.
     for (int i = 0; i < affectedGoalNames.size(); i++) {
-      this.affectedGoalNames.add(affectedGoalNames.get(i));
+      double congruence = Math.min(1, Math.max(-1, goalCongruences.get(i)));
+      this.goalCongruenceMap.put(affectedGoalNames.get(i), congruence);
     }
+  }
 
-    for (int i = 0; i < goalCongruences.size(); i++) {
-      this.goalCongruences.add(Math.min(1, Math.max(-1, goalCongruences.get(i))));
-    }
+  /**
+   * Get the likelihood of this belief.
+   * 
+   * @return the likelihood
+   */
+  public double getLikelihood() {
+    return likelihood;
+  }
+
+  /**
+   * Set the likelihood of this belief.
+   * 
+   * @param likelihood the likelihood to set
+   */
+  public void setLikelihood(double likelihood) {
+    this.likelihood = likelihood;
+  }
+
+  /**
+   * Get the name of the causal Agent.
+   * 
+   * @return the causalAgentName
+   */
+  public String getCausalAgentName() {
+    return causalAgentName;
+  }
+
+  /**
+   * Set the name of the causal Agent.
+   * 
+   * @param causalAgentName the causalAgentName to set
+   */
+  public void setCausalAgentName(String causalAgentName) {
+    this.causalAgentName = causalAgentName;
+  }
+
+  /**
+   * Get the names of the goals affected and their congruences.
+   * 
+   * @return The names of the goals affected and their congruences.
+   */
+  public HashMap<String, Double> getGoalCongruenceMap() {
+    return goalCongruenceMap;
+  }
+
+  /**
+   * Return whether or not belief is incremental.
+   * 
+   * @return the isIncremental
+   */
+  public boolean isIncremental() {
+    return isIncremental;
+  }
+
+  /**
+   * Set whether or not belief is incremental.
+   * 
+   * @param isIncremental the isIncremental to set
+   */
+  public void setIncremental(boolean isIncremental) {
+    this.isIncremental = isIncremental;
   }
 
 }
