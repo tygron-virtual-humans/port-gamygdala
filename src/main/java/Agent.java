@@ -11,7 +11,7 @@ public class Agent {
   /**
    * Collection of goals for this Agent.
    */
-  public HashMap<String, Goal> goals;
+  public GoalMap goals;
 
   /**
    * Collection of relations for this Agent.
@@ -36,7 +36,7 @@ public class Agent {
   /**
    * Pleasure Arousal Dominance mapping.
    */
-  private HashMap<String, double[]> mapPad;
+  private MapPad mapPad;
 
   public static final double DEFAULT_GAIN = 1;
 
@@ -49,7 +49,7 @@ public class Agent {
     this.name = name;
 
     // Init goal map.
-    this.goals = new HashMap<String, Goal>();
+    this.goals = new GoalMap();
 
     // Init relation and emotion collections
     this.currentRelations = new ArrayList<Relation>();
@@ -59,25 +59,9 @@ public class Agent {
     this.gain = Agent.DEFAULT_GAIN;
 
     // Initialize PAD map
-    this.mapPad = new HashMap<String, double[]>(16, 1);
-    this.mapPad.put("distress", new double[] { -0.61, 0.28, -0.36 });
-    this.mapPad.put("fear", new double[] { -0.64, 0.6, -0.43 });
-    this.mapPad.put("hope", new double[] { 0.51, 0.23, 0.14 });
-    this.mapPad.put("joy", new double[] { 0.76, .48, 0.35 });
-    this.mapPad.put("satisfaction", new double[] { 0.87, 0.2, 0.62 });
-    this.mapPad.put("fear-confirmed", new double[] { -0.61, 0.06, -0.32 }); // defeated
-    this.mapPad.put("disappointment", new double[] { -0.61, -0.15, -0.29 });
-    this.mapPad.put("relief", new double[] { 0.29, -0.19, -0.28 });
-    this.mapPad.put("happy-for", new double[] { 0.64, 0.35, 0.25 });
-    this.mapPad.put("resentment", new double[] { -0.35, 0.35, 0.29 });
-    this.mapPad.put("pity", new double[] { -0.52, 0.02, -0.21 }); // regretful
-    this.mapPad.put("gloating", new double[] { -0.45, 0.48, 0.42 }); // cruel
-    this.mapPad.put("gratitude", new double[] { 0.64, 0.16, -0.21 }); // grateful
-    this.mapPad.put("anger", new double[] { -0.51, 0.59, 0.25 });
-    this.mapPad.put("gratification", new double[] { 0.69, 0.57, 0.63 }); // triumphant
-    this.mapPad.put("remorse", new double[] { -0.57, 0.28, -0.34 }); // guilty
+    this.mapPad = new MapPad();
   }
-
+  
   /**
    * Add Goal.
    * 
@@ -85,11 +69,7 @@ public class Agent {
    * @return True if goal was added successfully, false if not.
    */
   public boolean addGoal(Goal goal) {
-    if (goal != null && !this.goals.containsKey(goal.name)) {
-      this.goals.put(goal.name, goal);
-      return true;
-    }
-    return false;
+    return this.goals.addGoal(goal);
   }
 
   /**
@@ -99,40 +79,37 @@ public class Agent {
    * @return True if goal was removed successfully, false if not.
    */
   public boolean removeGoal(Goal goal) {
-    return goal != null && this.goals.remove(goal.name) != null;
+    return this.goals.removeGoal(goal);
   }
 
   /**
-   * Check if this Agent has a specific Goal.
+   * Check if this GoalMap has a specific Goal (by object).
    * 
    * @param g Goal to check for.
    * @return True if Agent has goal, false if not.
    */
   public boolean hasGoal(Goal goal) {
-    return goal != null && this.hasGoal(goal.name);
+    return this.goals.hasGoal(goal);
   }
 
   /**
-   * Check if this Agent has a specific Goal.
+   * Check if this GoalMap contains a specific Goal (by name).
    * 
    * @param g Goal to check for.
    * @return True if Agent has goal, false if not.
    */
   public boolean hasGoal(String goalName) {
-    return this.goals.containsKey(goalName) && this.goals.get(goalName) != null;
+    return this.goals.hasGoal(goalName);
   }
 
   /**
-   * If this agent has a goal with name goalName, this method returns that goal.
+   * If this agent has a goal named goalName, this method returns that goal.
    * 
    * @param goalName The name of the goal to be found.
    * @return the reference to the goal.
    */
   public Goal getGoalByName(String goalName) {
-    if (this.goals.containsKey(goalName)) {
-      return this.goals.get(goalName);
-    }
-    return null;
+    return this.goals.getGoalByName(goalName);
   }
 
   /**
@@ -218,48 +195,6 @@ public class Agent {
     }
 
     return this.internalState;
-  }
-
-  /**
-   * This function returns a summation-based Pleasure Arousal Dominance mapping of the emotional
-   * state as is (gain=false), or a PAD mapping based on a gained limiter (limited between 0 and 1),
-   * of which the gain can be set by using setGain(gain).
-   * It sums over all emotions the equivalent PAD values of each emotion (i.e.,
-   * [P,A,D]=SUM(Emotion_i([P,A,D])))), which is then gained or not.
-   * A high gain factor works well when appraisals are small and rare, and you want to see the
-   * effect of these appraisals.
-   * A low gain factor (close to 0 but in any case below 1) works well for high frequency and/or
-   * large appraisals, so that the effect of these is dampened.
-   * 
-   * @param useGain Whether to use the gain function or not.
-   * @return An array of doubles with Pleasure at index 0, Arousal at index [1] and Dominance at
-   *         index [2].
-   */
-  public double[] getPadState(boolean useGain) {
-    double[] pad = new double[3];
-    pad[0] = 0;
-    pad[1] = 0;
-    pad[2] = 0;
-
-    Emotion emotion;
-    for (int i = 0; i < this.internalState.size(); i++) {
-      emotion = this.internalState.get(i);
-      pad[0] += (emotion.intensity * this.mapPad.get(emotion.name)[0]);
-      pad[1] += (emotion.intensity * this.mapPad.get(emotion.name)[1]);
-      pad[2] += (emotion.intensity * this.mapPad.get(emotion.name)[2]);
-    }
-
-    if (useGain) {
-      pad[0] = (pad[0] >= 0 ? this.gain * pad[0] / (this.gain * pad[0] + 1) : -this.gain * pad[0]
-          / (this.gain * pad[0] - 1));
-      pad[1] = (pad[1] >= 0 ? this.gain * pad[1] / (this.gain * pad[1] + 1) : -this.gain * pad[1]
-          / (this.gain * pad[1] - 1));
-      pad[2] = (pad[2] >= 0 ? this.gain * pad[2] / (this.gain * pad[2] + 1) : -this.gain * pad[2]
-          / (this.gain * pad[2] - 1));
-      return pad;
-    }
-
-    return pad;
   }
 
   /**
