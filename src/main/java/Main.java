@@ -10,4 +10,5 @@ public class Main {
 		Agent player = g.createAgent("player");
 		
 	}
+
 }
