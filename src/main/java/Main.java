@@ -7,5 +7,7 @@ public class Main {
 		
 		Gamygdala g = new Gamygdala();
 		
+		Agent player = g.createAgent("player");
+		
 	}
 }

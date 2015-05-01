@@ -43,8 +43,7 @@ public class Agent {
 	/**
 	 * Create new Agent.
 	 * 
-	 * @param name
-	 *            Agent name.
+	 * @param name Agent name.
 	 */
 	public Agent(String name) {
 		this.name = name;
@@ -114,7 +113,7 @@ public class Agent {
 	public boolean hasGoal(Goal g) {
 		return g != null && this.hasGoal(g.name);
 	}
-	
+
 	/**
 	 * Check if this Agent has a specific Goal.
 	 * 
@@ -191,7 +190,7 @@ public class Agent {
 	 * @param useGain Whether to use the gain function or not.
 	 * @return An array of emotions.
 	 */
-	public ArrayList<Emotion> getEmotionalStatefunction(boolean useGain) {
+	public ArrayList<Emotion> getEmotionalState(boolean useGain) {
 
 		if (useGain) {
 			ArrayList<Emotion> gainState = new ArrayList<Emotion>();
@@ -220,9 +219,28 @@ public class Agent {
 	 * @param useGain Whether to use the gain function or not.
 	 * @return An array of doubles with Pleasure at index 0, Arousal at index [1] and Dominance at index [2].
 	 */
-	public double[] getPADState() {
-		// TODO: getPADState()
-		return null;
+	public double[] getPADState(boolean useGain) {
+		double[] PAD = new double[3];
+		PAD[0] = 0;
+		PAD[1] = 0;
+		PAD[2] = 0;
+
+		Emotion e;
+		for (int i = 0; i < this.internalState.size(); i++) {
+			e = this.internalState.get(i);
+			PAD[0] += (e.intensity * this.mapPAD.get(e.name)[0]);
+			PAD[1] += (e.intensity * this.mapPAD.get(e.name)[1]);
+			PAD[2] += (e.intensity * this.mapPAD.get(e.name)[2]);
+		}
+
+		if (useGain) {
+			PAD[0] = (PAD[0] >= 0 ? this.gain * PAD[0] / (this.gain * PAD[0] + 1) : -this.gain * PAD[0] / (this.gain * PAD[0] - 1));
+			PAD[1] = (PAD[1] >= 0 ? this.gain * PAD[1] / (this.gain * PAD[1] + 1) : -this.gain * PAD[1] / (this.gain * PAD[1] - 1));
+			PAD[2] = (PAD[2] >= 0 ? this.gain * PAD[2] / (this.gain * PAD[2] + 1) : -this.gain * PAD[2] / (this.gain * PAD[2] - 1));
+			return PAD;
+		}
+
+		return PAD;
 	}
 
 	/**
@@ -232,8 +250,18 @@ public class Agent {
 	 * 
 	 * @param useGain Whether to use the gain function or not.
 	 */
-	public void printEmotionalState() {
-		// TODO: printEmotionalState()
+	public void printEmotionalState(boolean useGain) {
+		String output = this.name + " feels ";
+		int i;
+		ArrayList<Emotion> emotionalState = this.getEmotionalState(useGain);
+
+		Emotion e;
+		for (i = 0; i < emotionalState.size(); i++) {
+			e = emotionalState.get(i);
+			output += e.name + ": " + e.intensity + ", ";
+		}
+
+		System.out.println(output);
 	}
 
 	/**

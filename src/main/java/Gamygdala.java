@@ -351,13 +351,11 @@ public class Gamygdala {
 			}
 		}
 
-		// print the emotions to the console for debugging
+		if (Gamygdala.debug) {
 
-		// XXX: emotionEngine does also not exist in JS code
-		// if (this.debug){
-		// emotionEngine.printAllEmotions(false);
-		// //emotionEngine.printAllEmotions(true);
-		// }
+			// print the emotions to the console for debugging
+			this.printAllEmotions(false);
+		}
 	}
 
 	private void evaluateSocialEmotion(double utility, double desirability, double deltaLikelihood, Relation relation, Agent agent) {
@@ -377,7 +375,7 @@ public class Gamygdala {
 		emotion.intensity = Math.abs(utility * deltaLikelihood * relation.like);
 		if (emotion.intensity != 0) {
 			relation.addEmotion(emotion);
-			
+
 			// also add relation emotion the emotion to the emotional state
 			agent.updateEmotionalState(emotion);
 		}
@@ -568,6 +566,32 @@ public class Gamygdala {
 	}
 
 	/**
+	 * This method decays for all registered agents the emotional state and relations. It performs the decay according to the time passed, so longer intervals between consecutive calls result in bigger clunky steps.
+	 * Typically this is called automatically when you use startDecay(), but you can use it yourself if you want to manage the timing.
+	 * This function is keeping track of the millis passed since the last call, and will (try to) keep the decay close to the desired decay factor, regardless the time passed
+	 * So you can call this any time you want (or, e.g., have the game loop call it, or have e.g., Phaser call it in the plugin update, which is default now).
+	 * Further, if you want to tweak the emotional intensity decay of individual agents, you should tweak the decayFactor per agent not the "frame rate" of the decay (as this doesn't change the rate).
+	 */
+	public void decayAll() {
+
+		long now = System.currentTimeMillis();
+
+		this.millisPassed = now - this.lastMillis;
+		this.lastMillis = now;
+
+		Iterator<Entry<String, Agent>> it = this.agents.entrySet().iterator();
+		Agent a;
+		while (it.hasNext()) {
+			Map.Entry<String, Agent> pair = (Map.Entry<String, Agent>) it.next();
+			a = pair.getValue();
+
+			if (a != null) {
+				a.decay(this);
+			}
+		}
+	}
+
+	/**
 	 * Sets the decay factor and function for emotional decay.
 	 * It sets the decay factor and type for emotional decay, so that an emotion will slowly get lower in intensity.
 	 * Whenever decayAll is called, all emotions for all agents are decayed according to the factor and function set here.
@@ -596,6 +620,24 @@ public class Gamygdala {
 	}
 
 	/**
+	 * Facilitator method to print all emotional states to the console.
+	 * 
+	 * @param gain Whether you want to print the gained (true) emotional states or non-gained (false).
+	 */
+	public void printAllEmotions(boolean gain) {
+
+		Iterator<Entry<String, Agent>> it = this.agents.entrySet().iterator();
+		Agent a;
+		while (it.hasNext()) {
+			Map.Entry<String, Agent> pair = (Map.Entry<String, Agent>) it.next();
+			a = pair.getValue();
+
+			a.printEmotionalState(gain);
+			a.printRelations(null);
+		}
+	}
+
+	/**
 	 * Print debug information to console if the debug flag is set to true.
 	 * 
 	 * @param what Object to print to console.
@@ -604,5 +646,20 @@ public class Gamygdala {
 		if (Gamygdala.debug) {
 			System.out.println(what);
 		}
+	}
+
+	// =====
+
+	/**
+	 * XXX: Disabled because not needed in the Java port.
+	 * This starts the actual gamygdala decay process. It simply calls decayAll() at the specified interval.
+	 * The timeMS only defines the interval at which to decay, not the rate over time, that is defined by the decayFactor and function.
+	 * For more complex games (e.g., games where agents are not active when far away from the player, or games that do not need all agents to decay all the time) you should yourself choose when to decay agents individually.
+	 * To do so you can simply call the agent.decay() method (see the agent class).
+	 * 
+	 * @param {int} timeMS The "framerate" of the decay in milliseconds.
+	 */
+	public void startDecay(long timeMS) {
+		// setInterval(this.decayAll.bind(this), timeMS);
 	}
 }
