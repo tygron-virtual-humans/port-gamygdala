@@ -3,12 +3,18 @@
  */
 public class Main {
 
-	public static void main(String[] args) {
-		
-		Gamygdala g = new Gamygdala();
-		
-		Agent player = g.createAgent("player");
-		
-	}
+  /**
+   * Create Gamygdala instance and run some functional tests.
+   * @param args Command line parameters.
+   */
+  public static void main(String[] args) {
+
+    Gamygdala engine = new Gamygdala();
+
+    Agent player = engine.createAgent("player");
+    
+    System.out.println(player);
+
+  }
 
 }
