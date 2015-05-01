@@ -1,6 +1,9 @@
-import static org.junit.Assert.*;
-
-import java.util.HashMap;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.Before;
@@ -54,10 +57,13 @@ public class GamygdalaTest {
 		assertEquals(a, g.agents.get("RegisteredAgent"));
 	}
 
-//	@Test
-//	public void testCreateGoalForAgentAgentStringDouble() {
-//		fail("Not yet implemented");
-//	}
+	@Test
+	public void testCreateGoalForAgentAgentStringDouble() {
+		Agent a = new Agent("TestAgent");
+		g.registerAgent(a);
+		g.createGoalForAgent(a, "TestGoal", 1);
+		assertFalse(g.agents.get("TestAgent").goals.get("TestGoal").isMaintenanceGoal);
+	}
 
 	@Test
 	public void testCreateGoalForAgentAgentStringDoubleBoolean() {
@@ -116,16 +122,13 @@ public class GamygdalaTest {
 		assertNull(g.getGoalByName("TestGoal"));
 		g.registerGoal(new Goal("TestGoal", 1, false));
 		assertNotNull(g.getGoalByName("TestGoal"));
-		
+		assertTrue(g.goals.size() == 1);
+		g.registerGoal(new Goal("TestGoal", 1, false));
+		assertTrue(g.goals.size() == 1);
 	}
 
 //	@Test
 //	public void testGetMillisPassed() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	public void testDebug() {
 //		fail("Not yet implemented");
 //	}
 
