@@ -1,42 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.vh3.gamygdala_port</groupId>
-    <artifactId>gamygdala-port-java</artifactId>
-    <version>1.0-SNAPSHOT</version>
+	<groupId>com.github.vh3.gamygdala_port</groupId>
+	<artifactId>gamygdala-port-java</artifactId>
+	<version>1.0-SNAPSHOT</version>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.14</version>
-                <configuration>
-                    <failOnViolation>false</failOnViolation>
-                    <configLocation>checkstyle.xml</configLocation>
-                </configuration>
-            </plugin>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+		</dependency>
+	</dependencies>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>3.2</version>
-                <configuration>
-                    <format>xml</format>
-                </configuration>
-            </plugin>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.14</version>
+				<configuration>
+					<failOnViolation>false</failOnViolation>
+					<configLocation>checkstyle.xml</configLocation>
+				</configuration>
+			</plugin>
 
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>findbugs-maven-plugin</artifactId>
-                <version>3.0.1</version>
-                <configuration>
-                    <failOnError>false</failOnError>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>3.2</version>
+				<configuration>
+					<format>xml</format>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>3.0.1</version>
+				<configuration>
+					<failOnError>false</failOnError>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>

@@ -3,15 +3,12 @@
  */
 public class Main {
 
-    public static void main(String[] args) {
-        System.out.println(getString());
-    }
+	public static void main(String[] args) {
+		
+		Gamygdala g = new Gamygdala();
+		
+		Agent player = g.createAgent("player");
+		
+	}
 
-    /**
-     *
-     * @return
-     */
-    public static String getString(){
-        return "Main.main";
-    }
 }
