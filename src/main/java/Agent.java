@@ -108,12 +108,21 @@ public class Agent {
 	/**
 	 * Check if this Agent has a specific Goal.
 	 * 
-	 * @param g
-	 *            Goal to check for.
+	 * @param g Goal to check for.
 	 * @return True if Agent has goal, false if not.
 	 */
 	public boolean hasGoal(Goal g) {
-		return g != null && this.goals.containsKey(g.name);
+		return g != null && this.hasGoal(g.name);
+	}
+	
+	/**
+	 * Check if this Agent has a specific Goal.
+	 * 
+	 * @param g Goal to check for.
+	 * @return True if Agent has goal, false if not.
+	 */
+	public boolean hasGoal(String goalName) {
+		return this.goals.containsKey(goalName) && this.goals.get(goalName) != null;
 	}
 
 	/**
