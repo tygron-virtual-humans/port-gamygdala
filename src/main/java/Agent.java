@@ -3,405 +3,430 @@ import java.util.HashMap;
 
 public class Agent {
 
-	/**
-	 * The name of this Agent.
-	 */
-	public String name;
+  /**
+   * The name of this Agent.
+   */
+  public String name;
 
-	/**
-	 * Collection of goals for this Agent.
-	 */
-	public HashMap<String, Goal> goals;
+  /**
+   * Collection of goals for this Agent.
+   */
+  public HashMap<String, Goal> goals;
 
-	/**
-	 * Collection of relations for this Agent.
-	 */
-	public ArrayList<Relation> currentRelations;
+  /**
+   * Collection of relations for this Agent.
+   */
+  public ArrayList<Relation> currentRelations;
 
-	/**
-	 * Collection of emotions for this Agent.
-	 */
-	public ArrayList<Emotion> internalState;
+  /**
+   * Collection of emotions for this Agent.
+   */
+  public ArrayList<Emotion> internalState;
 
-	/**
-	 * The gain for this agent. Must be between 0 and 20 inclusive.
-	 */
-	public double gain;
+  /**
+   * The gain for this agent. Must be between 0 and 20 inclusive.
+   */
+  public double gain;
 
-	/**
-	 * The Gamygdala instance to which this Agent is linked.
-	 */
-	private Gamygdala gamygdalaInstance;
+  /**
+   * The Gamygdala instance to which this Agent is linked.
+   */
+  private Gamygdala gamygdalaInstance;
 
-	/**
-	 * Pleasure Arousal Dominance mapping.
-	 */
-	private HashMap<String, double[]> mapPAD;
+  /**
+   * Pleasure Arousal Dominance mapping.
+   */
+  private HashMap<String, double[]> mapPad;
 
-	public static final double DEFAULT_GAIN = 1;
+  public static final double DEFAULT_GAIN = 1;
 
-	/**
-	 * Create new Agent.
-	 * 
-	 * @param name Agent name.
-	 */
-	public Agent(String name) {
-		this.name = name;
+  /**
+   * Create new Agent.
+   * 
+   * @param name Agent name.
+   */
+  public Agent(String name) {
+    this.name = name;
 
-		// Init goal map.
-		this.goals = new HashMap<String, Goal>();
+    // Init goal map.
+    this.goals = new HashMap<String, Goal>();
 
-		// Init relation and emotion collections
-		this.currentRelations = new ArrayList<Relation>();
-		this.internalState = new ArrayList<Emotion>();
+    // Init relation and emotion collections
+    this.currentRelations = new ArrayList<Relation>();
+    this.internalState = new ArrayList<Emotion>();
 
-		// Set gain
-		this.gain = Agent.DEFAULT_GAIN;
+    // Set gain
+    this.gain = Agent.DEFAULT_GAIN;
 
-		// Initialize PAD map
-		this.mapPAD = new HashMap<String, double[]>(16, 1);
-		this.mapPAD.put("distress", new double[] { -0.61, 0.28, -0.36 });
-		this.mapPAD.put("fear", new double[] { -0.64, 0.6, -0.43 });
-		this.mapPAD.put("hope", new double[] { 0.51, 0.23, 0.14 });
-		this.mapPAD.put("joy", new double[] { 0.76, .48, 0.35 });
-		this.mapPAD.put("satisfaction", new double[] { 0.87, 0.2, 0.62 });
-		this.mapPAD.put("fear-confirmed", new double[] { -0.61, 0.06, -0.32 }); // defeated
-		this.mapPAD.put("disappointment", new double[] { -0.61, -0.15, -0.29 });
-		this.mapPAD.put("relief", new double[] { 0.29, -0.19, -0.28 });
-		this.mapPAD.put("happy-for", new double[] { 0.64, 0.35, 0.25 });
-		this.mapPAD.put("resentment", new double[] { -0.35, 0.35, 0.29 });
-		this.mapPAD.put("pity", new double[] { -0.52, 0.02, -0.21 }); // regretful
-		this.mapPAD.put("gloating", new double[] { -0.45, 0.48, 0.42 }); // cruel
-		this.mapPAD.put("gratitude", new double[] { 0.64, 0.16, -0.21 }); // grateful
-		this.mapPAD.put("anger", new double[] { -0.51, 0.59, 0.25 });
-		this.mapPAD.put("gratification", new double[] { 0.69, 0.57, 0.63 }); // triumphant
-		this.mapPAD.put("remorse", new double[] { -0.57, 0.28, -0.34 }); // guilty
-	}
+    // Initialize PAD map
+    this.mapPad = new HashMap<String, double[]>(16, 1);
+    this.mapPad.put("distress", new double[] { -0.61, 0.28, -0.36 });
+    this.mapPad.put("fear", new double[] { -0.64, 0.6, -0.43 });
+    this.mapPad.put("hope", new double[] { 0.51, 0.23, 0.14 });
+    this.mapPad.put("joy", new double[] { 0.76, .48, 0.35 });
+    this.mapPad.put("satisfaction", new double[] { 0.87, 0.2, 0.62 });
+    this.mapPad.put("fear-confirmed", new double[] { -0.61, 0.06, -0.32 }); // defeated
+    this.mapPad.put("disappointment", new double[] { -0.61, -0.15, -0.29 });
+    this.mapPad.put("relief", new double[] { 0.29, -0.19, -0.28 });
+    this.mapPad.put("happy-for", new double[] { 0.64, 0.35, 0.25 });
+    this.mapPad.put("resentment", new double[] { -0.35, 0.35, 0.29 });
+    this.mapPad.put("pity", new double[] { -0.52, 0.02, -0.21 }); // regretful
+    this.mapPad.put("gloating", new double[] { -0.45, 0.48, 0.42 }); // cruel
+    this.mapPad.put("gratitude", new double[] { 0.64, 0.16, -0.21 }); // grateful
+    this.mapPad.put("anger", new double[] { -0.51, 0.59, 0.25 });
+    this.mapPad.put("gratification", new double[] { 0.69, 0.57, 0.63 }); // triumphant
+    this.mapPad.put("remorse", new double[] { -0.57, 0.28, -0.34 }); // guilty
+  }
 
-	/**
-	 * Add Goal.
-	 * 
-	 * @param g
-	 *            Goal to add.
-	 * @return True if goal was added successfully, false if not.
-	 */
-	public boolean addGoal(Goal g) {
-		if (g != null && !this.goals.containsKey(g.name)) {
-			this.goals.put(g.name, g);
-			return true;
-		}
-		return false;
-	}
+  /**
+   * Add Goal.
+   * 
+   * @param goal Goal to add.
+   * @return True if goal was added successfully, false if not.
+   */
+  public boolean addGoal(Goal goal) {
+    if (goal != null && !this.goals.containsKey(goal.name)) {
+      this.goals.put(goal.name, goal);
+      return true;
+    }
+    return false;
+  }
 
-	/**
-	 * Remove Goal.
-	 * 
-	 * @param g
-	 *            Goal to remove.
-	 * @return True if goal was removed successfully, false if not.
-	 */
-	public boolean removeGoal(Goal g) {
-		return g != null && this.goals.remove(g.name) != null;
-	}
+  /**
+   * Remove Goal.
+   * 
+   * @param g Goal to remove.
+   * @return True if goal was removed successfully, false if not.
+   */
+  public boolean removeGoal(Goal goal) {
+    return goal != null && this.goals.remove(goal.name) != null;
+  }
 
-	/**
-	 * Check if this Agent has a specific Goal.
-	 * 
-	 * @param g Goal to check for.
-	 * @return True if Agent has goal, false if not.
-	 */
-	public boolean hasGoal(Goal g) {
-		return g != null && this.hasGoal(g.name);
-	}
+  /**
+   * Check if this Agent has a specific Goal.
+   * 
+   * @param g Goal to check for.
+   * @return True if Agent has goal, false if not.
+   */
+  public boolean hasGoal(Goal goal) {
+    return goal != null && this.hasGoal(goal.name);
+  }
 
-	/**
-	 * Check if this Agent has a specific Goal.
-	 * 
-	 * @param g Goal to check for.
-	 * @return True if Agent has goal, false if not.
-	 */
-	public boolean hasGoal(String goalName) {
-		return this.goals.containsKey(goalName) && this.goals.get(goalName) != null;
-	}
+  /**
+   * Check if this Agent has a specific Goal.
+   * 
+   * @param g Goal to check for.
+   * @return True if Agent has goal, false if not.
+   */
+  public boolean hasGoal(String goalName) {
+    return this.goals.containsKey(goalName) && this.goals.get(goalName) != null;
+  }
 
-	/**
-	 * If this agent has a goal with name goalName, this method returns that goal.
-	 * 
-	 * @param goalName The name of the goal to be found.
-	 * @return the reference to the goal.
-	 */
-	public Goal getGoalByName(String goalName) {
-		if (this.goals.containsKey(goalName)) {
-			return this.goals.get(goalName);
-		}
-		return null;
-	}
+  /**
+   * If this agent has a goal with name goalName, this method returns that goal.
+   * 
+   * @param goalName The name of the goal to be found.
+   * @return the reference to the goal.
+   */
+  public Goal getGoalByName(String goalName) {
+    if (this.goals.containsKey(goalName)) {
+      return this.goals.get(goalName);
+    }
+    return null;
+  }
 
-	/**
-	 * Sets the gain for this agent.
-	 * 
-	 * @param gain The gain value [0 and 20].
-	 */
-	public void setGain(double gain) {
+  /**
+   * Sets the gain for this agent.
+   * 
+   * @param gain The gain value [0 and 20].
+   */
+  public void setGain(double gain) {
 
-		// Gain has to be between 0 and 20.
-		if (gain <= 0 || gain > 20) {
-			Gamygdala.debug("Error: gain factor for appraisal integration must be between 0 and 20.");
-		} else {
-			this.gain = gain;
-		}
-	}
+    // Gain has to be between 0 and 20.
+    if (gain <= 0 || gain > 20) {
+      Gamygdala.debug("Error: gain factor for appraisal integration must be between 0 and 20.");
+    } else {
+      this.gain = gain;
+    }
+  }
 
-	/**
-	 * A facilitating method to be able to appraise one event only from the perspective of the current agent (this).
-	 * Needs an instantiated Gamygdala object (automatic when the agent is registered with Gamygdala.registerAgent(agent) to a Gamygdala instance).
-	 * 
-	 * @param belief The belief to be appraised.
-	 */
-	public void appraise(Belief belief) {
-		this.gamygdalaInstance.appraise(belief, this);
-	}
+  /**
+   * A facilitating method to be able to appraise one event only from the perspective of the current
+   * agent (this).
+   * Needs an instantiated Gamygdala object (automatic when the agent is registered with
+   * Gamygdala.registerAgent(agent) to a Gamygdala instance).
+   * 
+   * @param belief The belief to be appraised.
+   */
+  public void appraise(Belief belief) {
+    this.gamygdalaInstance.appraise(belief, this);
+  }
 
-	public void updateEmotionalState(Emotion emotion) {
-		Emotion e;
-		for (int i = 0; i < this.internalState.size(); i++) {
-			e = this.internalState.get(i);
-			if (e.name == emotion.name) {
-				// Appraisals simply add to the old value of the emotion
-				// So repeated appraisals without decay will result in the sum of the appraisals over time
-				// To decay the emotional state, call .decay(decayFunction), or simply use the facilitating function in Gamygdala setDecay(timeMS).
-				e.intensity += emotion.intensity;
+  /**
+   * Updates the emotional state of this agent using a single emotion.
+   * 
+   * @param emotion The emotion with which this Agent should be updated.
+   */
+  public void updateEmotionalState(Emotion emotion) {
+    Emotion temp;
+    for (int i = 0; i < this.internalState.size(); i++) {
+      temp = this.internalState.get(i);
+      if (temp.name == emotion.name) {
+        // Appraisals simply add to the old value of the emotion
+        // So repeated appraisals without decay will result in the sum of the appraisals over time
+        // To decay the emotional state, call .decay(decayFunction), or simply use the facilitating
+        // function in Gamygdala setDecay(timeMS).
+        temp.intensity += emotion.intensity;
 
-				// Test if this works without updating object, else:
-				// this.internalState.set(i, e);
-				return;
-			}
-		}
+        // Test if this works without updating object, else:
+        // this.internalState.set(i, e);
+        return;
+      }
+    }
 
-		// copy on keep, we need to maintain a list of current emotions for the state, not a list references to the appraisal engine
-		this.internalState.add(new Emotion(emotion.name, emotion.intensity));
-	}
+    // copy on keep, we need to maintain a list of current emotions for the state, not a list
+    // references to the appraisal engine
+    this.internalState.add(new Emotion(emotion.name, emotion.intensity));
+  }
 
-	/**
-	 * This function returns either the state as is (gain=false) or a state based on gained limiter (limited between 0 and 1), of which the gain can be set by using setGain(gain).
-	 * A high gain factor works well when appraisals are small and rare, and you want to see the effect of these appraisals
-	 * A low gain factor (close to 0 but in any case below 1) works well for high frequency and/or large appraisals, so that the effect of these is dampened.
-	 * 
-	 * @param useGain Whether to use the gain function or not.
-	 * @return An array of emotions.
-	 */
-	public ArrayList<Emotion> getEmotionalState(boolean useGain) {
+  /**
+   * This function returns either the state as is (gain=false) or a state based on gained limiter
+   * (limited between 0 and 1), of which the gain can be set by using setGain(gain).
+   * A high gain factor works well when appraisals are small and rare, and you want to see the
+   * effect of these appraisals
+   * A low gain factor (close to 0 but in any case below 1) works well for high frequency and/or
+   * large appraisals, so that the effect of these is dampened.
+   * 
+   * @param useGain Whether to use the gain function or not.
+   * @return An array of emotions.
+   */
+  public ArrayList<Emotion> getEmotionalState(boolean useGain) {
 
-		if (useGain) {
-			ArrayList<Emotion> gainState = new ArrayList<Emotion>();
-			Emotion e;
-			for (int i = 0; i < this.internalState.size(); i++) {
-				e = this.internalState.get(i);
+    if (useGain) {
+      ArrayList<Emotion> gainState = new ArrayList<Emotion>();
+      Emotion emotion;
+      for (int i = 0; i < this.internalState.size(); i++) {
+        emotion = this.internalState.get(i);
 
-				if (e != null) {
-					double gainEmo = (this.gain * e.intensity) / (this.gain * e.intensity + 1);
-					gainState.add(new Emotion(e.name, gainEmo));
-				}
-			}
+        if (emotion != null) {
+          double gainEmo = (this.gain * emotion.intensity) / (this.gain * emotion.intensity + 1);
+          gainState.add(new Emotion(emotion.name, gainEmo));
+        }
+      }
 
-			return gainState;
-		}
+      return gainState;
+    }
 
-		return this.internalState;
-	}
+    return this.internalState;
+  }
 
-	/**
-	 * This function returns a summation-based Pleasure Arousal Dominance mapping of the emotional state as is (gain=false), or a PAD mapping based on a gained limiter (limited between 0 and 1), of which the gain can be set by using setGain(gain).
-	 * It sums over all emotions the equivalent PAD values of each emotion (i.e., [P,A,D]=SUM(Emotion_i([P,A,D])))), which is then gained or not.
-	 * A high gain factor works well when appraisals are small and rare, and you want to see the effect of these appraisals.
-	 * A low gain factor (close to 0 but in any case below 1) works well for high frequency and/or large appraisals, so that the effect of these is dampened.
-	 * 
-	 * @param useGain Whether to use the gain function or not.
-	 * @return An array of doubles with Pleasure at index 0, Arousal at index [1] and Dominance at index [2].
-	 */
-	public double[] getPADState(boolean useGain) {
-		double[] PAD = new double[3];
-		PAD[0] = 0;
-		PAD[1] = 0;
-		PAD[2] = 0;
+  /**
+   * This function returns a summation-based Pleasure Arousal Dominance mapping of the emotional
+   * state as is (gain=false), or a PAD mapping based on a gained limiter (limited between 0 and 1),
+   * of which the gain can be set by using setGain(gain).
+   * It sums over all emotions the equivalent PAD values of each emotion (i.e.,
+   * [P,A,D]=SUM(Emotion_i([P,A,D])))), which is then gained or not.
+   * A high gain factor works well when appraisals are small and rare, and you want to see the
+   * effect of these appraisals.
+   * A low gain factor (close to 0 but in any case below 1) works well for high frequency and/or
+   * large appraisals, so that the effect of these is dampened.
+   * 
+   * @param useGain Whether to use the gain function or not.
+   * @return An array of doubles with Pleasure at index 0, Arousal at index [1] and Dominance at
+   *         index [2].
+   */
+  public double[] getPadState(boolean useGain) {
+    double[] pad = new double[3];
+    pad[0] = 0;
+    pad[1] = 0;
+    pad[2] = 0;
 
-		Emotion e;
-		for (int i = 0; i < this.internalState.size(); i++) {
-			e = this.internalState.get(i);
-			PAD[0] += (e.intensity * this.mapPAD.get(e.name)[0]);
-			PAD[1] += (e.intensity * this.mapPAD.get(e.name)[1]);
-			PAD[2] += (e.intensity * this.mapPAD.get(e.name)[2]);
-		}
+    Emotion emotion;
+    for (int i = 0; i < this.internalState.size(); i++) {
+      emotion = this.internalState.get(i);
+      pad[0] += (emotion.intensity * this.mapPad.get(emotion.name)[0]);
+      pad[1] += (emotion.intensity * this.mapPad.get(emotion.name)[1]);
+      pad[2] += (emotion.intensity * this.mapPad.get(emotion.name)[2]);
+    }
 
-		if (useGain) {
-			PAD[0] = (PAD[0] >= 0 ? this.gain * PAD[0] / (this.gain * PAD[0] + 1) : -this.gain * PAD[0] / (this.gain * PAD[0] - 1));
-			PAD[1] = (PAD[1] >= 0 ? this.gain * PAD[1] / (this.gain * PAD[1] + 1) : -this.gain * PAD[1] / (this.gain * PAD[1] - 1));
-			PAD[2] = (PAD[2] >= 0 ? this.gain * PAD[2] / (this.gain * PAD[2] + 1) : -this.gain * PAD[2] / (this.gain * PAD[2] - 1));
-			return PAD;
-		}
+    if (useGain) {
+      pad[0] = (pad[0] >= 0 ? this.gain * pad[0] / (this.gain * pad[0] + 1) : -this.gain * pad[0]
+          / (this.gain * pad[0] - 1));
+      pad[1] = (pad[1] >= 0 ? this.gain * pad[1] / (this.gain * pad[1] + 1) : -this.gain * pad[1]
+          / (this.gain * pad[1] - 1));
+      pad[2] = (pad[2] >= 0 ? this.gain * pad[2] / (this.gain * pad[2] + 1) : -this.gain * pad[2]
+          / (this.gain * pad[2] - 1));
+      return pad;
+    }
 
-		return PAD;
-	}
+    return pad;
+  }
 
-	/**
-	 * This function prints to the console either the state as is (gain=false) or a state based on gained limiter (limited between 0 and 1), of which the gain can be set by using setGain(gain).
-	 * A high gain factor works well when appraisals are small and rare, and you want to see the effect of these appraisals
-	 * A low gain factor (close to 0 but in any case below 1) works well for high frequency and/or large appraisals, so that the effect of these is dampened.
-	 * 
-	 * @param useGain Whether to use the gain function or not.
-	 */
-	public void printEmotionalState(boolean useGain) {
-		String output = this.name + " feels ";
-		int i;
-		ArrayList<Emotion> emotionalState = this.getEmotionalState(useGain);
+  /**
+   * This function prints to the console either the state as is (gain=false) or a state based on
+   * gained limiter (limited between 0 and 1), of which the gain can be set by using setGain(gain).
+   * A high gain factor works well when appraisals are small and rare, and you want to see the
+   * effect of these appraisals
+   * A low gain factor (close to 0 but in any case below 1) works well for high frequency and/or
+   * large appraisals, so that the effect of these is dampened.
+   * 
+   * @param useGain Whether to use the gain function or not.
+   */
+  public void printEmotionalState(boolean useGain) {
+    String output = this.name + " feels ";
 
-		Emotion e;
-		for (i = 0; i < emotionalState.size(); i++) {
-			e = emotionalState.get(i);
-			output += e.name + ": " + e.intensity + ", ";
-		}
+    ArrayList<Emotion> emotionalState = this.getEmotionalState(useGain);
 
-		System.out.println(output);
-	}
+    Emotion emotion;
+    for (int i = 0; i < emotionalState.size(); i++) {
+      emotion = emotionalState.get(i);
+      output += emotion.name + ": " + emotion.intensity + ", ";
+    }
 
-	/**
-	 * Sets the relation this agent has with the agent defined by agentName. If
-	 * the relation does not exist, it will be created, otherwise it will be
-	 * updated.
-	 * 
-	 * @param agentName The agent who is the target of the relation.
-	 * @param like The relation (between -1 and 1).
-	 */
-	public void updateRelation(String agentName, double like) {
-		if (!this.hasRelationWith(agentName)) {
-			// This relation does not exist, just add it.
-			this.currentRelations.add(new Relation(agentName, like));
-		} else {
-			// The relation already exists, update it.
-			Relation r;
-			for (int i = 0; i < this.currentRelations.size(); i++) {
-				r = this.currentRelations.get(i);
-				if (r.agentName == agentName) {
-					r.like = like;
-				}
-			}
-		}
-	}
+    System.out.println(output);
+  }
 
-	/**
-	 * Checks if this agent has a relation with the agent defined by agentName.
-	 * 
-	 * @param {String} agentName The agent who is the target of the relation.
-	 * @param {boolean} True if the relation exists, otherwise false.
-	 */
-	public boolean hasRelationWith(String agentName) {
-		return (this.getRelation(agentName) != null);
-	}
+  /**
+   * Sets the relation this agent has with the agent defined by agentName. If
+   * the relation does not exist, it will be created, otherwise it will be
+   * updated.
+   * 
+   * @param agentName The agent who is the target of the relation.
+   * @param like The relation (between -1 and 1).
+   */
+  public void updateRelation(String agentName, double like) {
+    if (!this.hasRelationWith(agentName)) {
+      // This relation does not exist, just add it.
+      this.currentRelations.add(new Relation(agentName, like));
+    } else {
+      // The relation already exists, update it.
+      Relation relation;
+      for (int i = 0; i < this.currentRelations.size(); i++) {
+        relation = this.currentRelations.get(i);
+        if (relation.agentName == agentName) {
+          relation.like = like;
+        }
+      }
+    }
+  }
 
-	/**
-	 * Returns the relation object this agent has with the agent defined by
-	 * agentName.
-	 * 
-	 * @param agentName The agent who is the target of the relation.
-	 * @param Relation The relation object or null if non existing.
-	 */
-	public Relation getRelation(String agentName) {
-		Relation r;
-		for (int i = 0; i < this.currentRelations.size(); i++) {
-			r = this.currentRelations.get(i);
-			if (r.agentName == agentName) {
-				return r;
-			}
-		}
-		return null;
-	}
+  /**
+   * Checks if this agent has a relation with the agent defined by agentName.
+   * 
+   * @param agentName The agent who is the target of the relation.
+   * @param True if the relation exists, otherwise false.
+   */
+  public boolean hasRelationWith(String agentName) {
+    return (this.getRelation(agentName) != null);
+  }
 
-	/**
-	 * Prints the relations this agent has with the agent defined by agentName.
-	 * 
-	 * @param agentName The agent who is the target of the relation. When omitted, all relations are printed.
-	 */
-	public void printRelations(String agentName) {
-		String output = this.name + " has the following sentiments:\n   ";
-		boolean found = false;
+  /**
+   * Returns the relation object this agent has with the agent defined by
+   * agentName.
+   * 
+   * @param agentName The agent who is the target of the relation.
+   * @return Relation The relation object or null if non existing.
+   */
+  public Relation getRelation(String agentName) {
+    Relation relation;
+    for (int i = 0; i < this.currentRelations.size(); i++) {
+      relation = this.currentRelations.get(i);
+      if (relation.agentName == agentName) {
+        return relation;
+      }
+    }
+    return null;
+  }
 
-		for (int i = 0; i < this.currentRelations.size(); i++) {
+  /**
+   * Prints the relations this agent has with the agent defined by agentName.
+   * 
+   * @param agentName The agent who is the target of the relation. When omitted, all relations are
+   *          printed.
+   */
+  public void printRelations(String agentName) {
+    String output = this.name + " has the following sentiments:\n   ";
+    boolean found = false;
 
-			if (agentName == null || this.currentRelations.get(i).agentName == agentName) {
-				for (int j = 0; j < this.currentRelations.get(i).emotionList.size(); j++) {
-					output += this.currentRelations.get(i).emotionList.get(j).name + "(" + this.currentRelations.get(i).emotionList.get(j).intensity + ") ";
-					found = true;
-				}
-			}
+    for (int i = 0; i < this.currentRelations.size(); i++) {
 
-			output += " for " + this.currentRelations.get(i).agentName;
+      if (agentName == null || this.currentRelations.get(i).agentName == agentName) {
+        for (int j = 0; j < this.currentRelations.get(i).emotionList.size(); j++) {
+          output += this.currentRelations.get(i).emotionList.get(j).name + "("
+              + this.currentRelations.get(i).emotionList.get(j).intensity + ") ";
+          found = true;
+        }
+      }
 
-			if (i < this.currentRelations.size() - 1) {
-				output += ", and\n   ";
-			}
-		}
+      output += " for " + this.currentRelations.get(i).agentName;
 
-		if (found) {
-			System.out.println(output);
-		}
-	}
+      if (i < this.currentRelations.size() - 1) {
+        output += ", and\n   ";
+      }
+    }
 
-	/**
-	 * This method decays the emotional state and relations according to the
-	 * decay factor and function defined in gamygdala. Typically this is called
-	 * automatically when you use startDecay() in Gamygdala, but you can use it
-	 * yourself if you want to manage the timing. This function is keeping track
-	 * of the millis passed since the last call, and will (try to) keep the
-	 * decay close to the desired decay factor, regardless the time passed So
-	 * you can call this any time you want (or, e.g., have the game loop call
-	 * it, or have e.g., Phaser call it in the plugin update, which is default
-	 * now). Further, if you want to tweak the emotional intensity decay of
-	 * individual agents, you should tweak the decayFactor per agent not the
-	 * "frame rate" of the decay (as this doesn't change the rate).
-	 * 
-	 * @param gamygdalaInstance A reference to the correct Gamygdala instance that
-	 *            contains the decayFunction property to be used (so you could use
-	 *            different gamygdala instances to manage different groups of agents)
-	 */
-	public void decay(Gamygdala gamygdalaInstance) {
-		for (int i = 0; i < this.internalState.size(); i++) {
-			double newIntensity = gamygdalaInstance.decayFunction.decay(this.internalState.get(i).intensity, gamygdalaInstance.getMillisPassed());
-			if (newIntensity < 0) {
-				this.internalState.remove(i);
-			} else {
-				this.internalState.get(i).intensity = newIntensity;
-			}
-		}
+    if (found) {
+      System.out.println(output);
+    }
+  }
 
-		for (int i = 0; i < this.currentRelations.size(); i++) {
-			this.currentRelations.get(i).decay(gamygdalaInstance);
-		}
-	}
+  /**
+   * This method decays the emotional state and relations according to the
+   * decay factor and function defined in gamygdala. Typically this is called
+   * automatically when you use startDecay() in Gamygdala, but you can use it
+   * yourself if you want to manage the timing. This function is keeping track
+   * of the millis passed since the last call, and will (try to) keep the
+   * decay close to the desired decay factor, regardless the time passed So
+   * you can call this any time you want (or, e.g., have the game loop call
+   * it, or have e.g., Phaser call it in the plugin update, which is default
+   * now). Further, if you want to tweak the emotional intensity decay of
+   * individual agents, you should tweak the decayFactor per agent not the
+   * "frame rate" of the decay (as this doesn't change the rate).
+   * 
+   * @param gamygdalaInstance A reference to the correct Gamygdala instance that
+   *          contains the decayFunction property to be used (so you could use
+   *          different gamygdala instances to manage different groups of agents)
+   */
+  public void decay(Gamygdala gamygdalaInstance) {
+    for (int i = 0; i < this.internalState.size(); i++) {
+      double newIntensity = gamygdalaInstance.decayFunction.decay(
+          this.internalState.get(i).intensity, gamygdalaInstance.getMillisPassed());
+      if (newIntensity < 0) {
+        this.internalState.remove(i);
+      } else {
+        this.internalState.get(i).intensity = newIntensity;
+      }
+    }
 
-	/**
-	 * Get the Gamygdala instance to which this Agent is linked.
-	 * 
-	 * @return Gamygdala object.
-	 */
-	public Gamygdala getGamygdalaInstance() {
-		return this.gamygdalaInstance;
-	}
+    for (int i = 0; i < this.currentRelations.size(); i++) {
+      this.currentRelations.get(i).decay(gamygdalaInstance);
+    }
+  }
 
-	/**
-	 * Set the Gamygdala instance to which this Agent is linked.
-	 * 
-	 * @return Gamygdala object.
-	 */
-	public void setGamygdalaInstance(Gamygdala g) {
-		this.gamygdalaInstance = g;
-	}
+  /**
+   * Get the Gamygdala instance to which this Agent is linked.
+   * 
+   * @return Gamygdala object.
+   */
+  public Gamygdala getGamygdalaInstance() {
+    return this.gamygdalaInstance;
+  }
 
-	/**
-	 * String representation of Agent.
-	 */
-	@Override
-	public String toString() {
-		return "<Agent[" + this.name + "]>";
-	}
+  /**
+   * Set the Gamygdala instance to which this Agent is linked.
+   * 
+   * @return Gamygdala object.
+   */
+  public void setGamygdalaInstance(Gamygdala instance) {
+    this.gamygdalaInstance = instance;
+  }
+
+  /**
+   * String representation of Agent.
+   */
+  @Override
+  public String toString() {
+    return "<Agent[" + this.name + "]>";
+  }
 
 }
