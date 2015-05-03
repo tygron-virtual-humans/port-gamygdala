@@ -294,10 +294,11 @@ public class Gamygdala {
     Iterator<Entry<String, Double>> goalCongruenceIterator = belief.getGoalCongruenceMap()
         .entrySet().iterator();
 
+    Goal currentGoal;
     String currentGoalName;
     Double currentCongruence;
 
-    // Loop through every goal in the list of affected goals by this event.
+    // Loop all goals.
     while (goalCongruenceIterator.hasNext()) {
 
       // Get next entry in map
@@ -305,14 +306,59 @@ public class Gamygdala {
       currentGoalName = goalPair.getKey();
       currentCongruence = goalPair.getValue();
 
+      // Check for nulls
       if (currentGoalName == null || currentCongruence == null) {
         Gamygdala.debug("Error: goal name or goal congruence is null.");
         continue;
       }
 
-      this.processAppraisalGoals(belief, this.getGoalByName(currentGoalName), currentCongruence,
-          affectedAgent);
+      // Loop through every goal in the list of affected goals by this event.
+      currentGoal = this.getGoalByName(currentGoalName);
 
+      // If current goal is really a goal
+      if (currentGoal != null) {
+
+        // the goal exists, appraise it
+        double utility = currentGoal.getUtility();
+        double deltaLikelihood = this.calculateDeltaLikelihood(currentGoal, currentCongruence,
+            belief.getLikelihood(), belief.isIncremental());
+        double desirability = deltaLikelihood * utility;
+
+        if (affectedAgent == null) {
+
+          Gamygdala.debug("Evaluated goal: " + currentGoal.getName() + "(" + utility + ", "
+              + deltaLikelihood + ")");
+
+          Iterator<Entry<String, Agent>> it = this.agents.entrySet().iterator();
+          Agent owner;
+
+          // now find the owners, and update their emotional states
+          while (it.hasNext()) {
+
+            Map.Entry<String, Agent> pair = (Map.Entry<String, Agent>) it.next();
+            owner = pair.getValue();
+
+            if (owner != null && owner.hasGoal(currentGoal.getName())) {
+
+              Gamygdala.debug("....owned by " + owner.name);
+
+              this.evaluateAgentEmotions(belief, affectedAgent, currentGoal, utility,
+                  deltaLikelihood, desirability);
+            }
+          }
+
+        } else {
+
+          // check only affectedAgent (which can be much faster) and does not involve console output
+          // nor checks
+
+          // assume affectedAgent is the only owner to be considered in this appraisal round.
+          this.evaluateAgentEmotions(belief, affectedAgent, currentGoal, utility, deltaLikelihood,
+              desirability);
+
+        }
+
+      }
     }
 
     if (Gamygdala.debug) {
@@ -322,143 +368,43 @@ public class Gamygdala {
     }
   }
 
-  private void processAppraisalGoals(Belief belief, Goal currentGoal, Double currentCongruence,
-      Agent affectedAgent) {
+  private void evaluateAgentEmotions(Belief belief, Agent owner, Goal currentGoal, double utility,
+      double deltaLikelihood, double desirability) {
 
-    if (currentGoal != null) {
+    Iterator<Entry<String, Agent>> it = this.agents.entrySet().iterator();
+    Agent temp;
+    Relation relation;
 
-      // the goal exists, appraise it
-      double utility = currentGoal.getUtility();
-      double deltaLikelihood = this.calculateDeltaLikelihood(currentGoal, currentCongruence,
-          belief.getLikelihood(), belief.isIncremental());
-      double desirability = deltaLikelihood * utility;
+    this.evaluateInternalEmotion(utility, deltaLikelihood, currentGoal.getLikelihood(), owner);
+    this.agentActions(owner.name, belief.getCausalAgentName(), owner.name, desirability, utility,
+        deltaLikelihood);
 
-      Gamygdala.debug("Evaluated goal: " + currentGoal.getName() + "(" + utility + ", "
-          + deltaLikelihood + ")");
+    // now check if anyone has a relation to this goal owner, and update the social emotions
+    // accordingly.
+    while (it.hasNext()) {
 
-      if (affectedAgent == null) {
+      Map.Entry<String, Agent> pair = (Map.Entry<String, Agent>) it.next();
+      temp = pair.getValue();
 
-        this.appraiseAllAgents(belief, currentGoal, utility, deltaLikelihood, desirability);
+      relation = temp.getRelation(owner.name);
+      if (relation != null) {
+
+        Gamygdala.debug(temp.name + " has a relationship with " + owner.name);
+        Gamygdala.debug(relation);
+
+        // The agent has relationship with the goal owner which has nonzero utility, add
+        // relational effects to the relations for agent[k].
+        this.evaluateSocialEmotion(utility, desirability, deltaLikelihood, relation, temp);
+
+        // also add remorse and gratification if conditions are met within (i.e., agent[k]
+        // did something bad/good for owner)
+        this.agentActions(owner.name, belief.getCausalAgentName(), temp.name, desirability,
+            utility, deltaLikelihood);
 
       } else {
-
-        this.appraiseSingleAgent(belief, currentGoal, affectedAgent, utility, deltaLikelihood,
-            desirability);
-
+        Gamygdala.debug(temp.name + " has NO relationship with " + owner.name);
       }
     }
-  }
-
-  private void appraiseSingleAgent(Belief belief, Goal currentGoal, Agent agent, double utility,
-      double deltaLikelihood, double desirability) {
-
-    Iterator<Entry<String, Agent>> it = this.agents.entrySet().iterator();
-    Iterator<Entry<String, Agent>> it2 = this.agents.entrySet().iterator();
-    Agent owner;
-    Agent temp;
-    Relation relation;
-
-    // now find the owners, and update their emotional states
-    while (it.hasNext()) {
-
-      Map.Entry<String, Agent> pair = (Map.Entry<String, Agent>) it.next();
-      owner = pair.getValue();
-
-      if (owner != null && owner.hasGoal(currentGoal.getName())) {
-
-        Gamygdala.debug("....owned by " + owner.name);
-
-        this.evaluateInternalEmotion(utility, deltaLikelihood, currentGoal.getLikelihood(), owner);
-        this.agentActions(owner.name, belief.getCausalAgentName(), owner.name, desirability,
-            utility, deltaLikelihood);
-
-        // now check if anyone has a relation to this goal owner, and update the social
-        // emotions accordingly.
-        while (it2.hasNext()) {
-
-          Map.Entry<String, Agent> pair2 = (Map.Entry<String, Agent>) it2.next();
-          temp = pair2.getValue();
-
-          if (temp != null) {
-            relation = temp.getRelation(owner.name);
-            if (relation != null) {
-
-              Gamygdala.debug(temp.name + " has a relationship with " + owner.name);
-              Gamygdala.debug(relation);
-
-              // The agent has relationship with the goal owner which has nonzero utility, add
-              // relational effects to the relations for agent[k].
-              this.evaluateSocialEmotion(utility, desirability, deltaLikelihood, relation, temp);
-
-              // also add remorse and gratification if conditions are met within (i.e.,
-              // agent[k] did something bad/good for owner)
-              this.agentActions(owner.name, belief.getCausalAgentName(), temp.name, desirability,
-                  utility, deltaLikelihood);
-
-            } else {
-              Gamygdala.debug(temp.name + " has NO relationship with " + owner.name);
-            }
-          }
-        }
-      }
-    }
-
-  }
-
-  private void appraiseAllAgents(Belief belief, Goal currentGoal, double utility,
-      double deltaLikelihood, double desirability) {
-
-    Iterator<Entry<String, Agent>> it = this.agents.entrySet().iterator();
-    Iterator<Entry<String, Agent>> it2 = this.agents.entrySet().iterator();
-    Agent owner;
-    Agent temp;
-    Relation relation;
-
-    // now find the owners, and update their emotional states
-    while (it.hasNext()) {
-
-      Map.Entry<String, Agent> pair = (Map.Entry<String, Agent>) it.next();
-      owner = pair.getValue();
-
-      if (owner != null && owner.hasGoal(currentGoal.getName())) {
-
-        Gamygdala.debug("....owned by " + owner.name);
-
-        this.evaluateInternalEmotion(utility, deltaLikelihood, currentGoal.getLikelihood(), owner);
-        this.agentActions(owner.name, belief.getCausalAgentName(), owner.name, desirability,
-            utility, deltaLikelihood);
-
-        // now check if anyone has a relation to this goal owner, and update the social
-        // emotions accordingly.
-        while (it2.hasNext()) {
-
-          Map.Entry<String, Agent> pair2 = (Map.Entry<String, Agent>) it2.next();
-          temp = pair2.getValue();
-
-          if (temp != null) {
-            relation = temp.getRelation(owner.name);
-            if (relation != null) {
-
-              Gamygdala.debug(temp.name + " has a relationship with " + owner.name);
-              Gamygdala.debug(relation);
-
-              // The agent has relationship with the goal owner which has nonzero utility, add
-              // relational effects to the relations for agent[k].
-              this.evaluateSocialEmotion(utility, desirability, deltaLikelihood, relation, temp);
-
-              // also add remorse and gratification if conditions are met within (i.e.,
-              // agent[k] did something bad/good for owner)
-              this.agentActions(owner.name, belief.getCausalAgentName(), temp.name, desirability,
-                  utility, deltaLikelihood);
-
-            } else {
-              Gamygdala.debug(temp.name + " has NO relationship with " + owner.name);
-            }
-          }
-        }
-      }
-    }
-
   }
 
   /**
