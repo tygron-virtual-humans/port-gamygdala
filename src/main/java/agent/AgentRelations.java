@@ -1,3 +1,5 @@
+package agent;
+
 import java.util.ArrayList;
 
 public class AgentRelations extends ArrayList<Relation> {

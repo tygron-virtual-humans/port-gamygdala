@@ -1,3 +1,5 @@
+package data;
+
 public class Goal {
 
   private String name;
@@ -63,6 +65,8 @@ public class Goal {
   }
 
   /**
+   * Get the name of the goal.
+   * 
    * @return the name
    */
   public String getName() {
@@ -70,6 +74,8 @@ public class Goal {
   }
 
   /**
+   * Set the name of the goal.
+   * 
    * @param name the name to set
    */
   public void setName(String name) {
@@ -77,6 +83,8 @@ public class Goal {
   }
 
   /**
+   * Get the utility value of this goal.
+   * 
    * @return the utility
    */
   public double getUtility() {
@@ -84,6 +92,8 @@ public class Goal {
   }
 
   /**
+   * Set the utility value of this goal.
+   * 
    * @param utility the utility to set
    */
   public void setUtility(double utility) {
@@ -91,6 +101,8 @@ public class Goal {
   }
 
   /**
+   * Get the likelihood value of this goal.
+   * 
    * @return the likelihood
    */
   public double getLikelihood() {
@@ -98,6 +110,8 @@ public class Goal {
   }
 
   /**
+   * Set the likelihood value of this goal.
+   * 
    * @param likelihood the likelihood to set
    */
   public void setLikelihood(double likelihood) {
@@ -105,6 +119,8 @@ public class Goal {
   }
 
   /**
+   * Whether or not the goal is a maintainance goal.
+   * 
    * @return the isMaintenanceGoal
    */
   public boolean isMaintenanceGoal() {
@@ -112,6 +128,8 @@ public class Goal {
   }
 
   /**
+   * Set whether or not the goal is a maintainance goal.
+   * 
    * @param isMaintenanceGoal the isMaintenanceGoal to set
    */
   public void setMaintenanceGoal(boolean isMaintenanceGoal) {

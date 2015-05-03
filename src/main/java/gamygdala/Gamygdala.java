@@ -1,3 +1,13 @@
+package gamygdala;
+
+import agent.Agent;
+import agent.Relation;
+import data.Belief;
+import data.Emotion;
+import data.Goal;
+import decayfunction.DecayFunction;
+import decayfunction.LinearDecay;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -169,7 +179,8 @@ public class Gamygdala {
     if (!this.goals.containsKey(goal.getName())) {
       this.goals.put(goal.getName(), goal);
     } else {
-      Gamygdala.debug("Warning: failed adding a second goal with the same name: " + goal.getName());
+      Gamygdala
+          .debug("Warning: failed adding a second goal with the same name: " + goal.getName());
     }
   }
 
@@ -601,22 +612,35 @@ public class Gamygdala {
    * to exist, such as hope, fear, etc..
    * 
    * @param utility
-   * @param deltaLikelihood
+   * @param deltaLikelh
    * @param likelihood
    * @param agent
    */
-  private void evaluateInternalEmotion(double utility, double deltaLikelihood, double likelihood,
+  private void evaluateInternalEmotion(double utility, double deltaLikelh, double likelihood,
       Agent agent) {
 
     boolean positive = false;
-    double intensity = 0;
-    ArrayList<String> emotion = new ArrayList<String>();
 
     if (utility >= 0) {
-      positive = (deltaLikelihood >= 0) ? true : false;
+      positive = (deltaLikelh >= 0) ? true : false;
     } else if (utility < 0) {
-      positive = (deltaLikelihood >= 0) ? false : true;
+      positive = (deltaLikelh >= 0) ? false : true;
     }
+
+    ArrayList<String> emotion = this.determineEmotions(utility, deltaLikelh, likelihood, positive);
+
+    double intensity = Math.abs(utility * deltaLikelh);
+    if (intensity != 0) {
+      for (int i = 0; i < emotion.size(); i++) {
+        agent.updateEmotionalState(new Emotion(emotion.get(i), intensity));
+      }
+    }
+  }
+
+  private ArrayList<String> determineEmotions(double utility, double deltaLikelihood,
+      double likelihood, boolean positive) {
+
+    ArrayList<String> emotion = new ArrayList<String>();
 
     if (likelihood > 0 && likelihood < 1) {
 
@@ -656,12 +680,7 @@ public class Gamygdala {
 
     }
 
-    intensity = Math.abs(utility * deltaLikelihood);
-    if (intensity != 0) {
-      for (int i = 0; i < emotion.size(); i++) {
-        agent.updateEmotionalState(new Emotion(emotion.get(i), intensity));
-      }
-    }
+    return emotion;
   }
 
   /**

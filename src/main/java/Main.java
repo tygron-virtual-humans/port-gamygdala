@@ -1,3 +1,7 @@
+import data.Goal;
+import gamygdala.Gamygdala;
+import agent.Agent;
+
 /**
  * Created by svenpopping on 29/04/15.
  */

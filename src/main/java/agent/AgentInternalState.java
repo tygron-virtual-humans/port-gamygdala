@@ -1,4 +1,9 @@
+package agent;
+
+import data.Emotion;
+
 import java.util.ArrayList;
+
 
 /**
  * The internal state of an Agent. Contains all it's emotions.

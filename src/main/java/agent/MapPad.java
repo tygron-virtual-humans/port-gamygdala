@@ -1,3 +1,7 @@
+package agent;
+
+import data.Emotion;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -17,13 +21,13 @@ public class MapPad {
     this.mapPad = new HashMap<String, double[]>(16, 1);
 
     // Add initial emotions.
-    this._addInitialEmotions();
+    this.addInitialEmotions();
   }
 
   /**
    * Adds the initial / default emotions to the PAD map.
    */
-  private void _addInitialEmotions() {
+  private void addInitialEmotions() {
     this.mapPad.put("distress", new double[] { -0.61, 0.28, -0.36 });
     this.mapPad.put("fear", new double[] { -0.64, 0.6, -0.43 });
     this.mapPad.put("hope", new double[] { 0.51, 0.23, 0.14 });

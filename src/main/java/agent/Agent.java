@@ -1,5 +1,10 @@
-import java.util.ArrayList;
-import java.util.HashMap;
+package agent;
+
+import data.Belief;
+import data.Emotion;
+import data.Goal;
+import data.GoalMap;
+import gamygdala.Gamygdala;
 
 public class Agent {
 

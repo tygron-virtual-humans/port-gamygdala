@@ -1,3 +1,8 @@
+package agent;
+
+import data.Emotion;
+import gamygdala.Gamygdala;
+
 import java.util.ArrayList;
 
 public class Relation {

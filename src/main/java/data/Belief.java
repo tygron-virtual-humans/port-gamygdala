@@ -1,3 +1,7 @@
+package data;
+
+import gamygdala.Gamygdala;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -61,14 +65,14 @@ public class Belief {
     return likelihood;
   }
 
-  /**
-   * Set the likelihood of this belief.
-   * 
-   * @param likelihood the likelihood to set
-   */
-  public void setLikelihood(double likelihood) {
-    this.likelihood = likelihood;
-  }
+//  /**
+//   * Set the likelihood of this belief.
+//   * 
+//   * @param likelihood the likelihood to set
+//   */
+//  public void setLikelihood(double likelihood) {
+//    this.likelihood = likelihood;
+//  }
 
   /**
    * Get the name of the causal Agent.
@@ -79,14 +83,14 @@ public class Belief {
     return causalAgentName;
   }
 
-  /**
-   * Set the name of the causal Agent.
-   * 
-   * @param causalAgentName the causalAgentName to set
-   */
-  public void setCausalAgentName(String causalAgentName) {
-    this.causalAgentName = causalAgentName;
-  }
+//  /**
+//   * Set the name of the causal Agent.
+//   * 
+//   * @param causalAgentName the causalAgentName to set
+//   */
+//  public void setCausalAgentName(String causalAgentName) {
+//    this.causalAgentName = causalAgentName;
+//  }
 
   /**
    * Get the names of the goals affected and their congruences.
@@ -106,13 +110,13 @@ public class Belief {
     return isIncremental;
   }
 
-  /**
-   * Set whether or not belief is incremental.
-   * 
-   * @param isIncremental the isIncremental to set
-   */
-  public void setIncremental(boolean isIncremental) {
-    this.isIncremental = isIncremental;
-  }
+//  /**
+//   * Set whether or not belief is incremental.
+//   * 
+//   * @param isIncremental the isIncremental to set
+//   */
+//  public void setIncremental(boolean isIncremental) {
+//    this.isIncremental = isIncremental;
+//  }
 
 }
