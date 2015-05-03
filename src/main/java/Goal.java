@@ -1,9 +1,9 @@
 public class Goal {
 
-  public String name;
-  public double utility;
-  public double likelihood;
-  public boolean isMaintenanceGoal;
+  private String name;
+  private double utility;
+  private double likelihood;
+  private boolean isMaintenanceGoal;
 
   /**
    * Construct new Goal.
@@ -61,4 +61,62 @@ public class Goal {
 
     return false;
   }
+
+  /**
+   * @return the name
+   */
+  public String getName() {
+    return name;
+  }
+
+  /**
+   * @param name the name to set
+   */
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  /**
+   * @return the utility
+   */
+  public double getUtility() {
+    return utility;
+  }
+
+  /**
+   * @param utility the utility to set
+   */
+  public void setUtility(double utility) {
+    this.utility = utility;
+  }
+
+  /**
+   * @return the likelihood
+   */
+  public double getLikelihood() {
+    return likelihood;
+  }
+
+  /**
+   * @param likelihood the likelihood to set
+   */
+  public void setLikelihood(double likelihood) {
+    this.likelihood = likelihood;
+  }
+
+  /**
+   * @return the isMaintenanceGoal
+   */
+  public boolean isMaintenanceGoal() {
+    return isMaintenanceGoal;
+  }
+
+  /**
+   * @param isMaintenanceGoal the isMaintenanceGoal to set
+   */
+  public void setMaintenanceGoal(boolean isMaintenanceGoal) {
+    this.isMaintenanceGoal = isMaintenanceGoal;
+  }
+  
+  
 }

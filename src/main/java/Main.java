@@ -12,8 +12,11 @@ public class Main {
     Gamygdala engine = new Gamygdala();
 
     Agent player = engine.createAgent("player");
-    
+    Goal goal = engine.createGoalForAgent(player, "win", 1);
     System.out.println(player);
+    
+    System.out.println(engine.goals);
+    engine.printAllEmotions(false);
 
   }
 

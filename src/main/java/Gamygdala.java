@@ -132,7 +132,7 @@ public class Gamygdala {
         // XXX: Currently, this updates this attribute for every goal with this name registered to
         // all agents. Do we want this?
         if (isMaintenanceGoal) {
-          goal.isMaintenanceGoal = isMaintenanceGoal;
+          goal.setMaintenanceGoal(isMaintenanceGoal);
         }
 
         Gamygdala.debug("Warning: I cannot make a new goal with the same name " + goalName
@@ -166,10 +166,10 @@ public class Gamygdala {
    * @param goal The goal to be registered.
    */
   public void registerGoal(Goal goal) {
-    if (!this.goals.containsKey(goal.name)) {
-      this.goals.put(goal.name, goal);
+    if (!this.goals.containsKey(goal.getName())) {
+      this.goals.put(goal.getName(), goal);
     } else {
-      Gamygdala.debug("Warning: failed adding a second goal with the same name: " + goal.name);
+      Gamygdala.debug("Warning: failed adding a second goal with the same name: " + goal.getName());
     }
   }
 
@@ -317,12 +317,12 @@ public class Gamygdala {
     if (currentGoal != null) {
 
       // the goal exists, appraise it
-      double utility = currentGoal.utility;
+      double utility = currentGoal.getUtility();
       double deltaLikelihood = this.calculateDeltaLikelihood(currentGoal, currentCongruence,
           belief.getLikelihood(), belief.isIncremental());
       double desirability = deltaLikelihood * utility;
 
-      Gamygdala.debug("Evaluated goal: " + currentGoal.name + "(" + utility + ", "
+      Gamygdala.debug("Evaluated goal: " + currentGoal.getName() + "(" + utility + ", "
           + deltaLikelihood + ")");
 
       if (affectedAgent == null) {
@@ -353,11 +353,11 @@ public class Gamygdala {
       Map.Entry<String, Agent> pair = (Map.Entry<String, Agent>) it.next();
       owner = pair.getValue();
 
-      if (owner != null && owner.hasGoal(currentGoal.name)) {
+      if (owner != null && owner.hasGoal(currentGoal.getName())) {
 
         Gamygdala.debug("....owned by " + owner.name);
 
-        this.evaluateInternalEmotion(utility, deltaLikelihood, currentGoal.likelihood, owner);
+        this.evaluateInternalEmotion(utility, deltaLikelihood, currentGoal.getLikelihood(), owner);
         this.agentActions(owner.name, belief.getCausalAgentName(), owner.name, desirability,
             utility, deltaLikelihood);
 
@@ -409,11 +409,11 @@ public class Gamygdala {
       Map.Entry<String, Agent> pair = (Map.Entry<String, Agent>) it.next();
       owner = pair.getValue();
 
-      if (owner != null && owner.hasGoal(currentGoal.name)) {
+      if (owner != null && owner.hasGoal(currentGoal.getName())) {
 
         Gamygdala.debug("....owned by " + owner.name);
 
-        this.evaluateInternalEmotion(utility, deltaLikelihood, currentGoal.likelihood, owner);
+        this.evaluateInternalEmotion(utility, deltaLikelihood, currentGoal.getLikelihood(), owner);
         this.agentActions(owner.name, belief.getCausalAgentName(), owner.name, desirability,
             utility, deltaLikelihood);
 
@@ -574,10 +574,10 @@ public class Gamygdala {
   private double calculateDeltaLikelihood(Goal goal, double congruence, double likelihood,
       boolean isIncremental) {
 
-    Double oldLikelihood = goal.likelihood;
+    Double oldLikelihood = goal.getLikelihood();
     double newLikelihood;
 
-    if (goal.isMaintenanceGoal == false && (oldLikelihood >= 1 | oldLikelihood <= -1)) {
+    if (!goal.isMaintenanceGoal() && (oldLikelihood >= 1 | oldLikelihood <= -1)) {
       return 0;
     }
 
@@ -588,7 +588,7 @@ public class Gamygdala {
       newLikelihood = (congruence * likelihood + 1.0) / 2.0;
     }
 
-    goal.likelihood = newLikelihood;
+    goal.setLikelihood(newLikelihood);
     if (oldLikelihood != null) {
       return newLikelihood - oldLikelihood;
     } else {
