@@ -116,6 +116,7 @@ public class Gamygdala {
    * @param agent The agent's name to which the newly created goal has to be added.
    * @param goalName The goal's name.
    * @param goalUtility The goal's utility.
+   * @param isMaintenanceGoal Whether or not this goal is a maintenance goal.
    * @return Goal - a goal reference to the newly created goal.
    */
   public Goal createGoalForAgent(Agent agent, String goalName, double goalUtility,

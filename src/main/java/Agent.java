@@ -11,17 +11,17 @@ public class Agent {
   /**
    * Collection of goals for this Agent.
    */
-  public GoalMap goals;
+  GoalMap goals;
 
   /**
    * Collection of relations for this Agent.
    */
-  public AgentRelations currentRelations;
+  AgentRelations currentRelations;
 
   /**
    * Collection of emotions for this Agent.
    */
-  public AgentInternalState internalState;
+  AgentInternalState internalState;
 
   /**
    * The gain for this agent. Must be between 0 and 20 inclusive.
@@ -166,10 +166,11 @@ public class Agent {
    * A low gain factor (close to 0 but in any case below 1) works well for high frequency and/or
    * large appraisals, so that the effect of these is dampened.
    * 
-   * @param gain The gain factor. Leave blank (null) to ignore gain.
+   * @param gained Print only gained emotions or not.
    */
-  public void printEmotionalState(Double gain) {
+  public void printEmotionalState(boolean gained) {
     String output = this.name + " feels ";
+    Double gain = gained ? this.gain : null;
     output += this.internalState.getEmotionalState(gain);
 
     System.out.println(output);
