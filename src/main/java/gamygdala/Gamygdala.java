@@ -73,7 +73,7 @@ public class Gamygdala {
   /**
    * Add an agent to this Gamygdala instance.
    * 
-   * @param a The agent to be registered.
+   * @param agent The agent to be registered.
    */
   public void registerAgent(Agent agent) {
     agent.setGamygdalaInstance(this);
