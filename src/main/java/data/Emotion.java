@@ -1,3 +1,4 @@
+package data;
 /**
  * This class is mainly a data structure to store an emotion with its intensity.
  */

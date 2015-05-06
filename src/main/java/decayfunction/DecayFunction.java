@@ -1,3 +1,4 @@
+package decayfunction;
 /**
  * Interface for emotion intensity decay functions.
  */

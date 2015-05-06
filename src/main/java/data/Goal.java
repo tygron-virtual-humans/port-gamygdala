@@ -1,9 +1,11 @@
+package data;
+
 public class Goal {
 
-  public String name;
-  public double utility;
-  public double likelihood;
-  public boolean isMaintenanceGoal;
+  private String name;
+  private double utility;
+  private double likelihood;
+  private boolean isMaintenanceGoal;
 
   /**
    * Construct new Goal.
@@ -61,4 +63,78 @@ public class Goal {
 
     return false;
   }
+
+  /**
+   * Get the name of the goal.
+   * 
+   * @return the name
+   */
+  public String getName() {
+    return name;
+  }
+
+  /**
+   * Set the name of the goal.
+   * 
+   * @param name the name to set
+   */
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  /**
+   * Get the utility value of this goal.
+   * 
+   * @return the utility
+   */
+  public double getUtility() {
+    return utility;
+  }
+
+  /**
+   * Set the utility value of this goal.
+   * 
+   * @param utility the utility to set
+   */
+  public void setUtility(double utility) {
+    this.utility = utility;
+  }
+
+  /**
+   * Get the likelihood value of this goal.
+   * 
+   * @return the likelihood
+   */
+  public double getLikelihood() {
+    return likelihood;
+  }
+
+  /**
+   * Set the likelihood value of this goal.
+   * 
+   * @param likelihood the likelihood to set
+   */
+  public void setLikelihood(double likelihood) {
+    this.likelihood = likelihood;
+  }
+
+  /**
+   * Whether or not the goal is a maintainance goal.
+   * 
+   * @return the isMaintenanceGoal
+   */
+  public boolean isMaintenanceGoal() {
+    return isMaintenanceGoal;
+  }
+
+  /**
+   * Set whether or not the goal is a maintainance goal.
+   * 
+   * @param isMaintenanceGoal the isMaintenanceGoal to set
+   */
+  public void setMaintenanceGoal(boolean isMaintenanceGoal) {
+    this.isMaintenanceGoal = isMaintenanceGoal;
+  }
+  
+  
 }

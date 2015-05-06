@@ -1,3 +1,5 @@
+package decayfunction;
+
 public class ExponentialDecay extends DecayFunction {
 
   public ExponentialDecay(double decayFactor) {
