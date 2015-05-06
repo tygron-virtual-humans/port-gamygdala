@@ -1,8 +1,13 @@
+package agent;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import data.Goal;
+import gamygdala.Gamygdala;
 
 import org.junit.After;
 import org.junit.Before;
@@ -91,8 +96,8 @@ public class AgentTest {
     Goal goal = new Goal("TestGoal", 1, true);
     agent.addGoal(goal);
 
-    assertNotNull(agent.goals.get(goal.name));
-    assertEquals(goal, agent.goals.get(goal.name));
+    assertNotNull(agent.goals.get(goal.getName()));
+    assertEquals(goal, agent.goals.get(goal.getName()));
 
   }
 
