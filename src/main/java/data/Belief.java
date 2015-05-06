@@ -5,10 +5,12 @@ import gamygdala.Gamygdala;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import agent.Agent;
+
 public class Belief {
 
   private double likelihood;
-  private String causalAgentName;
+  private Agent causalAgentObject;
   private HashMap<String, Double> goalCongruenceMap;
   private boolean isIncremental;
 
@@ -18,7 +20,7 @@ public class Belief {
    * evaluation
    * 
    * @param likelihood The likelihood of this belief to be true.
-   * @param causalAgentName The agent's name of the causal agent of this belief.
+   * @param agent The Agent object of the causal agent of this belief.
    * @param affectedGoalNames An array of affected goals' names.
    * @param goalCongruences An array of the affected goals' congruences (i.e., the extend
    *          to which this event is good or bad for a goal [-1,1]).
@@ -27,7 +29,7 @@ public class Belief {
    *          subtract this belief's likelihood*congruence from the goal likelihood instead of using
    *          the belief as "state" defining the absolute likelihood
    */
-  public Belief(double likelihood, String causalAgentName, ArrayList<String> affectedGoalNames,
+  public Belief(double likelihood, Agent agent, ArrayList<String> affectedGoalNames,
       ArrayList<Double> goalCongruences, boolean isIncremental) {
     if (isIncremental) {
       // incremental evidence enforces Gamygdala to use the likelihood as delta, i.e, it will add or
@@ -39,7 +41,7 @@ public class Belief {
     }
 
     this.likelihood = Math.min(1, Math.max(-1, likelihood));
-    this.causalAgentName = causalAgentName;
+    this.causalAgentObject = agent;
 
     this.goalCongruenceMap = new HashMap<String, Double>();
 
@@ -79,8 +81,8 @@ public class Belief {
    * 
    * @return the causalAgentName
    */
-  public String getCausalAgentName() {
-    return causalAgentName;
+  public Agent getCausalAgent() {
+    return causalAgentObject;
   }
 
 //  /**

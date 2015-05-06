@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class Relation {
 
-  public String agentName;
+  public Agent agent;
   public double like;
   public ArrayList<Emotion> emotionList;
 
@@ -20,8 +20,8 @@ public class Relation {
    * @param targetName The agent who is the target of the relation.
    * @param like The relation [-1 and 1].
    */
-  public Relation(String targetName, double like) {
-    this.agentName = targetName;
+  public Relation(Agent target, double like) {
+    this.agent = target;
     this.like = like;
     this.emotionList = new ArrayList<Emotion>();
   }
@@ -87,7 +87,7 @@ public class Relation {
 
       Relation rel = (Relation) obj;
 
-      return rel.agentName.equals(this.agentName) && Double.compare(this.like, rel.like) == 0
+      return rel.agent.equals(this.agent) && Double.compare(this.like, rel.like) == 0
           && rel.emotionList.equals(this.emotionList);
 
     }

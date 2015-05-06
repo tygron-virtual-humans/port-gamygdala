@@ -14,19 +14,19 @@ public class AgentRelations extends ArrayList<Relation> {
    * the relation does not exist, it will be created, otherwise it will be
    * updated.
    * 
-   * @param agentName The agent who is the target of the relation.
+   * @param agent The agent who is the target of the relation.
    * @param like The relation (between -1 and 1).
    */
-  public void updateRelation(String agentName, double like) {
-    if (!this.hasRelationWith(agentName)) {
+  public void updateRelation(Agent agent, double like) {
+    if (!this.hasRelationWith(agent)) {
       // This relation does not exist, just add it.
-      add(new Relation(agentName, like));
+      add(new Relation(agent, like));
     } else {
       // The relation already exists, update it.
       Relation relation;
       for (int i = 0; i < size(); i++) {
         relation = get(i);
-        if (relation.agentName == agentName) {
+        if (relation.agent.equals(agent)) {
           relation.like = like;
         }
       }
@@ -39,22 +39,22 @@ public class AgentRelations extends ArrayList<Relation> {
    * @param agentName The agent who is the target of the relation.
    * @param True if the relation exists, otherwise false.
    */
-  public boolean hasRelationWith(String agentName) {
-    return (this.getRelation(agentName) != null);
+  public boolean hasRelationWith(Agent agent) {
+    return (this.getRelation(agent) != null);
   }
 
   /**
    * Returns the relation object this agent has with the agent defined by
    * agentName.
    * 
-   * @param agentName The agent who is the target of the relation.
+   * @param agent The agent who is the target of the relation.
    * @return Relation The relation object or null if non existing.
    */
-  public Relation getRelation(String agentName) {
+  public Relation getRelation(Agent agent) {
     Relation relation;
     for (int i = 0; i < size(); i++) {
       relation = get(i);
-      if (relation.agentName == agentName) {
+      if (relation.agent.equals(agent)) {
         return relation;
       }
     }
@@ -64,24 +64,24 @@ public class AgentRelations extends ArrayList<Relation> {
   /**
    * Prints the relations this agent has with the agent defined by agentName.
    * 
-   * @param agentName The agent who is the target of the relation. When omitted, all relations are
-   *          printed.
+   * @param agent The agent who is the target of the relation. When omitted, all
+   *          relations are printed.
    */
-  public String printRelations(String agentName) {
+  public String printRelations(Agent agent) {
     boolean found = false;
     String output = "";
 
     for (int i = 0; i < size(); i++) {
 
-      if (agentName == null || get(i).agentName == agentName) {
+      if (agent == null || get(i).agent.equals(agent)) {
         for (int j = 0; j < get(i).emotionList.size(); j++) {
-          output += get(i).emotionList.get(j).name + "(" + get(i).emotionList.get(j).intensity
-              + ") ";
+          output += get(i).emotionList.get(j).name + "("
+              + get(i).emotionList.get(j).intensity + ") ";
           found = true;
         }
       }
 
-      output += " for " + get(i).agentName;
+      output += " for " + get(i).agent;
 
       if (i < size() - 1) {
         output += ", and\n   ";
