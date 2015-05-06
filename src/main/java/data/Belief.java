@@ -15,25 +15,29 @@ public class Belief {
   private boolean isIncremental;
 
   /**
-   * This class is a data structure to store one Belief for an agent
-   * A belief is created and fed into a Gamygdala instance (method Gamygdala.appraise()) for
+   * This class is a data structure to store one Belief for an agent A belief is
+   * created and fed into a Gamygdala instance (method Gamygdala.appraise()) for
    * evaluation
    * 
    * @param likelihood The likelihood of this belief to be true.
    * @param agent The Agent object of the causal agent of this belief.
    * @param affectedGoalNames An array of affected goals' names.
-   * @param goalCongruences An array of the affected goals' congruences (i.e., the extend
-   *          to which this event is good or bad for a goal [-1,1]).
-   * @param isIncremental Incremental evidence enforces gamygdala to see this event as
-   *          incremental evidence for (or against) the list of goals provided, i.e, it will add or
-   *          subtract this belief's likelihood*congruence from the goal likelihood instead of using
+   * @param goalCongruences An array of the affected goals' congruences (i.e.,
+   *          the extend to which this event is good or bad for a goal [-1,1]).
+   * @param isIncremental Incremental evidence enforces gamygdala to see this
+   *          event as incremental evidence for (or against) the list of goals
+   *          provided, i.e, it will add or subtract this belief's
+   *          likelihood*congruence from the goal likelihood instead of using
    *          the belief as "state" defining the absolute likelihood
    */
-  public Belief(double likelihood, Agent agent, ArrayList<String> affectedGoalNames,
-      ArrayList<Double> goalCongruences, boolean isIncremental) {
+  public Belief(double likelihood, Agent agent,
+      ArrayList<String> affectedGoalNames, ArrayList<Double> goalCongruences,
+      boolean isIncremental) {
     if (isIncremental) {
-      // incremental evidence enforces Gamygdala to use the likelihood as delta, i.e, it will add or
-      // subtract this belief's likelihood from the goal likelihood instead of using the belief as
+      // incremental evidence enforces Gamygdala to use the likelihood as delta,
+      // i.e, it will add or
+      // subtract this belief's likelihood from the goal likelihood instead of
+      // using the belief as
       // "state" defining the absolute likelihood.
       this.isIncremental = isIncremental;
     } else {
@@ -50,7 +54,7 @@ public class Belief {
           + "as the affected goal list.");
       return;
     }
-    
+
     // Add goals and congruences to Map.
     for (int i = 0; i < affectedGoalNames.size(); i++) {
       double congruence = Math.min(1, Math.max(-1, goalCongruences.get(i)));
@@ -67,14 +71,14 @@ public class Belief {
     return likelihood;
   }
 
-//  /**
-//   * Set the likelihood of this belief.
-//   * 
-//   * @param likelihood the likelihood to set
-//   */
-//  public void setLikelihood(double likelihood) {
-//    this.likelihood = likelihood;
-//  }
+  // /**
+  // * Set the likelihood of this belief.
+  // *
+  // * @param likelihood the likelihood to set
+  // */
+  // public void setLikelihood(double likelihood) {
+  // this.likelihood = likelihood;
+  // }
 
   /**
    * Get the name of the causal Agent.
@@ -85,14 +89,14 @@ public class Belief {
     return causalAgentObject;
   }
 
-//  /**
-//   * Set the name of the causal Agent.
-//   * 
-//   * @param causalAgentName the causalAgentName to set
-//   */
-//  public void setCausalAgentName(String causalAgentName) {
-//    this.causalAgentName = causalAgentName;
-//  }
+  // /**
+  // * Set the name of the causal Agent.
+  // *
+  // * @param causalAgentName the causalAgentName to set
+  // */
+  // public void setCausalAgentName(String causalAgentName) {
+  // this.causalAgentName = causalAgentName;
+  // }
 
   /**
    * Get the names of the goals affected and their congruences.
@@ -112,13 +116,23 @@ public class Belief {
     return isIncremental;
   }
 
-//  /**
-//   * Set whether or not belief is incremental.
-//   * 
-//   * @param isIncremental the isIncremental to set
-//   */
-//  public void setIncremental(boolean isIncremental) {
-//    this.isIncremental = isIncremental;
-//  }
+  // /**
+  // * Set whether or not belief is incremental.
+  // *
+  // * @param isIncremental the isIncremental to set
+  // */
+  // public void setIncremental(boolean isIncremental) {
+  // this.isIncremental = isIncremental;
+  // }
+  
+  /**
+   * Return string representation of Belief.
+   */
+  public String toString() {
+    String str = "<Belief[CausalAgent = " + causalAgentObject
+        + ", likelihood = " + likelihood + ", incremental = " + isIncremental
+        + "]>";
+    return str;
+  }
 
 }
