@@ -126,16 +126,19 @@ public class Agent {
 
     // Gain has to be between 0 and 20.
     if (gain <= 0 || gain > 20) {
-      Gamygdala.debug("Error: gain factor for appraisal integration must be between 0 and 20.");
+      Gamygdala
+          .debug("Error: gain factor for appraisal integration must be between 0 and 20.");
     } else {
       this.gain = gain;
     }
   }
 
   /**
-   * A facilitating method to be able to appraise one event only from the perspective of the current
+   * A facilitating method to be able to appraise one event only from the
+   * perspective of the current
    * agent (this).
-   * Needs an instantiated Gamygdala object (automatic when the agent is registered with
+   * Needs an instantiated Gamygdala object (automatic when the agent is
+   * registered with
    * Gamygdala.registerAgent(agent) to a Gamygdala instance).
    * 
    * @param belief The belief to be appraised.
@@ -164,11 +167,15 @@ public class Agent {
   }
 
   /**
-   * This function prints to the console either the state as is (gain=null) or a state based on
-   * gained limiter (limited between 0 and 1), of which the gain can be set by using setGain(gain).
-   * A high gain factor works well when appraisals are small and rare, and you want to see the
+   * This function prints to the console either the state as is (gain=null) or a
+   * state based on
+   * gained limiter (limited between 0 and 1), of which the gain can be set by
+   * using setGain(gain).
+   * A high gain factor works well when appraisals are small and rare, and you
+   * want to see the
    * effect of these appraisals.
-   * A low gain factor (close to 0 but in any case below 1) works well for high frequency and/or
+   * A low gain factor (close to 0 but in any case below 1) works well for high
+   * frequency and/or
    * large appraisals, so that the effect of these is dampened.
    * 
    * @param gained Print only gained emotions or not.
@@ -187,10 +194,15 @@ public class Agent {
    * updated.
    * 
    * @param agentName The agent who is the target of the relation.
-   * @param like The relation (between -1 and 1).
+   * @param relation The relation (between -1 and 1).
    */
-  public void updateRelation(String agentName, double like) {
-    this.currentRelations.updateRelation(agentName, like);
+  public void updateRelation(String agentName, double relation) {
+    if (relation >= -1 && relation <= 1) {
+      this.currentRelations.updateRelation(agentName, relation);
+    } else {
+      Gamygdala.debug("Error: cannot relate " + this + " to " + agentName
+          + " with intensity " + relation);
+    }
   }
 
   /**
@@ -217,7 +229,8 @@ public class Agent {
   /**
    * Prints the relations this agent has with the agent defined by agentName.
    * 
-   * @param agentName The agent who is the target of the relation. When omitted, all relations are
+   * @param agentName The agent who is the target of the relation. When omitted,
+   *          all relations are
    *          printed.
    */
   public void printRelations(String agentName) {
@@ -241,12 +254,14 @@ public class Agent {
    * 
    * @param gamygdalaInstance A reference to the correct Gamygdala instance that
    *          contains the decayFunction property to be used (so you could use
-   *          different gamygdala instances to manage different groups of agents)
+   *          different gamygdala instances to manage different groups of
+   *          agents)
    */
   public void decay(Gamygdala gamygdalaInstance) {
     for (int i = 0; i < this.internalState.size(); i++) {
       double newIntensity = gamygdalaInstance.decayFunction.decay(
-          this.internalState.get(i).intensity, gamygdalaInstance.getMillisPassed());
+          this.internalState.get(i).intensity,
+          gamygdalaInstance.getMillisPassed());
       if (newIntensity < 0) {
         this.internalState.remove(i);
       } else {
