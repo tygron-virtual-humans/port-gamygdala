@@ -76,19 +76,6 @@ public class Gamygdala {
   }
 
   /**
-   * Create and register a new Agent.
-   * 
-   * @param agentName Name of the Agent.
-   * @return The newly created Agent.
-   */
-  public Agent createAgent(String agentName) {
-
-    Agent agent = new Agent(agentName);
-    this.registerAgent(agent);
-    return agent;
-  }
-
-  /**
    * Add an agent to this Gamygdala instance.
    * 
    * @param a The agent to be registered.
@@ -753,22 +740,4 @@ public class Gamygdala {
     }
   }
 
-  // =====
-
-  /**
-   * XXX: Disabled because not needed in the Java port.
-   * This starts the actual gamygdala decay process. It simply calls decayAll() at the specified
-   * interval.
-   * The timeMS only defines the interval at which to decay, not the rate over time, that is defined
-   * by the decayFactor and function.
-   * For more complex games (e.g., games where agents are not active when far away from the player,
-   * or games that do not need all agents to decay all the time) you should yourself choose when to
-   * decay agents individually.
-   * To do so you can simply call the agent.decay() method (see the agent class).
-   * 
-   * @param {int} timeMS The "framerate" of the decay in milliseconds.
-   */
-  public void startDecay(long timeMs) {
-    // setInterval(this.decayAll.bind(this), timeMs);
-  }
 }
