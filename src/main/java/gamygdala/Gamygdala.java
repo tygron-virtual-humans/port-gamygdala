@@ -6,6 +6,7 @@ import data.Belief;
 import data.Emotion;
 import data.Goal;
 import decayfunction.DecayFunction;
+import decayfunction.ExponentialDecay;
 import decayfunction.LinearDecay;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class Gamygdala {
   /**
    * Debug flag.
    */
-  public static final boolean debug = true;
+  public static final boolean debug = false;
 
   /**
    * The collection of agents in this Gamygdala instance.
@@ -69,7 +70,7 @@ public class Gamygdala {
     this.decayFactor = .8;
 
     // Set default decay function
-    this.decayFunction = new LinearDecay(this.decayFactor);
+    this.decayFunction = new ExponentialDecay(this.decayFactor);
 
     // Record current time
     this.lastMillis = System.currentTimeMillis();
@@ -304,8 +305,8 @@ public class Gamygdala {
 
               Gamygdala.debug("....owned by " + owner.name);
 
-              this.evaluateAgentEmotions(belief, affectedAgent, currentGoal,
-                  utility, deltaLikelihood, desirability);
+              this.evaluateAgentEmotions(belief, owner, currentGoal, utility,
+                  deltaLikelihood, desirability);
             }
           }
 
@@ -536,6 +537,12 @@ public class Gamygdala {
    */
   private void evaluateInternalEmotion(double utility, double deltaLikelh,
       double likelihood, Agent agent) {
+
+    if (agent == null) {
+      Gamygdala
+          .debug("Error: Gamygdala.evaluateInternalEmotion has been passed an empty Agent object.");
+      return;
+    }
 
     boolean positive = false;
 
