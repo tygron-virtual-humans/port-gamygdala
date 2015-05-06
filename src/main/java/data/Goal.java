@@ -2,10 +2,10 @@ package data;
 
 public class Goal {
 
-  private String name;
-  private double utility;
-  private double likelihood;
-  private boolean isMaintenanceGoal;
+  String name;
+  double utility;
+  double likelihood;
+  boolean isMaintenanceGoal;
 
   /**
    * Construct new Goal.
