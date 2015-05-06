@@ -11,7 +11,7 @@ public class AgentFactory {
    * @param agentName Name of the Agent.
    * @return The newly created Agent.
    */
-  public Agent createAgent(String agentName) {
+  public static Agent createAgent(String agentName) {
 
     Agent agent = new Agent(agentName);
     return agent;

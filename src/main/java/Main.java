@@ -1,27 +1,36 @@
-import data.Goal;
 import gamygdala.Gamygdala;
 import agent.Agent;
+import agent.AgentFactory;
 
 /**
- * Created by svenpopping on 29/04/15.
+ * Function test case during development.
  */
 public class Main {
 
   /**
-   * Create Gamygdala instance and run some functional tests.
-   * @param args Command line parameters.
+   * Run test.
    */
   public static void main(String[] args) {
 
+    // Create new Gamygdala engine
     Gamygdala engine = new Gamygdala();
 
-    Agent player = engine.createAgent("player");
-    Goal goal = engine.createGoalForAgent(player, "win", 1);
-    System.out.println(player);
+    // Create new Agents
+    Agent mario = AgentFactory.createAgent("mario");
+    Agent bowser = AgentFactory.createAgent("bowser");
     
-    System.out.println(engine.goals);
-    engine.printAllEmotions(false);
-
+    // Create goals for Mario
+    engine.createGoalForAgent(mario, "rescue-peach", 1, false);
+    engine.createGoalForAgent(mario, "survive", .8, true);
+    
+    // Create goals for Bowser
+    engine.createGoalForAgent(bowser, "kill-mario", 1, false);
+    
+    
+    
+    // First, mario can't find peach
+    
+    
   }
 
 }
