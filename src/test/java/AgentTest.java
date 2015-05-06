@@ -1,4 +1,8 @@
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.Before;
@@ -6,195 +10,190 @@ import org.junit.Test;
 
 public class AgentTest {
 
-	Agent a;
-	
-	@Before
-	public void setUp() {
-		a = new Agent("TestAgent");
-	}
+  Agent agent;
 
-	@After
-	public void cleanUp() {
-		a = null;
-	}
+  @Before
+  public void setUp() {
+    agent = new Agent("TestAgent");
+  }
 
-	
-	@Test
-	public void testAgent() {
+  @After
+  public void cleanUp() {
+    agent = null;
+  }
 
-		// Verify name
-		assertEquals("TestAgent", a.name);
+  @Test
+  public void testAgent() {
 
-		// Verify maps / collections instantiated
-		assertNotNull(a.goals);
-		assertNotNull(a.currentRelations);
-		assertNotNull(a.internalState);
+    // Verify name
+    assertEquals("TestAgent", agent.name);
 
-		// Check initial gain
-		assertEquals(1, a.gain, 10E-15);
-	}
+    // Verify maps / collections instantiated
+    assertNotNull(agent.goals);
+    assertNotNull(agent.currentRelations);
+    assertNotNull(agent.internalState);
 
-	@Test
-	public void testAddRemoveHasGoal() {
-		
-		Goal g = new Goal("TestGoal", 1, false);
+    // Check initial gain
+    assertEquals(1, agent.gain, 10E-15);
+  }
 
-		// Clean start
-		assertFalse(a.hasGoal(g));
+  @Test
+  public void testAddRemoveHasGoal() {
 
-		// Add / Remove goals
-		a.addGoal(g);
-		assertTrue(a.hasGoal(g));
-		a.removeGoal(g);
-		assertFalse(a.hasGoal(g));
+    Goal goal = new Goal("TestGoal", 1, false);
 
-	}
+    // Clean start
+    assertFalse(agent.hasGoal(goal));
 
-	@Test
-	public void testAddRemoveHasNullGoal() {
-		
-		Goal g2 = null;
+    // Add / Remove goals
+    agent.addGoal(goal);
+    assertTrue(agent.hasGoal(goal));
+    agent.removeGoal(goal);
+    assertFalse(agent.hasGoal(goal));
 
-		// Assert that no NPE's are thrown
-		assertFalse(a.hasGoal(g2));
-		assertFalse(a.addGoal(g2));
-		assertFalse(a.removeGoal(g2));
-	}
+  }
 
-	@Test
-	public void testAddRemoveExistingGoal() {
-		
-		Goal g1 = new Goal("TestGoal", 1, false);
-		Goal g2 = new Goal("TestGoal", 1, false);
+  @Test
+  public void testAddRemoveHasNullGoal() {
 
-		// Clean start
-		assertFalse(a.hasGoal(g1));
-		assertFalse(a.hasGoal(g2));
+    Goal g2 = null;
 
-		// Add goal1, then verify goal2 cannot be added because it's the same
-		a.addGoal(g1);
-		assertFalse(a.addGoal(g2));
+    // Assert that no NPE's are thrown
+    assertFalse(agent.hasGoal(g2));
+    assertFalse(agent.addGoal(g2));
+    assertFalse(agent.removeGoal(g2));
+  }
 
-		// Verify no goals remain
-		a.removeGoal(g1);
-		assertFalse(a.hasGoal(g1));
-		assertFalse(a.hasGoal(g2));
+  @Test
+  public void testAddRemoveExistingGoal() {
 
-	}
+    Goal g1 = new Goal("TestGoal", 1, false);
+    Goal g2 = new Goal("TestGoal", 1, false);
 
-	@Test
-	public void testGetGoalByName() {
-		
-		Goal g = new Goal("TestGoal", 1, true);
-		a.addGoal(g);
-		
-		assertNotNull(a.goals.get(g.name));
-		assertEquals(g, a.goals.get(g.name));
-		
-	}
+    // Clean start
+    assertFalse(agent.hasGoal(g1));
+    assertFalse(agent.hasGoal(g2));
 
-	@Test
-	public void testSetGain() {
-		
-		// Verify default gain is set
-		assertEquals(Agent.DEFAULT_GAIN, a.gain, 10E-15);
-		
-		// Set gain to allowed value and verify
-		a.setGain(2);
-		assertEquals(2, a.gain, 10E-15);
-		
-		// Set gain to disallowed value and verify the gain has not been changed
-		a.setGain(0);
-		a.setGain(20.01);
-		assertEquals(2, a.gain, 10E-15);
-		
-	}
+    // Add goal1, then verify goal2 cannot be added because it's the same
+    agent.addGoal(g1);
+    assertFalse(agent.addGoal(g2));
 
-//	@Test
-//	public void testAppraise() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	public void testUpdateEmotionalState() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	public void testGetEmotionalState() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	public void testGetPADState() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	public void testPrintEmotionalState() {
-//		fail("Not yet implemented");
-//	}
+    // Verify no goals remain
+    agent.removeGoal(g1);
+    assertFalse(agent.hasGoal(g1));
+    assertFalse(agent.hasGoal(g2));
 
-	@Test
-	public void testUpdateRelation() {
+  }
 
-		// Verify new relation is added
-		Agent a = new Agent("TestAgent");
-		a.updateRelation("TestName", 1);
-		a.updateRelation("TestName", 2);
+  @Test
+  public void testGetGoalByName() {
 
-		assertTrue(a.hasRelationWith("TestName"));
+    Goal goal = new Goal("TestGoal", 1, true);
+    agent.addGoal(goal);
 
-		assertNotNull(a.getRelation("TestName"));
-		assertEquals(2, a.getRelation("TestName").like, 10E-15);
+    assertNotNull(agent.goals.get(goal.name));
+    assertEquals(goal, agent.goals.get(goal.name));
 
-	}
+  }
 
-	@Test
-	public void testAddGetHasRelation() {
+  @Test
+  public void testSetGain() {
 
-		// Check NPE's
-		Agent a = new Agent("TestAgent");
-		assertNull(a.getRelation(null));
+    // Verify default gain is set
+    assertEquals(Agent.DEFAULT_GAIN, agent.gain, 10E-15);
 
-		// Verify new relation is added
-		assertFalse(a.hasRelationWith("TestName"));
-		Relation r = new Relation("TestName", 1);
-		a.updateRelation("TestName", 1);
-		assertEquals(r, a.getRelation("TestName"));
-		assertTrue(a.hasRelationWith("TestName"));
+    // Set gain to allowed value and verify
+    agent.setGain(2);
+    assertEquals(2, agent.gain, 10E-15);
 
-	}
+    // Set gain to disallowed value and verify the gain has not been changed
+    agent.setGain(0);
+    agent.setGain(20.01);
+    assertEquals(2, agent.gain, 10E-15);
 
-//	@Test
-//	public void testPrintRelations() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	public void testDecay() {
-//		fail("Not yet implemented");
-//	}
+  }
 
-	@Test
-	public void testGetSetGamygdalaInstance() {
+  // @Test
+  // public void testAppraise() {
+  // fail("Not yet implemented");
+  // }
+  //
+  // @Test
+  // public void testUpdateEmotionalState() {
+  // fail("Not yet implemented");
+  // }
+  //
+  // @Test
+  // public void testGetEmotionalState() {
+  // fail("Not yet implemented");
+  // }
+  //
+  // @Test
+  // public void testGetPADState() {
+  // fail("Not yet implemented");
+  // }
+  //
+  // @Test
+  // public void testPrintEmotionalState() {
+  // fail("Not yet implemented");
+  // }
 
-		Agent a = new Agent("TestAgent");
-		assertNull(a.getGamygdalaInstance());
+  @Test
+  public void testUpdateRelation() {
 
-		Gamygdala g = new Gamygdala();
-		a.setGamygdalaInstance(g);
+    // Verify new relation is added
+    Agent agent = new Agent("TestAgent");
+    agent.updateRelation("TestName", 2);
 
-		assertEquals(g, a.getGamygdalaInstance());
+    assertTrue(agent.hasRelationWith("TestName"));
 
-	}
-	
-	@Test
-	public void testToString() {
-		
-		Agent a = new Agent("TestAgent");
-		assertEquals("<Agent[TestAgent]>", a.toString());
-		
-	}
+    assertNotNull(agent.getRelation("TestName"));
+    assertEquals(2, agent.getRelation("TestName").like, 10E-15);
+
+  }
+
+  @Test
+  public void testAddGetHasRelation() {
+
+    // Check NPE's
+    assertNull(agent.getRelation(null));
+
+    // Verify new relation is added
+    assertFalse(agent.hasRelationWith("TestName"));
+    Relation rel = new Relation("TestName", 1);
+    agent.updateRelation("TestName", 1);
+    assertEquals(rel, agent.getRelation("TestName"));
+    assertTrue(agent.hasRelationWith("TestName"));
+
+  }
+
+  // @Test
+  // public void testPrintRelations() {
+  // fail("Not yet implemented");
+  // }
+  //
+  // @Test
+  // public void testDecay() {
+  // fail("Not yet implemented");
+  // }
+
+  @Test
+  public void testGetSetGamygdalaInstance() {
+
+    assertNull(agent.getGamygdalaInstance());
+
+    Gamygdala gamyg = new Gamygdala();
+    agent.setGamygdalaInstance(gamyg);
+
+    assertEquals(gamyg, agent.getGamygdalaInstance());
+
+  }
+
+  @Test
+  public void testToString() {
+
+    assertEquals("<Agent[TestAgent]>", agent.toString());
+
+  }
 
 }
