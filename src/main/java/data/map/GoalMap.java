@@ -1,4 +1,7 @@
-package data;
+package data.map;
+
+import data.Goal;
+import gamygdala.Gamygdala;
 
 import java.util.HashMap;
 
@@ -70,4 +73,15 @@ public class GoalMap extends HashMap<String, Goal> {
     return null;
   }
 
+  @Override
+  public Goal put(String name, Goal goal) {
+      if (!this.containsKey(goal.getName())) {
+          return super.put(goal.getName(), goal);
+      } else {
+          Gamygdala
+                  .debug("Warning: failed adding a second goal with the same name: "
+                          + goal.getName());
+      }
+      return null;
+  }
 }

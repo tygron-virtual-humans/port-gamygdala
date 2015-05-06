@@ -5,6 +5,7 @@ import agent.Relation;
 import data.Belief;
 import data.Emotion;
 import data.Goal;
+import data.map.GamygdalaMap;
 import decayfunction.DecayFunction;
 import decayfunction.LinearDecay;
 
@@ -29,12 +30,7 @@ public class Gamygdala {
   /**
    * The collection of agents in this Gamygdala instance.
    */
-  public HashMap<String, Agent> agents;
-
-  /**
-   * The collection of goals in this Gamygdala instance.
-   */
-  public HashMap<String, Goal> goals;
+  public GamygdalaMap gamydgalaMap;
 
   /**
    * The decay function used to calculate emotion intensity.
@@ -62,8 +58,7 @@ public class Gamygdala {
   public Gamygdala() {
 
     // Init agent and goal maps
-    this.agents = new HashMap<String, Agent>();
-    this.goals = new HashMap<String, Goal>();
+    this.gamydgalaMap = new GamygdalaMap();
 
     // Set default decay factor
     this.decayFactor = .8;
@@ -82,7 +77,7 @@ public class Gamygdala {
    */
   public void registerAgent(Agent agent) {
     agent.setGamygdalaInstance(this);
-    this.agents.put(agent.name, agent);
+    this.gamydgalaMap.getAgentMap().put(agent.name, agent);
   }
 
   /**
@@ -94,13 +89,7 @@ public class Gamygdala {
    * @param goal The goal to be registered.
    */
   public void registerGoal(Goal goal) {
-    if (!this.goals.containsKey(goal.getName())) {
-      this.goals.put(goal.getName(), goal);
-    } else {
-      Gamygdala
-          .debug("Warning: failed adding a second goal with the same name: "
-              + goal.getName());
-    }
+    this.gamydgalaMap.getGoalMap().put(goal.getName(), goal);
   }
 
   /**

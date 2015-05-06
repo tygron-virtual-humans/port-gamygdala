@@ -3,7 +3,7 @@ package agent;
 import data.Belief;
 import data.Emotion;
 import data.Goal;
-import data.GoalMap;
+import data.map.GoalMap;
 import gamygdala.Gamygdala;
 
 public class Agent {
