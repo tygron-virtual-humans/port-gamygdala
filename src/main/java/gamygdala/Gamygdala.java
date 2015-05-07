@@ -6,7 +6,6 @@ import data.Belief;
 import data.Emotion;
 import data.Goal;
 import decayfunction.DecayFunction;
-import decayfunction.ExponentialDecay;
 import decayfunction.LinearDecay;
 
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ public class Gamygdala {
   /**
    * Debug flag.
    */
-  public static final boolean debug = false;
+  public static final boolean debug = true;
 
   /**
    * The collection of agents in this Gamygdala instance.
@@ -70,7 +69,7 @@ public class Gamygdala {
     this.decayFactor = .8;
 
     // Set default decay function
-    this.decayFunction = new ExponentialDecay(this.decayFactor);
+    this.decayFunction = new LinearDecay(this.decayFactor);
 
     // Record current time
     this.lastMillis = System.currentTimeMillis();
@@ -669,7 +668,7 @@ public class Gamygdala {
       agent = pair.getValue();
 
       if (agent != null) {
-        agent.decay(this);
+        agent.decay(decayFunction, getMillisPassed());
       }
     }
   }

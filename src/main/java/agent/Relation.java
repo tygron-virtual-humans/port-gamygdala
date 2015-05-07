@@ -1,6 +1,7 @@
 package agent;
 
 import data.Emotion;
+import decayfunction.DecayFunction;
 import gamygdala.Gamygdala;
 
 import java.util.ArrayList;
@@ -12,12 +13,12 @@ public class Relation {
   public ArrayList<Emotion> emotionList;
 
   /**
-   * This is the class that represents a relation one agent has with other agents.
-   * It's main role is to store and manage the emotions felt for a target agent (e.g angry at, or
-   * pity for).
-   * Each agent maintains a list of relations, one relation for each target agent.
+   * This is the class that represents a relation one agent has with other
+   * agents. It's main role is to store and manage the emotions felt for a
+   * target agent (e.g angry at, or pity for). Each agent maintains a list of
+   * relations, one relation for each target agent.
    * 
-   * @param targetName The agent who is the target of the relation.
+   * @param target The agent who is the target of the relation.
    * @param like The relation [-1 and 1].
    */
   public Relation(Agent target, double like) {
@@ -46,7 +47,8 @@ public class Relation {
       }
     }
     if (added == false) {
-      // copy on keep, we need to maintain a list of current emotions for the relation, not a list
+      // copy on keep, we need to maintain a list of current emotions for the
+      // relation, not a list
       // refs to the appraisal engine
       this.emotionList.add(new Emotion(emotion.name, emotion.intensity));
     }
@@ -55,15 +57,15 @@ public class Relation {
   /**
    * Decay all emotions in this relation.
    * 
-   * @param gamygdalaInstance The Gamygdala instance.
+   * @param dfunc The Decay Function used to decay this relation.
+   * @param millisPassed The time passed (in milliseconds) since the last decay.
    */
-  public void decay(Gamygdala gamygdalaInstance) {
+  public void decay(DecayFunction dfunc, long millisPassed) {
     for (int i = 0; i < this.emotionList.size(); i++) {
 
       Emotion emotion = this.emotionList.get(i);
 
-      double newIntensity = gamygdalaInstance.decayFunction.decay(emotion.intensity,
-          gamygdalaInstance.getMillisPassed());
+      double newIntensity = dfunc.decay(emotion.intensity, millisPassed);
 
       if (newIntensity < 0) {
         // This emotion has decayed below zero, we need to remove it.
@@ -87,7 +89,8 @@ public class Relation {
 
       Relation rel = (Relation) obj;
 
-      return rel.agent.equals(this.agent) && Double.compare(this.like, rel.like) == 0
+      return rel.agent.equals(this.agent)
+          && Double.compare(this.like, rel.like) == 0
           && rel.emotionList.equals(this.emotionList);
 
     }

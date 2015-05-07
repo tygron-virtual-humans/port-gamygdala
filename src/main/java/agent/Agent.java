@@ -1,10 +1,10 @@
 package agent;
 
-import data.Belief;
+import gamygdala.Gamygdala;
 import data.Emotion;
 import data.Goal;
 import data.GoalMap;
-import gamygdala.Gamygdala;
+import decayfunction.DecayFunction;
 
 public class Agent {
 
@@ -134,18 +134,6 @@ public class Agent {
   }
 
   /**
-   * A facilitating method to be able to appraise one event only from the
-   * perspective of the current agent (this). Needs an instantiated Gamygdala
-   * object (automatic when the agent is registered with
-   * Gamygdala.registerAgent(agent) to a Gamygdala instance).
-   * 
-   * @param belief The belief to be appraised.
-   */
-  public void appraise(Belief belief) {
-    this.gamygdalaInstance.appraise(belief, this);
-  }
-
-  /**
    * Passthrough function to AgentInternalState.
    * 
    * @param emotion The emotion with which this Agent should be updated.
@@ -246,16 +234,19 @@ public class Agent {
    * you should tweak the decayFactor per agent not the "frame rate" of the
    * decay (as this doesn't change the rate).
    * 
-   * @param gamygdalaInstance A reference to the correct Gamygdala instance that
-   *          contains the decayFunction property to be used (so you could use
-   *          different gamygdala instances to manage different groups of
-   *          agents)
+   * @param dfunc The Decay Function used to decay emotions and relations.
+   * @param millisPassed The time passed (in milliseconds) since the last decay.
    */
-  public void decay(Gamygdala gamygdalaInstance) {
+  public void decay(DecayFunction dfunc, long millisPassed) {
+
+    // Decay all internal emotions
     for (int i = 0; i < this.internalState.size(); i++) {
-      double newIntensity = gamygdalaInstance.decayFunction.decay(
-          this.internalState.get(i).intensity,
-          gamygdalaInstance.getMillisPassed());
+
+      // Decay emotion
+      double newIntensity = dfunc.decay(this.internalState.get(i).intensity,
+          millisPassed);
+
+      // If intensity is below zero, remove emotion
       if (newIntensity < 0) {
         this.internalState.remove(i);
       } else {
@@ -263,8 +254,9 @@ public class Agent {
       }
     }
 
+    // Decay all relations
     for (int i = 0; i < this.currentRelations.size(); i++) {
-      this.currentRelations.get(i).decay(gamygdalaInstance);
+      this.currentRelations.get(i).decay(dfunc, millisPassed);
     }
   }
 
