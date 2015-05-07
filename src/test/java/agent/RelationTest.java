@@ -16,7 +16,7 @@ public class RelationTest {
   
   @Before
   public void setUp() {
-    rel = new Relation("TestAgent2", 0);
+    rel = new Relation(new Agent("TestAgent2"), 0);
   }
   
   @After
@@ -27,7 +27,7 @@ public class RelationTest {
   @Test
   public void testRelation() {
 
-    assertEquals("TestAgent2", rel.agentName);
+    assertEquals("TestAgent2", rel.getAgent());
     assertEquals(0, rel.like, 10E-15);
     assertNotNull(rel.emotionList);
   }

@@ -1,3 +1,8 @@
+import gamygdala.Gamygdala;
+
+import java.util.ArrayList;
+
+import data.Goal;
 import agent.Agent;
 import agent.AgentFactory;
 import gamygdala.Gamygdala;
@@ -7,29 +12,68 @@ import gamygdala.Gamygdala;
  */
 public class Main {
 
-    /**
-     * Run test.
-     */
-    public static void main(String[] args) {
+  /**
+   * Run test.
+   * @throws InterruptedException 
+   */
+  public static void main(String[] args) throws InterruptedException {
 
-        // Create new Gamygdala engine
-        Gamygdala engine = new Gamygdala();
+    // Create new Gamygdala engine
+    Gamygdala engine = new Gamygdala();
 
-        // Create new Agents
-        Agent mario = AgentFactory.createAgent("mario");
-        Agent bowser = AgentFactory.createAgent("bowser");
+    // Create new Agents
+    Agent mario = AgentFactory.createAgent("mario");
+    Agent bowser = AgentFactory.createAgent("bowser");
 
-        // Create goals for Mario
-        engine.createGoalForAgent(mario, "rescue-peach", 1, false);
-        engine.createGoalForAgent(mario, "survive", .8, true);
+    // Register agents with engine
+    engine.registerAgent(mario);
+    engine.registerAgent(bowser);
 
-        // Create goals for Bowser
-        engine.createGoalForAgent(bowser, "kill-mario", 1, false);
+    // Create goals for Mario
+    Goal rescuePeachGoal = new Goal("rescue-peach", 1, false);
+    Goal surviveGoal = new Goal("survive", .8, true);
+    
+    mario.addGoal(rescuePeachGoal);
+    mario.addGoal(surviveGoal);
+    
+    engine.registerGoal(rescuePeachGoal);
+    engine.registerGoal(surviveGoal);
 
+    // Create goals for Bowser
+    Goal killMarioGoal = new Goal("kill-mario", 1, false);
+    
+    bowser.addGoal(killMarioGoal);
+    engine.registerGoal(killMarioGoal);
 
-        // First, mario can't find peach
+    // ---
+    // Display initial state
+    engine.printAllEmotions(false);
+    System.out.println("===\n");
+    // ---
 
+    // Init commonly used variables
+    ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
+    ArrayList<Double> goalCongruences = new ArrayList<Double>();
 
-    }
+    // First, mario can't find peach
+    affectedGoals.clear();
+    goalCongruences.clear();
+
+    affectedGoals.add(rescuePeachGoal);
+    goalCongruences.add(0.25);
+
+//    engine.appraiseBelief(1, mario, affectedGoals, goalCongruences, true);
+    
+    // Then, he finds her!
+    
+    
+    // ---
+    // Display emotions
+    engine.printAllEmotions(false);
+    engine.printAllEmotions(true);
+    System.out.println("===\n");
+    // ---
+
+  }
 
 }
