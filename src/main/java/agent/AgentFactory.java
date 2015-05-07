@@ -5,16 +5,16 @@ package agent;
  */
 public class AgentFactory {
 
-  /**
-   * Create a new Agent.
-   * 
-   * @param agentName Name of the Agent.
-   * @return The newly created Agent.
-   */
-  public static Agent createAgent(String agentName) {
+    /**
+     * Create a new Agent.
+     *
+     * @param agentName Name of the Agent.
+     * @return The newly created Agent.
+     */
+    public static Agent createAgent(String agentName) {
 
-    Agent agent = new Agent(agentName);
-    return agent;
-  }
+        Agent agent = new Agent(agentName);
+        return agent;
+    }
 
 }

@@ -1,7 +1,5 @@
 package data.map;
 
-import gamygdala.Gamygdala;
-
 /**
  * Created by svenpopping on 06/05/15.
  */
@@ -26,7 +24,6 @@ public class GamygdalaMap {
     }
 
     /**
-     *
      * @return
      */
     public AgentMap getAgentMap() {
@@ -34,7 +31,6 @@ public class GamygdalaMap {
     }
 
     /**
-     *
      * @param agentMap
      */
     public void setAgentMap(AgentMap agentMap) {
@@ -42,7 +38,6 @@ public class GamygdalaMap {
     }
 
     /**
-     *
      * @return
      */
     public GoalMap getGoalMap() {
@@ -50,7 +45,6 @@ public class GamygdalaMap {
     }
 
     /**
-     *
      * @param goalMap
      */
     public void setGoalMap(GoalMap goalMap) {
