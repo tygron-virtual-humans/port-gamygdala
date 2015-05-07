@@ -104,76 +104,43 @@ public class Gamygdala {
   }
 
   /**
-   * A facilitator method to appraise an event. It takes in the same as what the
-   * new Belief(...) takes in, creates a belief and appraises it for all agents
-   * that are registered. This method is thus handy if you want to keep all
-   * gamygdala logic internal to Gamygdala.
+   * The main emotional interpretation logic entry point. Performs the complete
+   * appraisal of a single event (belief) for all agents (affectedAgent == null)
+   * or for only one agent. If affectedAgent is set, then the complete appraisal
+   * logic is executed including the effect on relations (possibly influencing
+   * the emotional state of other agents), but only if the affected agent (the
+   * one owning the goal) == affectedAgent this is sometimes needed for
+   * efficiency, if you as a game developer know that particular agents can
+   * never appraise an event, then you can force Gamygdala to only look at a
+   * subset of agents. Gamygdala assumes that the affectedAgent is indeed the
+   * only goal owner affected, that the belief is well-formed, and will not
+   * perform any checks, nor use Gamygdala's list of known goals to find other
+   * agents that share this goal. (!!!)
    * 
-   * @param likelihood The likelihood of this belief to be true.
-   * @param agent The agent object of the causal agent of this belief.
-   * @param affectedGoals An array of affected goals.
-   * @param goalCongruences An array of the affected goals' congruences (i.e.,
-   *          the extend to which this event is good or bad for a goal [-1,1]).
-   * @param isIncr Incremental evidence enforces gamygdala to see this event as
-   *          incremental evidence for (or against) the list of goals provided,
-   *          i.e, it will add or subtract this belief's likelihood*congruence
-   *          from the goal likelihood instead of using the belief as "state"
-   *          defining the absolute likelihood
-   */
-  public void appraiseBelief(double likelihood, Agent agent,
-      ArrayList<Goal> affectedGoals, ArrayList<Double> goalCongruences,
-      boolean isIncr) {
-
-    this.appraise(new Belief(likelihood, agent, affectedGoals, goalCongruences,
-        isIncr), null);
-
-  }
-
-  /**
-   * This method is the main emotional interpretation logic entry point. It
-   * performs the complete appraisal of a single event (belief) for all agents
-   * (affectedAgent=null) or for only one agent (affectedAgent=true) if
-   * affectedAgent is set, then the complete appraisal logic is executed
-   * including the effect on relations (possibly influencing the emotional state
-   * of other agents), but only if the affected agent (the one owning the goal)
-   * == affectedAgent this is sometimes needed for efficiency, if you as a game
-   * developer know that particular agents can never appraise an event, then you
-   * can force Gamygdala to only look at a subset of agents. Gamygdala assumes
-   * that the affectedAgent is indeed the only goal owner affected, that the
-   * belief is well-formed, and will not perform any checks, nor use Gamygdala's
-   * list of known goals to find other agents that share this goal (!!!)
-   * 
-   * @param belief The current event, in the form of a Belief object, to be
-   *          appraised
-   * @param affectedAgent The reference to the agent who needs to appraise the
-   *          event. If given, this is the appraisal perspective (see
-   *          explanation above).
+   * @param belief The current event to be appraised.
+   * @param affectedAgent The reference to the agent who appraises the event.
    */
   public void appraise(Belief belief, Agent affectedAgent) {
 
+    // Check belief
     if (belief == null) {
       Gamygdala.debug("Error: belief is null.");
       return;
     }
 
-    // check all
-    Gamygdala.debug(belief);
-
-    // The congruence list must be of the same length as the affected goals
-    // list.
+    // Check goal list size
     if (this.goals.size() == 0) {
-      Gamygdala.debug("Warning: no goals registered to Gamygdala, "
-          + "all goals to be considered in appraisal need to be registered.");
+      Gamygdala.debug("Warning: no goals registered to Gamygdala.");
       return;
     }
-
-    Iterator<Entry<Goal, Double>> goalCongruenceIterator = belief
-        .getGoalCongruenceMap().entrySet().iterator();
 
     Goal currentGoal;
     Double currentCongruence;
 
     // Loop all goals.
+    Iterator<Entry<Goal, Double>> goalCongruenceIterator = belief
+        .getGoalCongruenceMap().entrySet().iterator();
+
     while (goalCongruenceIterator.hasNext()) {
 
       // Get next entry in map
@@ -182,59 +149,66 @@ public class Gamygdala {
       currentCongruence = goalPair.getValue();
 
       // If current goal is really a goal
-      if (currentGoal != null) {
+      if (currentGoal == null) {
+        return;
+      }
 
-        // the goal exists, appraise it
-        double utility = currentGoal.getUtility();
-        double deltaLikelihood = this.calculateDeltaLikelihood(currentGoal,
-            currentCongruence, belief.getLikelihood(), belief.isIncremental());
-        double desirability = deltaLikelihood * utility;
+      // Calculate goal values
+      double utility = currentGoal.getUtility();
+      double deltaLikelihood = this.calculateDeltaLikelihood(currentGoal,
+          currentCongruence, belief.getLikelihood(), belief.isIncremental());
+      double desirability = deltaLikelihood * utility;
 
-        if (affectedAgent == null) {
+      if (affectedAgent == null) {
 
-          Gamygdala.debug("Evaluated goal: " + currentGoal.getName() + "("
-              + utility + ", " + deltaLikelihood + ")");
+        this.appraiseByAllAgents(currentGoal, belief, utility,
+            deltaLikelihood, desirability);
 
-          Iterator<Entry<String, Agent>> it = this.agents.entrySet().iterator();
-          Agent owner;
+      } else {
 
-          // now find the owners, and update their emotional states
-          while (it.hasNext()) {
-
-            Map.Entry<String, Agent> pair = (Map.Entry<String, Agent>) it
-                .next();
-            owner = pair.getValue();
-
-            if (owner != null && owner.hasGoal(currentGoal.getName())) {
-
-              Gamygdala.debug("....owned by " + owner.name);
-
-              this.evaluateAgentEmotions(belief, owner, currentGoal, utility,
-                  deltaLikelihood, desirability);
-            }
-          }
-
-        } else {
-
-          // check only affectedAgent (which can be much faster) and does not
-          // involve console output
-          // nor checks
-
-          // assume affectedAgent is the only owner to be considered in this
-          // appraisal round.
-          this.evaluateAgentEmotions(belief, affectedAgent, currentGoal,
-              utility, deltaLikelihood, desirability);
-
-        }
+        // check only affectedAgent
+        this.evaluateAgentEmotions(belief, affectedAgent, currentGoal, utility,
+            deltaLikelihood, desirability);
 
       }
     }
 
-    if (Gamygdala.debug) {
+  }
 
-      // print the emotions to the console for debugging
-      this.printAllEmotions(false);
+  /**
+   * Appraise a belief by all agents in the engine.
+   * 
+   * @param currentGoal The goal to be considered.
+   * @param belief The belief to be appraised.
+   * @param utility The utility value of the goal.
+   * @param deltaLikelihood The delta likelihood of the goal.
+   * @param desirability The desirability of the goal (utility * delta).
+   */
+  private void appraiseByAllAgents(Goal currentGoal, Belief belief,
+      double utility, double deltaLikelihood, double desirability) {
+
+    // Debug
+    Gamygdala.debug("Evaluated goal: " + currentGoal.getName() + "(" + utility
+        + ", " + deltaLikelihood + ")");
+
+    Agent owner;
+
+    // Find the owners and update their emotional states
+    Iterator<Entry<String, Agent>> it = this.agents.entrySet().iterator();
+    while (it.hasNext()) {
+
+      Map.Entry<String, Agent> pair = (Map.Entry<String, Agent>) it.next();
+      owner = pair.getValue();
+
+      if (owner != null && owner.hasGoal(currentGoal.getName())) {
+
+        Gamygdala.debug("....owned by " + owner.name);
+
+        this.evaluateAgentEmotions(belief, owner, currentGoal, utility,
+            deltaLikelihood, desirability);
+      }
     }
+
   }
 
   private void evaluateAgentEmotions(Belief belief, Agent owner,
@@ -251,8 +225,7 @@ public class Gamygdala {
         utility, deltaLikelihood);
 
     // now check if anyone has a relation to this goal owner, and update the
-    // social emotions
-    // accordingly.
+    // social emotions accordingly.
     while (it.hasNext()) {
 
       Map.Entry<String, Agent> pair = (Map.Entry<String, Agent>) it.next();
@@ -265,14 +238,12 @@ public class Gamygdala {
         Gamygdala.debug(relation);
 
         // The agent has relationship with the goal owner which has nonzero
-        // utility, add
-        // relational effects to the relations for agent[k].
+        // utility, add relational effects to the relations for agent[k].
         this.evaluateSocialEmotion(utility, desirability, deltaLikelihood,
             relation, temp);
 
         // also add remorse and gratification if conditions are met within
-        // (i.e., agent[k]
-        // did something bad/good for owner)
+        // (i.e., agent[k] did something bad/good for owner)
         this.agentActions(owner, belief.getCausalAgent(), temp, desirability,
             utility, deltaLikelihood);
 
