@@ -11,7 +11,7 @@ public class Belief {
 
   private double likelihood;
   private Agent causalAgentObject;
-  private HashMap<String, Double> goalCongruenceMap;
+  private HashMap<Goal, Double> goalCongruenceMap;
   private boolean isIncremental;
 
   /**
@@ -21,7 +21,7 @@ public class Belief {
    * 
    * @param likelihood The likelihood of this belief to be true.
    * @param agent The Agent object of the causal agent of this belief.
-   * @param affectedGoalNames An array of affected goals' names.
+   * @param affectedGoals An array of affected goals.
    * @param goalCongruences An array of the affected goals' congruences (i.e.,
    *          the extend to which this event is good or bad for a goal [-1,1]).
    * @param isIncremental Incremental evidence enforces gamygdala to see this
@@ -31,7 +31,7 @@ public class Belief {
    *          the belief as "state" defining the absolute likelihood
    */
   public Belief(double likelihood, Agent agent,
-      ArrayList<String> affectedGoalNames, ArrayList<Double> goalCongruences,
+      ArrayList<Goal> affectedGoals, ArrayList<Double> goalCongruences,
       boolean isIncremental) {
     if (isIncremental) {
       // incremental evidence enforces Gamygdala to use the likelihood as delta,
@@ -47,18 +47,18 @@ public class Belief {
     this.likelihood = Math.min(1, Math.max(-1, likelihood));
     this.causalAgentObject = agent;
 
-    this.goalCongruenceMap = new HashMap<String, Double>();
+    this.goalCongruenceMap = new HashMap<Goal, Double>();
 
-    if (affectedGoalNames.size() != goalCongruences.size()) {
+    if (affectedGoals.size() != goalCongruences.size()) {
       Gamygdala.debug("Error: the congruence list is not of the same size "
           + "as the affected goal list.");
       return;
     }
 
     // Add goals and congruences to Map.
-    for (int i = 0; i < affectedGoalNames.size(); i++) {
+    for (int i = 0; i < affectedGoals.size(); i++) {
       double congruence = Math.min(1, Math.max(-1, goalCongruences.get(i)));
-      this.goalCongruenceMap.put(affectedGoalNames.get(i), congruence);
+      this.goalCongruenceMap.put(affectedGoals.get(i), congruence);
     }
   }
 
@@ -103,7 +103,7 @@ public class Belief {
    * 
    * @return The names of the goals affected and their congruences.
    */
-  public HashMap<String, Double> getGoalCongruenceMap() {
+  public HashMap<Goal, Double> getGoalCongruenceMap() {
     return goalCongruenceMap;
   }
 

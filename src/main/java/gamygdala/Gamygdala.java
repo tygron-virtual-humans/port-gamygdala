@@ -104,36 +104,6 @@ public class Gamygdala {
   }
 
   /**
-   * Simple agent getter by name.
-   * 
-   * @param agentName The name of the agent to be found.
-   * @return Agent null or an agent reference that has the name property equal
-   *         to the agentName argument
-   */
-  public Agent getAgentByName(String agentName) {
-    if (this.agents.containsKey(agentName)) {
-      return this.agents.get(agentName);
-    }
-    Gamygdala.debug("Warning: agent \"" + agentName + "\" not found.");
-    return null;
-  }
-
-  /**
-   * Simple goal getter by name.
-   * 
-   * @param goalName The name of the goal to be found.
-   * @return Goal null or a goal reference that has the name property equal to
-   *         the goalName argument.
-   */
-  public Goal getGoalByName(String goalName) {
-    if (this.goals.containsKey(goalName)) {
-      return new Goal(this.goals.get(goalName));
-    }
-    Gamygdala.debug("Warning: goal \"" + goalName + "\" not found.");
-    return null;
-  }
-
-  /**
    * A facilitator method to appraise an event. It takes in the same as what the
    * new Belief(...) takes in, creates a belief and appraises it for all agents
    * that are registered. This method is thus handy if you want to keep all
@@ -141,7 +111,7 @@ public class Gamygdala {
    * 
    * @param likelihood The likelihood of this belief to be true.
    * @param agent The agent object of the causal agent of this belief.
-   * @param affectedGoalNames An array of affected goals' names.
+   * @param affectedGoals An array of affected goals.
    * @param goalCongruences An array of the affected goals' congruences (i.e.,
    *          the extend to which this event is good or bad for a goal [-1,1]).
    * @param isIncr Incremental evidence enforces gamygdala to see this event as
@@ -151,11 +121,11 @@ public class Gamygdala {
    *          defining the absolute likelihood
    */
   public void appraiseBelief(double likelihood, Agent agent,
-      ArrayList<String> affectedGoalNames, ArrayList<Double> goalCongruences,
+      ArrayList<Goal> affectedGoals, ArrayList<Double> goalCongruences,
       boolean isIncr) {
 
-    this.appraise(new Belief(likelihood, agent, affectedGoalNames,
-        goalCongruences, isIncr), null);
+    this.appraise(new Belief(likelihood, agent, affectedGoals, goalCongruences,
+        isIncr), null);
 
   }
 
@@ -197,29 +167,19 @@ public class Gamygdala {
       return;
     }
 
-    Iterator<Entry<String, Double>> goalCongruenceIterator = belief
+    Iterator<Entry<Goal, Double>> goalCongruenceIterator = belief
         .getGoalCongruenceMap().entrySet().iterator();
 
     Goal currentGoal;
-    String currentGoalName;
     Double currentCongruence;
 
     // Loop all goals.
     while (goalCongruenceIterator.hasNext()) {
 
       // Get next entry in map
-      Map.Entry<String, Double> goalPair = goalCongruenceIterator.next();
-      currentGoalName = goalPair.getKey();
+      Map.Entry<Goal, Double> goalPair = goalCongruenceIterator.next();
+      currentGoal = goalPair.getKey();
       currentCongruence = goalPair.getValue();
-
-      // Check for nulls
-      if (currentGoalName == null || currentCongruence == null) {
-        Gamygdala.debug("Error: goal name or goal congruence is null.");
-        continue;
-      }
-
-      // Loop through every goal in the list of affected goals by this event.
-      currentGoal = this.getGoalByName(currentGoalName);
 
       // If current goal is really a goal
       if (currentGoal != null) {

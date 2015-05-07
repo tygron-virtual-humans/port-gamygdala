@@ -51,14 +51,14 @@ public class Main {
     // ---
 
     // Init commonly used variables
-    ArrayList<String> affectedGoals = new ArrayList<String>();
+    ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
     ArrayList<Double> goalCongruences = new ArrayList<Double>();
 
     // First, mario can't find peach
     affectedGoals.clear();
     goalCongruences.clear();
 
-    affectedGoals.add("rescue-peach");
+    affectedGoals.add(rescuePeachGoal);
     goalCongruences.add(0.25);
 
     engine.appraiseBelief(1, mario, affectedGoals, goalCongruences, true);
