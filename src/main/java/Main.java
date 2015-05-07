@@ -1,4 +1,8 @@
 import gamygdala.Gamygdala;
+
+import java.util.ArrayList;
+
+import data.Goal;
 import agent.Agent;
 import agent.AgentFactory;
 
@@ -9,8 +13,9 @@ public class Main {
 
   /**
    * Run test.
+   * @throws InterruptedException 
    */
-  public static void main(String[] args) {
+  public static void main(String[] args) throws InterruptedException {
 
     // Create new Gamygdala engine
     Gamygdala engine = new Gamygdala();
@@ -18,19 +23,56 @@ public class Main {
     // Create new Agents
     Agent mario = AgentFactory.createAgent("mario");
     Agent bowser = AgentFactory.createAgent("bowser");
-    
+
+    // Register agents with engine
+    engine.registerAgent(mario);
+    engine.registerAgent(bowser);
+
     // Create goals for Mario
-    engine.createGoalForAgent(mario, "rescue-peach", 1, false);
-    engine.createGoalForAgent(mario, "survive", .8, true);
+    Goal rescuePeachGoal = new Goal("rescue-peach", 1, false);
+    Goal surviveGoal = new Goal("survive", .8, true);
     
+    mario.addGoal(rescuePeachGoal);
+    mario.addGoal(surviveGoal);
+    
+    engine.registerGoal(rescuePeachGoal);
+    engine.registerGoal(surviveGoal);
+
     // Create goals for Bowser
-    engine.createGoalForAgent(bowser, "kill-mario", 1, false);
+    Goal killMarioGoal = new Goal("kill-mario", 1, false);
     
-    
-    
+    bowser.addGoal(killMarioGoal);
+    engine.registerGoal(killMarioGoal);
+
+    // ---
+    // Display initial state
+    engine.printAllEmotions(false);
+    System.out.println("===\n");
+    // ---
+
+    // Init commonly used variables
+    ArrayList<String> affectedGoals = new ArrayList<String>();
+    ArrayList<Double> goalCongruences = new ArrayList<Double>();
+
     // First, mario can't find peach
+    affectedGoals.clear();
+    goalCongruences.clear();
+
+    affectedGoals.add("rescue-peach");
+    goalCongruences.add(0.25);
+
+    engine.appraiseBelief(1, mario, affectedGoals, goalCongruences, true);
+    
+    // Then, he finds her!
     
     
+    // ---
+    // Display emotions
+    engine.printAllEmotions(false);
+    engine.printAllEmotions(true);
+    System.out.println("===\n");
+    // ---
+
   }
 
 }
