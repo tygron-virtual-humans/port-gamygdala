@@ -104,61 +104,6 @@ public class Gamygdala {
   }
 
   /**
-   * A facilitator method to create a goal for a particular agent, that also
-   * registers the goal to the agent and Gamygdala. This method is thus handy if
-   * you want to keep all Gamygdala logic internal to Gamygdala. However, if you
-   * want to do more sophisticated stuff (e.g., goals for multiple agents, keep
-   * track of your own list of goals to also remove them, appraise events per
-   * agent without the need for Gamygdala to keep track of goals, etc...) this
-   * method will probably be doing too much.
-   * 
-   * @param agent The agent's name to which the newly created goal has to be
-   *          added.
-   * @param goalName The goal's name.
-   * @param goalUtility The goal's utility.
-   * @param isMaintenanceGoal Whether or not this goal is a maintenance goal.
-   * @return Goal - a goal reference to the newly created goal.
-   */
-  public Goal createGoalForAgent(Agent agent, String goalName,
-      double goalUtility, boolean isMaintenanceGoal) {
-
-    if (this.agents.containsKey(agent.name)) {
-      Goal goal = this.getGoalByName(goalName);
-
-      // Check if goal already exists
-      if (goal != null) {
-
-        // Update isMaintenanceGoal
-        // XXX: Currently, this updates this attribute for every goal with this
-        // name registered to
-        // all agents. Do we want this?
-        if (isMaintenanceGoal) {
-          goal.setMaintenanceGoal(isMaintenanceGoal);
-        }
-
-        Gamygdala.debug("Warning: I cannot make a new goal with the same name "
-            + goalName + " as one is registered already."
-            + "I assume the goal is a common goal and will add the already "
-            + "known goal with that name to the agent " + agent);
-      } else {
-        // .. else, create new goal and add to this Gamygdala instance
-        goal = new Goal(goalName, goalUtility, isMaintenanceGoal);
-        this.registerGoal(goal);
-      }
-
-      // Register goal with agent
-      agent.addGoal(goal);
-
-      return goal;
-    } else {
-      Gamygdala.debug("Error: agent " + agent
-          + " does not exist, so I cannot create a goal for it.");
-      return null;
-    }
-
-  }
-
-  /**
    * Simple agent getter by name.
    * 
    * @param agentName The name of the agent to be found.
