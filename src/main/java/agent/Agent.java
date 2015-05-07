@@ -1,10 +1,10 @@
 package agent;
 
-import data.Belief;
+import gamygdala.Gamygdala;
 import data.Emotion;
 import data.Goal;
 import data.GoalMap;
-import gamygdala.Gamygdala;
+import decayfunction.DecayFunction;
 
 public class Agent {
 
@@ -126,22 +126,11 @@ public class Agent {
 
     // Gain has to be between 0 and 20.
     if (gain <= 0 || gain > 20) {
-      Gamygdala.debug("Error: gain factor for appraisal integration must be between 0 and 20.");
+      Gamygdala
+          .debug("Error: gain factor for appraisal integration must be between 0 and 20.");
     } else {
       this.gain = gain;
     }
-  }
-
-  /**
-   * A facilitating method to be able to appraise one event only from the perspective of the current
-   * agent (this).
-   * Needs an instantiated Gamygdala object (automatic when the agent is registered with
-   * Gamygdala.registerAgent(agent) to a Gamygdala instance).
-   * 
-   * @param belief The belief to be appraised.
-   */
-  public void appraise(Belief belief) {
-    this.gamygdalaInstance.appraise(belief, this);
   }
 
   /**
@@ -164,12 +153,13 @@ public class Agent {
   }
 
   /**
-   * This function prints to the console either the state as is (gain=null) or a state based on
-   * gained limiter (limited between 0 and 1), of which the gain can be set by using setGain(gain).
-   * A high gain factor works well when appraisals are small and rare, and you want to see the
-   * effect of these appraisals.
-   * A low gain factor (close to 0 but in any case below 1) works well for high frequency and/or
-   * large appraisals, so that the effect of these is dampened.
+   * This function prints to the console either the state as is (gain=null) or a
+   * state based on gained limiter (limited between 0 and 1), of which the gain
+   * can be set by using setGain(gain). A high gain factor works well when
+   * appraisals are small and rare, and you want to see the effect of these
+   * appraisals. A low gain factor (close to 0 but in any case below 1) works
+   * well for high frequency and/or large appraisals, so that the effect of
+   * these is dampened.
    * 
    * @param gained Print only gained emotions or not.
    */
@@ -186,67 +176,77 @@ public class Agent {
    * the relation does not exist, it will be created, otherwise it will be
    * updated.
    * 
-   * @param agentName The agent who is the target of the relation.
-   * @param like The relation (between -1 and 1).
+   * @param agent The agent who is the target of the relation.
+   * @param relation The relation (between -1 and 1).
    */
-  public void updateRelation(String agentName, double like) {
-    this.currentRelations.updateRelation(agentName, like);
+  public void updateRelation(Agent agent, double relation) {
+    if (relation >= -1 && relation <= 1) {
+      this.currentRelations.updateRelation(agent, relation);
+    } else {
+      Gamygdala.debug("Error: cannot relate " + this + " to " + agent
+          + " with intensity " + relation);
+    }
   }
 
   /**
    * Checks if this agent has a relation with the agent defined by agentName.
    * 
-   * @param agentName The agent who is the target of the relation.
+   * @param agent The agent who is the target of the relation.
    * @param True if the relation exists, otherwise false.
    */
-  public boolean hasRelationWith(String agentName) {
-    return this.currentRelations.hasRelationWith(agentName);
+  public boolean hasRelationWith(Agent agent) {
+    return this.currentRelations.hasRelationWith(agent);
   }
 
   /**
    * Returns the relation object this agent has with the agent defined by
    * agentName.
    * 
-   * @param agentName The agent who is the target of the relation.
+   * @param agent The agent who is the target of the relation.
    * @return Relation The relation object or null if non existing.
    */
-  public Relation getRelation(String agentName) {
-    return this.currentRelations.getRelation(agentName);
+  public Relation getRelation(Agent agent) {
+    return this.currentRelations.getRelation(agent);
   }
 
   /**
    * Prints the relations this agent has with the agent defined by agentName.
    * 
-   * @param agentName The agent who is the target of the relation. When omitted, all relations are
-   *          printed.
+   * @param agent The agent who is the target of the relation. When omitted, all
+   *          relations are printed.
    */
-  public void printRelations(String agentName) {
+  public void printRelations(Agent agent) {
     String output = this.name + " has the following sentiments:\n   ";
-    output += this.currentRelations.printRelations(agentName);
+    output += this.currentRelations.printRelations(agent);
     System.out.println(output);
   }
 
   /**
-   * This method decays the emotional state and relations according to the
-   * decay factor and function defined in gamygdala. Typically this is called
+   * This method decays the emotional state and relations according to the decay
+   * factor and function defined in gamygdala. Typically this is called
    * automatically when you use startDecay() in Gamygdala, but you can use it
    * yourself if you want to manage the timing. This function is keeping track
-   * of the millis passed since the last call, and will (try to) keep the
-   * decay close to the desired decay factor, regardless the time passed So
-   * you can call this any time you want (or, e.g., have the game loop call
-   * it, or have e.g., Phaser call it in the plugin update, which is default
-   * now). Further, if you want to tweak the emotional intensity decay of
-   * individual agents, you should tweak the decayFactor per agent not the
-   * "frame rate" of the decay (as this doesn't change the rate).
+   * of the millis passed since the last call, and will (try to) keep the decay
+   * close to the desired decay factor, regardless the time passed So you can
+   * call this any time you want (or, e.g., have the game loop call it, or have
+   * e.g., Phaser call it in the plugin update, which is default now). Further,
+   * if you want to tweak the emotional intensity decay of individual agents,
+   * you should tweak the decayFactor per agent not the "frame rate" of the
+   * decay (as this doesn't change the rate).
    * 
-   * @param gamygdalaInstance A reference to the correct Gamygdala instance that
-   *          contains the decayFunction property to be used (so you could use
-   *          different gamygdala instances to manage different groups of agents)
+   * @param dfunc The Decay Function used to decay emotions and relations.
+   * @param millisPassed The time passed (in milliseconds) since the last decay.
    */
-  public void decay(Gamygdala gamygdalaInstance) {
+  public void decay(DecayFunction dfunc, long millisPassed) {
+
+    // Decay all internal emotions
     for (int i = 0; i < this.internalState.size(); i++) {
-      double newIntensity = gamygdalaInstance.decayFunction.decay(
-          this.internalState.get(i).intensity, gamygdalaInstance.getMillisPassed());
+
+      // Decay emotion
+      double newIntensity = dfunc.decay(this.internalState.get(i).intensity,
+          millisPassed);
+
+      // If intensity is below zero, remove emotion
       if (newIntensity < 0) {
         this.internalState.remove(i);
       } else {
@@ -254,8 +254,9 @@ public class Agent {
       }
     }
 
+    // Decay all relations
     for (int i = 0; i < this.currentRelations.size(); i++) {
-      this.currentRelations.get(i).decay(gamygdalaInstance);
+      this.currentRelations.get(i).decay(dfunc, millisPassed);
     }
   }
 
