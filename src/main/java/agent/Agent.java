@@ -1,22 +1,16 @@
 package agent;
 
-import gamygdala.Gamygdala;
-
-import java.util.ArrayList;
-
-import observer.AgentObserver;
-import observer.AgentSubject;
 import data.Belief;
 import data.Emotion;
 import data.Goal;
-import data.map.GamygdalaMap;
 import data.map.GoalMap;
 import decayfunction.DecayFunction;
+import gamygdala.Gamygdala;
 
 /**
  * The main interacting character in the Gamygdala engine.
  */
-public class Agent implements AgentSubject {
+public class Agent {
 
     /**
      * The name of this Agent.
@@ -53,8 +47,6 @@ public class Agent implements AgentSubject {
      */
     private MapPad mapPad;
 
-    private ArrayList<AgentObserver> observer;
-
     public static final double DEFAULT_GAIN = 1;
 
     /**
@@ -62,7 +54,7 @@ public class Agent implements AgentSubject {
      *
      * @param name Agent name.
      */
-    public Agent(String name, GamygdalaMap map) {
+    public Agent(String name) {
         this.name = name;
 
         // Init goal map.
@@ -77,12 +69,6 @@ public class Agent implements AgentSubject {
 
         // Initialize PAD map
         this.mapPad = new MapPad();
-
-        // Initialize observer array
-        observer = new ArrayList<AgentObserver>();
-        
-        // Register engine as observer
-        attach(map);
     }
 
     /**
@@ -92,9 +78,7 @@ public class Agent implements AgentSubject {
      * @return True if goal was added successfully, false if not.
      */
     public boolean addGoal(Goal goal) {
-        boolean status = this.goals.addGoal(goal);
-        notifyObservers(goal);
-        return status;
+        return this.goals.addGoal(goal);
     }
 
     /**
@@ -368,19 +352,5 @@ public class Agent implements AgentSubject {
     @Override
     public String toString() {
         return "<Agent[" + this.name + "]>";
-    }
-
-    public void attach(AgentObserver ob) {
-        this.observer.add(ob);
-    }
-
-    public void remove(AgentObserver ob) {
-        this.observer.remove(ob);
-    }
-
-    public void notifyObservers(Goal goal) {
-        for (AgentObserver ob : this.observer) {
-            ob.update(goal);
-        }
     }
 }
