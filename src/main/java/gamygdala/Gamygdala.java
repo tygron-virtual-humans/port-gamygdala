@@ -149,6 +149,15 @@ public class Gamygdala {
         }
     }
 
+    public void appraiseAll(Belief belief) {
+//        belief.calculate()
+    }
+
+    public void appraiseOne(Belief belief) {
+//        belief.calculate()
+    }
+
+
     /**
      * Appraise a belief by all agents in the engine.
      *
