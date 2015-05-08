@@ -125,11 +125,8 @@ public class Gamygdala {
         Goal currentGoal;
         Double currentCongruence;
 
-        // Loop all goals.
-        Iterator<Entry<Goal, Double>> goalCongruenceIterator = belief.getGoalCongruenceMap().entrySet().iterator();
-
-        for (Map.Entry<Goal, Double> goalPair = goalCongruenceIterator.next(); goalCongruenceIterator.hasNext(); ) {
-
+        // Loop over all goals.
+        for (Map.Entry<Goal, Double> goalPair : belief.getGoalCongruenceMap().entrySet()) {
             currentGoal = goalPair.getKey();
             currentCongruence = goalPair.getValue();
 
@@ -143,18 +140,13 @@ public class Gamygdala {
             double deltaLikelihood = this.calculateDeltaLikelihood(currentGoal, currentCongruence, belief.getLikelihood(), belief.isIncremental());
             double desirability = deltaLikelihood * utility;
 
+            // if affectedAgent is null, than calculate all agent emotions.
             if (affectedAgent == null) {
-
                 this.appraiseByAllAgents(currentGoal, belief, utility, deltaLikelihood, desirability);
-
             } else {
-
-                // check only affectedAgent
                 this.evaluateAgentEmotions(belief, affectedAgent, currentGoal, utility, deltaLikelihood, desirability);
-
             }
         }
-
     }
 
     /**
@@ -191,6 +183,7 @@ public class Gamygdala {
     }
 
     private void evaluateAgentEmotions(Belief belief, Agent owner, Goal currentGoal, double utility, double deltaLikelihood, double desirability) {
+        System.out.println("EvaluateAgentEmotions!");
 
         Iterator<Entry<String, Agent>> it = this.gamydgalaMap.getAgentMap().getIterator();
         Agent temp;
