@@ -5,49 +5,49 @@ package data.map;
  */
 public class GamygdalaMap {
 
-    /**
+  /**
      *
      */
-    private AgentMap agentMap;
+  private AgentMap agentMap;
 
-    /**
+  /**
      *
      */
-    private GoalMap goalMap;
+  private GoalMap goalMap;
 
-    /**
+  /**
      *
      */
-    public GamygdalaMap() {
-        this.agentMap = new AgentMap();
-        this.goalMap = new GoalMap();
-    }
+  public GamygdalaMap() {
+    this.agentMap = new AgentMap();
+    this.goalMap = new GoalMap();
+  }
 
-    /**
-     * @return
-     */
-    public AgentMap getAgentMap() {
-        return agentMap;
-    }
+  /**
+   * @return
+   */
+  public AgentMap getAgentMap() {
+    return agentMap;
+  }
 
-    /**
-     * @param agentMap
-     */
-    public void setAgentMap(AgentMap agentMap) {
-        this.agentMap = agentMap;
-    }
+  /**
+   * @param agentMap
+   */
+  public void setAgentMap(AgentMap agentMap) {
+    this.agentMap = agentMap;
+  }
 
-    /**
-     * @return
-     */
-    public GoalMap getGoalMap() {
-        return goalMap;
-    }
+  /**
+   * @return
+   */
+  public GoalMap getGoalMap() {
+    return goalMap;
+  }
 
-    /**
-     * @param goalMap
-     */
-    public void setGoalMap(GoalMap goalMap) {
-        this.goalMap = goalMap;
-    }
+  /**
+   * @param goalMap
+   */
+  public void setGoalMap(GoalMap goalMap) {
+    this.goalMap = goalMap;
+  }
 }
