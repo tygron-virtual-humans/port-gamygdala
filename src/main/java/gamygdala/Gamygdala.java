@@ -128,10 +128,8 @@ public class Gamygdala {
         // Loop all goals.
         Iterator<Entry<Goal, Double>> goalCongruenceIterator = belief.getGoalCongruenceMap().entrySet().iterator();
 
-        while (goalCongruenceIterator.hasNext()) {
+        for (Map.Entry<Goal, Double> goalPair = goalCongruenceIterator.next(); goalCongruenceIterator.hasNext(); ) {
 
-            // Get next entry in map
-            Map.Entry<Goal, Double> goalPair = goalCongruenceIterator.next();
             currentGoal = goalPair.getKey();
             currentCongruence = goalPair.getValue();
 
@@ -205,7 +203,7 @@ public class Gamygdala {
         // social emotions accordingly.
         while (it.hasNext()) {
 
-            Map.Entry<String, Agent> pair = (Map.Entry<String, Agent>) it.next();
+            Map.Entry<String, Agent> pair = it.next();
             temp = pair.getValue();
 
             relation = temp.getRelation(owner);
@@ -236,10 +234,10 @@ public class Gamygdala {
      * resentment. Emotions that arise when we evaluate events that affect goals
      * of others.
      *
-     * @param utility
+     * @param utility the utility.
      * @param desirability The desirability is the desirability from the goal
      *            owner's perspective.
-     * @param deltaLikelihood
+     * @param deltaLikelihood the delta likelihood.
      * @param relation A relation object between the agent being evaluated and
      *            the goal owner of the affected goal.
      * @param agent The agent getting evaluated (the agent that gets the social
@@ -345,11 +343,11 @@ public class Gamygdala {
      * (the default) is -1 or 1, we can't change it any more (unless externally
      * and explicitly by changing the goal.likelihood).
      *
-     * @param goal
-     * @param congruence
-     * @param likelihood
-     * @param isIncremental
-     * @return
+     * @param goal the goal for which to calculate the likelihood.
+     * @param congruence how much is it affecting the agent.
+     * @param likelihood the likelihood.
+     * @param isIncremental if the goal is incremental
+     * @return the delta likelihood.
      */
     private double calculateDeltaLikelihood(Goal goal, double congruence, double likelihood, boolean isIncremental) {
 
@@ -368,21 +366,18 @@ public class Gamygdala {
         }
 
         goal.setLikelihood(newLikelihood);
-        if (oldLikelihood != null) {
-            return newLikelihood - oldLikelihood;
-        } else {
-            return newLikelihood;
-        }
+
+        return newLikelihood - oldLikelihood;
     }
 
     /**
      * This method evaluates the event in terms of internal emotions that do not
      * need relations to exist, such as hope, fear, etc..
      *
-     * @param utility
-     * @param deltaLikelh
-     * @param likelihood
-     * @param agent
+     * @param utility the utility.
+     * @param deltaLikelh the delta likelihood.
+     * @param likelihood the likelihood.
+     * @param agent the agent for which to evaluate the internal emotion.
      */
     private void evaluateInternalEmotion(double utility, double deltaLikelh, double likelihood, Agent agent) {
 
@@ -394,17 +389,17 @@ public class Gamygdala {
         boolean positive = false;
 
         if (utility >= 0) {
-            positive = (deltaLikelh >= 0) ? true : false;
+            positive = (deltaLikelh >= 0);
         } else if (utility < 0) {
-            positive = (deltaLikelh >= 0) ? false : true;
+            positive = (deltaLikelh >= 0);
         }
 
         ArrayList<String> emotion = this.determineEmotions(utility, deltaLikelh, likelihood, positive);
 
         double intensity = Math.abs(utility * deltaLikelh);
         if (intensity != 0) {
-            for (int i = 0; i < emotion.size(); i++) {
-                agent.updateEmotionalState(new Emotion(emotion.get(i), intensity));
+            for (String emo : emotion) {
+                agent.updateEmotionalState(new Emotion(emo, intensity));
             }
         }
     }
@@ -415,7 +410,7 @@ public class Gamygdala {
 
         if (likelihood > 0 && likelihood < 1) {
 
-            if (positive == true) {
+            if (positive) {
                 emotion.add("hope");
             } else {
                 emotion.add("fear");
@@ -472,7 +467,7 @@ public class Gamygdala {
         Iterator<Entry<String, Agent>> it = this.gamydgalaMap.getAgentMap().getIterator();
         Agent temp;
         while (it.hasNext()) {
-            Map.Entry<String, Agent> pair = (Map.Entry<String, Agent>) it.next();
+            Map.Entry<String, Agent> pair = it.next();
 
             temp = pair.getValue();
             if (temp != null) {
@@ -509,7 +504,7 @@ public class Gamygdala {
         Iterator<Entry<String, Agent>> it = this.gamydgalaMap.getAgentMap().getIterator();
         Agent agent;
         while (it.hasNext()) {
-            Map.Entry<String, Agent> pair = (Map.Entry<String, Agent>) it.next();
+            Map.Entry<String, Agent> pair = it.next();
             agent = pair.getValue();
 
             if (agent != null) {
@@ -562,7 +557,7 @@ public class Gamygdala {
         Iterator<Entry<String, Agent>> it = this.gamydgalaMap.getAgentMap().getIterator();
         Agent agent;
         while (it.hasNext()) {
-            Map.Entry<String, Agent> pair = (Map.Entry<String, Agent>) it.next();
+            Map.Entry<String, Agent> pair = it.next();
             agent = pair.getValue();
 
             agent.printEmotionalState(gain);
