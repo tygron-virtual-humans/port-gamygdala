@@ -21,8 +21,8 @@ public class Main {
     Gamygdala engine = new Gamygdala();
 
     // Create new Agents
-    Agent mario = AgentFactory.createAgent("mario");
-    Agent bowser = AgentFactory.createAgent("bowser");
+    Agent mario = AgentFactory.createAgent("mario", engine);
+    Agent bowser = AgentFactory.createAgent("bowser", engine);
 
     // Register agents with engine
     engine.registerAgent(mario);
@@ -34,15 +34,19 @@ public class Main {
     
     mario.addGoal(rescuePeachGoal);
     mario.addGoal(surviveGoal);
-    
-    engine.registerGoal(rescuePeachGoal);
-    engine.registerGoal(surviveGoal);
 
+    System.out.println("\n\n\n");
+    System.out.println(engine.gamygdalaMap.getGoalMap());
+    System.out.println("\n\n\n");
+    
     // Create goals for Bowser
     Goal killMarioGoal = new Goal("kill-mario", 1, false);
     
     bowser.addGoal(killMarioGoal);
-    engine.registerGoal(killMarioGoal);
+    
+    System.out.println("\n\n\n");
+    System.out.println(engine.gamygdalaMap.getGoalMap());
+    System.out.println("\n\n\n");
 
     // ---
     // Display initial state
