@@ -30,8 +30,8 @@ public abstract class DecayFunction {
 
     /**
      * Get decay factor.
-     *
-     * @return Decay factor.
+     * 
+     * @param decayFactor The decay factor.
      */
     public void setDecayFactor(double decayFactor) {
         this.decayFactor = decayFactor;

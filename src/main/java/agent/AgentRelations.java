@@ -2,6 +2,9 @@ package agent;
 
 import java.util.ArrayList;
 
+/**
+ * The collection of Agent Relations.
+ */
 public class AgentRelations extends ArrayList<Relation> {
 
     /**
@@ -15,7 +18,7 @@ public class AgentRelations extends ArrayList<Relation> {
      * updated.
      *
      * @param agent The agent who is the target of the relation.
-     * @param like  The relation (between -1 and 1).
+     * @param like The relation (between -1 and 1).
      */
     public void updateRelation(Agent agent, double like) {
         if (!this.hasRelationWith(agent)) {
@@ -36,8 +39,8 @@ public class AgentRelations extends ArrayList<Relation> {
     /**
      * Checks if this agent has a relation with the agent defined by agentName.
      *
-     * @param agentName The agent who is the target of the relation.
-     * @param True      if the relation exists, otherwise false.
+     * @param agent The agent who is the target of the relation.
+     * @return True if the relation exists, otherwise false.
      */
     public boolean hasRelationWith(Agent agent) {
         return (this.getRelation(agent) != null);
@@ -64,8 +67,8 @@ public class AgentRelations extends ArrayList<Relation> {
     /**
      * Prints the relations this agent has with the agent defined by agentName.
      *
-     * @param agent The agent who is the target of the relation. When omitted, all
-     *              relations are printed.
+     * @param agent The agent who is the target of the relation. When omitted,
+     *            all relations are printed.
      */
     public String printRelations(Agent agent) {
         boolean found = false;
@@ -75,8 +78,7 @@ public class AgentRelations extends ArrayList<Relation> {
 
             if (agent == null || get(i).agent.equals(agent)) {
                 for (int j = 0; j < get(i).emotionList.size(); j++) {
-                    output += get(i).emotionList.get(j).name + "("
-                            + get(i).emotionList.get(j).intensity + ") ";
+                    output += get(i).emotionList.get(j).name + "(" + get(i).emotionList.get(j).intensity + ") ";
                     found = true;
                 }
             }

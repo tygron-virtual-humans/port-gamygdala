@@ -1,8 +1,8 @@
 package agent;
 
-import data.Emotion;
-
 import java.util.ArrayList;
+
+import data.Emotion;
 
 
 /**

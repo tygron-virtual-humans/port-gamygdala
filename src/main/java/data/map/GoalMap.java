@@ -1,9 +1,9 @@
 package data.map;
 
+import java.util.HashMap;
+
 import data.Goal;
 import gamygdala.Gamygdala;
-
-import java.util.HashMap;
 
 /**
  * HashMap to store Goals.
@@ -33,7 +33,7 @@ public class GoalMap extends HashMap<String, Goal> {
     /**
      * Remove Goal.
      *
-     * @param g Goal to remove.
+     * @param goal Goal to remove.
      * @return True if goal was removed successfully, false if not.
      */
     public boolean removeGoal(Goal goal) {
@@ -43,7 +43,7 @@ public class GoalMap extends HashMap<String, Goal> {
     /**
      * Check if this GoalMap has a specific Goal (by object).
      *
-     * @param g Goal to check for.
+     * @param goal Goal to check for.
      * @return True if Agent has goal, false if not.
      */
     public boolean hasGoal(Goal goal) {
@@ -53,10 +53,10 @@ public class GoalMap extends HashMap<String, Goal> {
     /**
      * Check if this GoalMap contains a specific Goal (by name).
      *
-     * @param g Goal to check for.
+     * @param goalName Goal name to check for.
      * @return True if Agent has goal, false if not.
      */
-    public boolean hasGoal(String goalName) {
+    private boolean hasGoal(String goalName) {
         return containsKey(goalName) && get(goalName) != null;
     }
 

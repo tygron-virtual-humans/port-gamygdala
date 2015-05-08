@@ -1,12 +1,15 @@
 package agent;
 
-import gamygdala.Gamygdala;
 import data.Belief;
 import data.Emotion;
 import data.Goal;
 import data.map.GoalMap;
 import decayfunction.DecayFunction;
+import gamygdala.Gamygdala;
 
+/**
+ * The main interacting character in the Gamygdala engine.
+ */
 public class Agent {
 
     /**
@@ -99,16 +102,6 @@ public class Agent {
     }
 
     /**
-     * Check if this GoalMap contains a specific Goal (by name).
-     *
-     * @param goalName Goal to check for.
-     * @return True if Agent has goal, false if not.
-     */
-    public boolean hasGoal(String goalName) {
-        return this.goals.hasGoal(goalName);
-    }
-
-    /**
      * If this agent has a goal named goalName, this method returns that goal.
      *
      * @param goalName The name of the goal to be found.
@@ -127,8 +120,7 @@ public class Agent {
 
         // Gain has to be between 0 and 20.
         if (gain <= 0 || gain > 20) {
-            Gamygdala
-                    .debug("Error: gain factor for appraisal integration must be between 0 and 20.");
+            Gamygdala.debug("Error: gain factor for appraisal integration must be between 0 and 20.");
         } else {
             this.gain = gain;
         }
@@ -196,8 +188,7 @@ public class Agent {
         if (relation >= -1 && relation <= 1) {
             this.currentRelations.updateRelation(agent, relation);
         } else {
-            Gamygdala.debug("Error: cannot relate " + this + " to " + agent
-                    + " with intensity " + relation);
+            Gamygdala.debug("Error: cannot relate " + this + " to " + agent + " with intensity " + relation);
         }
     }
 
@@ -234,26 +225,7 @@ public class Agent {
         System.out.println(output);
     }
 
-    /**
-     * Get the Gamygdala instance to which this Agent is linked.
-     *
-     * @return Gamygdala object.
-     */
-    public Gamygdala getGamygdalaInstance() {
-        return this.gamygdalaInstance;
-    }
-
-    /**
-     * Set the Gamygdala instance to which this Agent is linked.
-     *
-     * @return Gamygdala object.
-     */
-    public void setGamygdalaInstance(Gamygdala instance) {
-        this.gamygdalaInstance = instance;
-    }
-
-    public void agentActions(Agent affectedAgent, Agent causalAgent,
-            double desirability, double utility, double deltaLikelihood) {
+    public void agentActions(Agent affectedAgent, Agent causalAgent, double desirability, double utility, double deltaLikelihood) {
 
         if (causalAgent == null) {
             return;
@@ -275,8 +247,7 @@ public class Agent {
             this.updateEmotionalState(emotion);
 
         } else if (affectedAgent.equals(this) && this.equals(causalAgent)) {
-            Gamygdala
-                    .debug("[Gamygdala.agentActions] This case is not included in Gamygdala.");
+            Gamygdala.debug("[Gamygdala.agentActions] This case is not included in Gamygdala.");
 
         } else if (!affectedAgent.equals(this) && causalAgent.equals(this)) {
             if (causalAgent.hasRelationWith(affectedAgent)) {
@@ -286,8 +257,7 @@ public class Agent {
 
                     if (relation.like >= 0) {
                         emotion.name = "gratification";
-                        emotion.intensity = Math.abs(utility * deltaLikelihood
-                                * relation.like);
+                        emotion.intensity = Math.abs(utility * deltaLikelihood * relation.like);
                         relation.addEmotion(emotion);
                         causalAgent.updateEmotionalState(emotion);
                     }
@@ -296,8 +266,7 @@ public class Agent {
 
                     if (relation.like >= 0) {
                         emotion.name = "remorse";
-                        emotion.intensity = Math.abs(utility * deltaLikelihood
-                                * relation.like);
+                        emotion.intensity = Math.abs(utility * deltaLikelihood * relation.like);
                         relation.addEmotion(emotion);
                         causalAgent.updateEmotionalState(emotion);
                     }
@@ -321,8 +290,7 @@ public class Agent {
      * @param relation A relation object between the agent being evaluated and
      *            the goal owner of the affected goal.
      */
-    public void evaluateSocialEmotion(double utility, double desirability,
-            double deltaLikelihood, Relation relation) {
+    public void evaluateSocialEmotion(double utility, double desirability, double deltaLikelihood, Relation relation) {
         Emotion emotion = new Emotion(null, 0);
 
         if (desirability >= 0) {
@@ -362,8 +330,7 @@ public class Agent {
         for (int i = 0; i < this.internalState.size(); i++) {
 
             // Decay emotion
-            double newIntensity = dfunc.decay(
-                    this.internalState.get(i).intensity, millisPassed);
+            double newIntensity = dfunc.decay(this.internalState.get(i).intensity, millisPassed);
 
             // If intensity is below zero, remove emotion
             if (newIntensity < 0) {

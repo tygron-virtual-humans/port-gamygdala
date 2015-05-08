@@ -1,18 +1,17 @@
 package gamygdala;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import agent.Agent;
-import data.Goal;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import agent.Agent;
+
+/**
+ * Test main Gamygdala engine.
+ */
 public class GamygdalaTest {
 
   Gamygdala gamyg;

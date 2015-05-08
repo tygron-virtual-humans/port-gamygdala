@@ -75,7 +75,7 @@ public class Gamygdala {
      * @param agent The agent to be registered.
      */
     public void registerAgent(Agent agent) {
-        agent.setGamygdalaInstance(this);
+//        agent.setGamygdalaInstance(this);
         this.gamydgalaMap.getAgentMap().put(agent.name, agent);
     }
 
@@ -126,8 +126,7 @@ public class Gamygdala {
         Double currentCongruence;
 
         // Loop all goals.
-        Iterator<Entry<Goal, Double>> goalCongruenceIterator = belief
-                .getGoalCongruenceMap().entrySet().iterator();
+        Iterator<Entry<Goal, Double>> goalCongruenceIterator = belief.getGoalCongruenceMap().entrySet().iterator();
 
         while (goalCongruenceIterator.hasNext()) {
 
@@ -143,21 +142,17 @@ public class Gamygdala {
 
             // Calculate goal values
             double utility = currentGoal.getUtility();
-            double deltaLikelihood = this.calculateDeltaLikelihood(currentGoal,
-                    currentCongruence, belief.getLikelihood(),
-                    belief.isIncremental());
+            double deltaLikelihood = this.calculateDeltaLikelihood(currentGoal, currentCongruence, belief.getLikelihood(), belief.isIncremental());
             double desirability = deltaLikelihood * utility;
 
             if (affectedAgent == null) {
 
-                this.appraiseByAllAgents(currentGoal, belief, utility,
-                        deltaLikelihood, desirability);
+                this.appraiseByAllAgents(currentGoal, belief, utility, deltaLikelihood, desirability);
 
             } else {
 
                 // check only affectedAgent
-                this.evaluateAgentEmotions(belief, affectedAgent, currentGoal,
-                        utility, deltaLikelihood, desirability);
+                this.evaluateAgentEmotions(belief, affectedAgent, currentGoal, utility, deltaLikelihood, desirability);
 
             }
         }
@@ -173,79 +168,65 @@ public class Gamygdala {
      * @param deltaLikelihood The delta likelihood of the goal.
      * @param desirability The desirability of the goal (utility * delta).
      */
-    private void appraiseByAllAgents(Goal currentGoal, Belief belief,
-            double utility, double deltaLikelihood, double desirability) {
+    private void appraiseByAllAgents(Goal currentGoal, Belief belief, double utility, double deltaLikelihood, double desirability) {
 
         // Debug
-        Gamygdala.debug("Evaluated goal: " + currentGoal.getName() + "("
-                + utility + ", " + deltaLikelihood + ")");
+        Gamygdala.debug("Evaluated goal: " + currentGoal.getName() + "(" + utility + ", " + deltaLikelihood + ")");
 
         Agent owner;
 
         // Find the owners and update their emotional states
-        Iterator<Entry<String, Agent>> it = this.gamydgalaMap.getAgentMap()
-                .getIterator();
+        Iterator<Entry<String, Agent>> it = this.gamydgalaMap.getAgentMap().getIterator();
         while (it.hasNext()) {
 
             Map.Entry<String, Agent> pair = it.next();
             owner = pair.getValue();
 
-            if (owner != null && owner.hasGoal(currentGoal.getName())) {
+            if (owner != null && owner.hasGoal(currentGoal)) {
 
                 Gamygdala.debug("....owned by " + owner.name);
 
-                this.evaluateAgentEmotions(belief, owner, currentGoal, utility,
-                        deltaLikelihood, desirability);
+                this.evaluateAgentEmotions(belief, owner, currentGoal, utility, deltaLikelihood, desirability);
             }
         }
 
     }
 
-    private void evaluateAgentEmotions(Belief belief, Agent owner,
-            Goal currentGoal, double utility, double deltaLikelihood,
-            double desirability) {
+    private void evaluateAgentEmotions(Belief belief, Agent owner, Goal currentGoal, double utility, double deltaLikelihood, double desirability) {
 
-        Iterator<Entry<String, Agent>> it = this.gamydgalaMap.getAgentMap()
-                .getIterator();
+        Iterator<Entry<String, Agent>> it = this.gamydgalaMap.getAgentMap().getIterator();
         Agent temp;
         Relation relation;
 
-        this.evaluateInternalEmotion(utility, deltaLikelihood,
-                currentGoal.getLikelihood(), owner);
-        this.agentActions(owner, belief.getCausalAgent(), owner, desirability,
-                utility, deltaLikelihood);
+        this.evaluateInternalEmotion(utility, deltaLikelihood, currentGoal.getLikelihood(), owner);
+        this.agentActions(owner, belief.getCausalAgent(), owner, desirability, utility, deltaLikelihood);
 
         // now check if anyone has a relation to this goal owner, and update the
         // social emotions accordingly.
         while (it.hasNext()) {
 
-            Map.Entry<String, Agent> pair = (Map.Entry<String, Agent>) it
-                    .next();
+            Map.Entry<String, Agent> pair = (Map.Entry<String, Agent>) it.next();
             temp = pair.getValue();
 
             relation = temp.getRelation(owner);
             if (relation != null) {
 
-                Gamygdala.debug(temp.name + " has a relationship with "
-                        + owner.name);
+                Gamygdala.debug(temp.name + " has a relationship with " + owner.name);
                 Gamygdala.debug(relation);
 
                 // The agent has relationship with the goal owner which has
                 // nonzero
                 // utility, add relational effects to the relations for
                 // agent[k].
-                this.evaluateSocialEmotion(utility, desirability,
-                        deltaLikelihood, relation, temp);
+                this.evaluateSocialEmotion(utility, desirability, deltaLikelihood, relation, temp);
 
                 // also add remorse and gratification if conditions are met
                 // within
                 // (i.e., agent[k] did something bad/good for owner)
-                this.agentActions(owner, belief.getCausalAgent(), temp,
-                        desirability, utility, deltaLikelihood);
+                this.agentActions(owner, belief.getCausalAgent(), temp, desirability, utility, deltaLikelihood);
 
             } else {
-                Gamygdala.debug(temp.name + " has NO relationship with "
-                        + owner.name);
+                Gamygdala.debug(temp.name + " has NO relationship with " + owner.name);
             }
         }
     }
@@ -264,8 +245,7 @@ public class Gamygdala {
      * @param agent The agent getting evaluated (the agent that gets the social
      *            emotion added to his emotional state).
      */
-    private void evaluateSocialEmotion(double utility, double desirability,
-            double deltaLikelihood, Relation relation, Agent agent) {
+    private void evaluateSocialEmotion(double utility, double desirability, double deltaLikelihood, Relation relation, Agent agent) {
 
         Emotion emotion = new Emotion(null, 0);
 
@@ -285,9 +265,7 @@ public class Gamygdala {
 
     }
 
-    private void agentActions(Agent affectedAgent, Agent causalAgent,
-            Agent self, double desirability, double utility,
-            double deltaLikelihood) {
+    private void agentActions(Agent affectedAgent, Agent causalAgent, Agent self, double desirability, double utility, double deltaLikelihood) {
 
         if (causalAgent != null) {
             // If the causal agent is null or empty, then we we assume the event
@@ -324,8 +302,7 @@ public class Gamygdala {
 
                 // This case is not included in TUDelft.Gamygdala.
                 // This should include pride and shame
-                Gamygdala
-                        .debug("[Gamygdala.agentActions] This case is not included in Gamygdala.");
+                Gamygdala.debug("[Gamygdala.agentActions] This case is not included in Gamygdala.");
 
             } else if (!affectedAgent.equals(self) && causalAgent.equals(self)) {
 
@@ -337,8 +314,7 @@ public class Gamygdala {
 
                         if (relation.like >= 0) {
                             emotion.name = "gratification";
-                            emotion.intensity = Math.abs(utility
-                                    * deltaLikelihood * relation.like);
+                            emotion.intensity = Math.abs(utility * deltaLikelihood * relation.like);
                             relation.addEmotion(emotion);
                             causalAgent.updateEmotionalState(emotion);
                         }
@@ -347,8 +323,7 @@ public class Gamygdala {
 
                         if (relation.like >= 0) {
                             emotion.name = "remorse";
-                            emotion.intensity = Math.abs(utility
-                                    * deltaLikelihood * relation.like);
+                            emotion.intensity = Math.abs(utility * deltaLikelihood * relation.like);
                             relation.addEmotion(emotion);
                             causalAgent.updateEmotionalState(emotion);
                         }
@@ -376,14 +351,12 @@ public class Gamygdala {
      * @param isIncremental
      * @return
      */
-    private double calculateDeltaLikelihood(Goal goal, double congruence,
-            double likelihood, boolean isIncremental) {
+    private double calculateDeltaLikelihood(Goal goal, double congruence, double likelihood, boolean isIncremental) {
 
         Double oldLikelihood = goal.getLikelihood();
         double newLikelihood;
 
-        if (!goal.isMaintenanceGoal()
-                && (oldLikelihood >= 1 | oldLikelihood <= -1)) {
+        if (!goal.isMaintenanceGoal() && (oldLikelihood >= 1 | oldLikelihood <= -1)) {
             return 0;
         }
 
@@ -411,12 +384,10 @@ public class Gamygdala {
      * @param likelihood
      * @param agent
      */
-    private void evaluateInternalEmotion(double utility, double deltaLikelh,
-            double likelihood, Agent agent) {
+    private void evaluateInternalEmotion(double utility, double deltaLikelh, double likelihood, Agent agent) {
 
         if (agent == null) {
-            Gamygdala
-                    .debug("Error: Gamygdala.evaluateInternalEmotion has been passed an empty Agent object.");
+            Gamygdala.debug("Error: Gamygdala.evaluateInternalEmotion has been passed an empty Agent object.");
             return;
         }
 
@@ -428,20 +399,17 @@ public class Gamygdala {
             positive = (deltaLikelh >= 0) ? false : true;
         }
 
-        ArrayList<String> emotion = this.determineEmotions(utility,
-                deltaLikelh, likelihood, positive);
+        ArrayList<String> emotion = this.determineEmotions(utility, deltaLikelh, likelihood, positive);
 
         double intensity = Math.abs(utility * deltaLikelh);
         if (intensity != 0) {
             for (int i = 0; i < emotion.size(); i++) {
-                agent.updateEmotionalState(new Emotion(emotion.get(i),
-                        intensity));
+                agent.updateEmotionalState(new Emotion(emotion.get(i), intensity));
             }
         }
     }
 
-    private ArrayList<String> determineEmotions(double utility,
-            double deltaLikelihood, double likelihood, boolean positive) {
+    private ArrayList<String> determineEmotions(double utility, double deltaLikelihood, double likelihood, boolean positive) {
 
         ArrayList<String> emotion = new ArrayList<String>();
 
@@ -497,18 +465,14 @@ public class Gamygdala {
     public void setGain(double gain) {
 
         if (gain <= 0 || gain > 20) {
-            Gamygdala
-                    .debug("[Gamygdala.setGain] Error: "
-                            + "gain factor for appraisal integration must be between 0 and 20.");
+            Gamygdala.debug("[Gamygdala.setGain] Error: " + "gain factor for appraisal integration must be between 0 and 20.");
             return;
         }
 
-        Iterator<Entry<String, Agent>> it = this.gamydgalaMap.getAgentMap()
-                .getIterator();
+        Iterator<Entry<String, Agent>> it = this.gamydgalaMap.getAgentMap().getIterator();
         Agent temp;
         while (it.hasNext()) {
-            Map.Entry<String, Agent> pair = (Map.Entry<String, Agent>) it
-                    .next();
+            Map.Entry<String, Agent> pair = (Map.Entry<String, Agent>) it.next();
 
             temp = pair.getValue();
             if (temp != null) {
@@ -542,12 +506,10 @@ public class Gamygdala {
         this.millisPassed = now - this.lastMillis;
         this.lastMillis = now;
 
-        Iterator<Entry<String, Agent>> it = this.gamydgalaMap.getAgentMap()
-                .getIterator();
+        Iterator<Entry<String, Agent>> it = this.gamydgalaMap.getAgentMap().getIterator();
         Agent agent;
         while (it.hasNext()) {
-            Map.Entry<String, Agent> pair = (Map.Entry<String, Agent>) it
-                    .next();
+            Map.Entry<String, Agent> pair = (Map.Entry<String, Agent>) it.next();
             agent = pair.getValue();
 
             if (agent != null) {
@@ -597,12 +559,10 @@ public class Gamygdala {
      */
     public void printAllEmotions(boolean gain) {
 
-        Iterator<Entry<String, Agent>> it = this.gamydgalaMap.getAgentMap()
-                .getIterator();
+        Iterator<Entry<String, Agent>> it = this.gamydgalaMap.getAgentMap().getIterator();
         Agent agent;
         while (it.hasNext()) {
-            Map.Entry<String, Agent> pair = (Map.Entry<String, Agent>) it
-                    .next();
+            Map.Entry<String, Agent> pair = (Map.Entry<String, Agent>) it.next();
             agent = pair.getValue();
 
             agent.printEmotionalState(gain);

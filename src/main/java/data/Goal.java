@@ -1,5 +1,8 @@
 package data;
 
+/**
+ * Goal for an Agent.
+ */
 public class Goal {
 
     String name;

@@ -6,13 +6,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import data.Goal;
-import gamygdala.Gamygdala;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import data.Goal;
+import gamygdala.Gamygdala;
+
+/**
+ * Test Agent class.
+ */
 public class AgentTest {
 
   Agent agent;
@@ -182,17 +185,17 @@ public class AgentTest {
   // fail("Not yet implemented");
   // }
 
-  @Test
-  public void testGetSetGamygdalaInstance() {
-
-    assertNull(agent.getGamygdalaInstance());
-
-    Gamygdala gamyg = new Gamygdala();
-    agent.setGamygdalaInstance(gamyg);
-
-    assertEquals(gamyg, agent.getGamygdalaInstance());
-
-  }
+//  @Test
+//  public void testGetSetGamygdalaInstance() {
+//
+//    assertNull(agent.getGamygdalaInstance());
+//
+//    Gamygdala gamyg = new Gamygdala();
+//    agent.setGamygdalaInstance(gamyg);
+//
+//    assertEquals(gamyg, agent.getGamygdalaInstance());
+//
+//  }
 
   @Test
   public void testToString() {

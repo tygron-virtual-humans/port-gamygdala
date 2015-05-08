@@ -1,11 +1,10 @@
-import gamygdala.Gamygdala;
-
 import java.util.ArrayList;
 
 import agent.Agent;
 import agent.AgentFactory;
 import data.Belief;
 import data.Goal;
+import gamygdala.Gamygdala;
 
 /**
  * Function test case during development.

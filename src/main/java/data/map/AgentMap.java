@@ -1,20 +1,21 @@
 package data.map;
 
-import agent.Agent;
-import gamygdala.Gamygdala;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import agent.Agent;
+import gamygdala.Gamygdala;
+
 /**
- * Created by svenpopping on 06/05/15.
+ * HashMap containing Agents.
  */
 public class AgentMap extends HashMap<String, Agent> {
 
-    public AgentMap() {
-
-    }
+    /**
+     * Serialization ID.
+     */
+    private static final long serialVersionUID = -2321551205683477281L;
 
     /**
      * Simple agent getter by name.
@@ -30,13 +31,17 @@ public class AgentMap extends HashMap<String, Agent> {
         Gamygdala.debug("Warning: agent \"" + agentName + "\" not found.");
         return null;
     }
-
-    public Iterator getIterator() {
+    
+    /**
+     * Get the EntrySet iterator.
+     * @return Iterator
+     */
+    public Iterator<Entry<String, Agent>> getIterator() {
         return this.entrySet().iterator();
     }
 
     /**
-     * Facilitator method to print all emotional states to the console.
+     * Print all emotional states to the console.
      *
      * @param gain Whether you want to print the gained (true) emotional states or
      *             non-gained (false).

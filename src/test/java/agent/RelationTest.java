@@ -4,12 +4,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import data.Emotion;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import data.Emotion;
+
+/**
+ * Test Relation class.
+ */
 public class RelationTest {
 
   private Relation rel;

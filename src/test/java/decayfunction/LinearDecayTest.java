@@ -1,8 +1,12 @@
 package decayfunction;
+
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+/**
+ * Test linear DecayFunction.
+ */
 public class LinearDecayTest {
 
   @Test

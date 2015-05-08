@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import data.Emotion;
 import decayfunction.DecayFunction;
 
+/**
+ * Describes a Relation between two Agents.
+ */
 public class Relation {
 
   public Agent agent;
