@@ -17,7 +17,7 @@ public class ExponentialDecay extends DecayFunction {
      * Returns the decay outcome.
      * @param initial      Initial emotion intensity.
      * @param millisPassed Milliseconds since last decay function execution.
-     * @return
+     * @return the decay outcome of the function.
      */
     @Override
     public double decay(double initial, long millisPassed) {
