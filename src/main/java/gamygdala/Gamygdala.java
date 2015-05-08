@@ -136,15 +136,13 @@ public class Gamygdala {
             }
 
             // Calculate goal values
-            double utility = currentGoal.getUtility();
             double deltaLikelihood = this.calculateDeltaLikelihood(currentGoal, currentCongruence, belief.getLikelihood(), belief.isIncremental());
-            double desirability = deltaLikelihood * utility;
 
             // if affectedAgent is null, than calculate all agent emotions.
             if (affectedAgent == null) {
-                this.appraiseByAllAgents(currentGoal, belief, utility, deltaLikelihood, desirability);
+                this.appraiseByAllAgents(currentGoal, belief, deltaLikelihood);
             } else {
-                this.evaluateAgentEmotions(belief, affectedAgent, currentGoal, utility, deltaLikelihood, desirability);
+                this.evaluateAgentEmotions(affectedAgent, currentGoal, belief, deltaLikelihood);
             }
         }
     }
@@ -163,14 +161,12 @@ public class Gamygdala {
      *
      * @param currentGoal The goal to be considered.
      * @param belief The belief to be appraised.
-     * @param utility The utility value of the goal.
      * @param deltaLikelihood The delta likelihood of the goal.
-     * @param desirability The desirability of the goal (utility * delta).
      */
-    private void appraiseByAllAgents(Goal currentGoal, Belief belief, double utility, double deltaLikelihood, double desirability) {
+    private void appraiseByAllAgents(Goal currentGoal, Belief belief, double deltaLikelihood) {
 
         // Debug
-        Gamygdala.debug("Evaluated goal: " + currentGoal.getName() + "(" + utility + ", " + deltaLikelihood + ")");
+        Gamygdala.debug("Evaluated goal: " + currentGoal.getName() + "(" + currentGoal.getUtility() + ", " + deltaLikelihood + ")");
 
         Agent owner;
 
@@ -185,21 +181,21 @@ public class Gamygdala {
 
                 Gamygdala.debug("....owned by " + owner.name);
 
-                this.evaluateAgentEmotions(belief, owner, currentGoal, utility, deltaLikelihood, desirability);
+                this.evaluateAgentEmotions(owner, currentGoal, belief, deltaLikelihood);
             }
         }
 
     }
 
-    private void evaluateAgentEmotions(Belief belief, Agent owner, Goal currentGoal, double utility, double deltaLikelihood, double desirability) {
+    private void evaluateAgentEmotions(Agent owner, Goal currentGoal, Belief belief, double deltaLikelihood) {
         System.out.println("EvaluateAgentEmotions!");
 
         Iterator<Entry<String, Agent>> it = this.gamydgalaMap.getAgentMap().getIterator();
         Agent temp;
         Relation relation;
 
-        this.evaluateInternalEmotion(utility, deltaLikelihood, currentGoal.getLikelihood(), owner);
-        this.agentActions(owner, belief.getCausalAgent(), owner, desirability, utility, deltaLikelihood);
+        this.evaluateInternalEmotion(currentGoal.getUtility(), deltaLikelihood, currentGoal.getLikelihood(), owner);
+        this.agentActions(owner, belief.getCausalAgent(), owner, currentGoal.getUtility() * deltaLikelihood);
 
         // now check if anyone has a relation to this goal owner, and update the
         // social emotions accordingly.
@@ -218,12 +214,12 @@ public class Gamygdala {
                 // nonzero
                 // utility, add relational effects to the relations for
                 // agent[k].
-                this.evaluateSocialEmotion(utility, desirability, deltaLikelihood, relation, temp);
+                this.evaluateSocialEmotion(currentGoal.getUtility() * deltaLikelihood, relation, temp);
 
                 // also add remorse and gratification if conditions are met
                 // within
                 // (i.e., agent[k] did something bad/good for owner)
-                this.agentActions(owner, belief.getCausalAgent(), temp, desirability, utility, deltaLikelihood);
+                this.agentActions(owner, belief.getCausalAgent(), temp, currentGoal.getUtility() * deltaLikelihood);
 
             } else {
                 Gamygdala.debug(temp.name + " has NO relationship with " + owner.name);
@@ -236,16 +232,14 @@ public class Gamygdala {
      * resentment. Emotions that arise when we evaluate events that affect goals
      * of others.
      *
-     * @param utility the utility.
      * @param desirability The desirability is the desirability from the goal
      *            owner's perspective.
-     * @param deltaLikelihood the delta likelihood.
      * @param relation A relation object between the agent being evaluated and
      *            the goal owner of the affected goal.
      * @param agent The agent getting evaluated (the agent that gets the social
      *            emotion added to his emotional state).
      */
-    private void evaluateSocialEmotion(double utility, double desirability, double deltaLikelihood, Relation relation, Agent agent) {
+    private void evaluateSocialEmotion(double desirability, Relation relation, Agent agent) {
 
         Emotion emotion = new Emotion(null, 0);
 
@@ -255,7 +249,7 @@ public class Gamygdala {
             emotion.name = relation.like >= 0 ? "pity" : "gloating";
         }
 
-        emotion.intensity = Math.abs(utility * deltaLikelihood * relation.like);
+        emotion.intensity = Math.abs(desirability * relation.like);
         if (emotion.intensity != 0) {
             relation.addEmotion(emotion);
 
@@ -265,7 +259,7 @@ public class Gamygdala {
 
     }
 
-    private void agentActions(Agent affectedAgent, Agent causalAgent, Agent self, double desirability, double utility, double deltaLikelihood) {
+    private void agentActions(Agent affectedAgent, Agent causalAgent, Agent self, double desirability) {
 
         if (causalAgent != null) {
             // If the causal agent is null or empty, then we we assume the event
@@ -284,7 +278,7 @@ public class Gamygdala {
 
                 // Case one
                 emotion.name = (desirability >= 0) ? "gratitude" : "anger";
-                emotion.intensity = Math.abs(utility * deltaLikelihood);
+                emotion.intensity = Math.abs(desirability);
 
                 if (self.hasRelationWith(causalAgent)) {
                     relation = self.getRelation(causalAgent);
@@ -314,7 +308,7 @@ public class Gamygdala {
 
                         if (relation.like >= 0) {
                             emotion.name = "gratification";
-                            emotion.intensity = Math.abs(utility * deltaLikelihood * relation.like);
+                            emotion.intensity = Math.abs(desirability * relation.like);
                             relation.addEmotion(emotion);
                             causalAgent.updateEmotionalState(emotion);
                         }
@@ -323,7 +317,7 @@ public class Gamygdala {
 
                         if (relation.like >= 0) {
                             emotion.name = "remorse";
-                            emotion.intensity = Math.abs(utility * deltaLikelihood * relation.like);
+                            emotion.intensity = Math.abs(desirability * relation.like);
                             relation.addEmotion(emotion);
                             causalAgent.updateEmotionalState(emotion);
                         }
@@ -388,13 +382,7 @@ public class Gamygdala {
             return;
         }
 
-        boolean positive = false;
-
-        if (utility >= 0) {
-            positive = (deltaLikelh >= 0);
-        } else if (utility < 0) {
-            positive = (deltaLikelh >= 0);
-        }
+        boolean positive = (deltaLikelh >= 0);
 
         ArrayList<String> emotion = this.determineEmotions(utility, deltaLikelh, likelihood, positive);
 
