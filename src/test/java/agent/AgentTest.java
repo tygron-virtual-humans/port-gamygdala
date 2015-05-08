@@ -6,13 +6,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import data.Goal;
-import gamygdala.Gamygdala;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import data.Goal;
+import gamygdala.Gamygdala;
+
+/**
+ * Test Agent class.
+ */
 public class AgentTest {
 
   Agent agent;
@@ -148,12 +151,12 @@ public class AgentTest {
 
     // Verify new relation is added
     Agent agent = new Agent("TestAgent");
-    agent.updateRelation("TestName", 2);
+    agent.updateRelation(new Agent("TestName"), 2);
 
-    assertTrue(agent.hasRelationWith("TestName"));
+    assertTrue(agent.hasRelationWith(new Agent("TestName")));
 
-    assertNotNull(agent.getRelation("TestName"));
-    assertEquals(2, agent.getRelation("TestName").like, 10E-15);
+    assertNotNull(agent.getRelation(new Agent("TestName")));
+    assertEquals(2, agent.getRelation(new Agent("TestName")).like, 10E-15);
 
   }
 
@@ -164,11 +167,11 @@ public class AgentTest {
     assertNull(agent.getRelation(null));
 
     // Verify new relation is added
-    assertFalse(agent.hasRelationWith("TestName"));
-    Relation rel = new Relation("TestName", 1);
-    agent.updateRelation("TestName", 1);
-    assertEquals(rel, agent.getRelation("TestName"));
-    assertTrue(agent.hasRelationWith("TestName"));
+    assertFalse(agent.hasRelationWith(new Agent("TestName")));
+    Relation rel = new Relation(new Agent("TestName"), 1);
+    agent.updateRelation(new Agent("TestName"), 1);
+    assertEquals(rel, agent.getRelation(new Agent("TestName")));
+    assertTrue(agent.hasRelationWith(new Agent("TestName")));
 
   }
 
@@ -182,17 +185,17 @@ public class AgentTest {
   // fail("Not yet implemented");
   // }
 
-  @Test
-  public void testGetSetGamygdalaInstance() {
-
-    assertNull(agent.getGamygdalaInstance());
-
-    Gamygdala gamyg = new Gamygdala();
-    agent.setGamygdalaInstance(gamyg);
-
-    assertEquals(gamyg, agent.getGamygdalaInstance());
-
-  }
+//  @Test
+//  public void testGetSetGamygdalaInstance() {
+//
+//    assertNull(agent.getGamygdalaInstance());
+//
+//    Gamygdala gamyg = new Gamygdala();
+//    agent.setGamygdalaInstance(gamyg);
+//
+//    assertEquals(gamyg, agent.getGamygdalaInstance());
+//
+//  }
 
   @Test
   public void testToString() {

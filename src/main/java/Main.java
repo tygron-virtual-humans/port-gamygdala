@@ -1,10 +1,10 @@
-import gamygdala.Gamygdala;
-
 import java.util.ArrayList;
 
-import data.Goal;
 import agent.Agent;
 import agent.AgentFactory;
+import data.Belief;
+import data.Goal;
+import gamygdala.Gamygdala;
 
 /**
  * Function test case during development.
@@ -61,7 +61,7 @@ public class Main {
     affectedGoals.add(rescuePeachGoal);
     goalCongruences.add(0.25);
 
-    engine.appraiseBelief(1, mario, affectedGoals, goalCongruences, true);
+    engine.appraise(new Belief(1, mario, affectedGoals, goalCongruences, true), null);
     
     // Then, he finds her!
     

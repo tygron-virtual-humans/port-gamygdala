@@ -6,6 +6,9 @@ import static org.junit.Assert.assertNotEquals;
 
 import org.junit.Test;
 
+/**
+ * Test Emotion class.
+ */
 public class EmotionTest {
 
   @Test
