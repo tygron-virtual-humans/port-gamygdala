@@ -29,8 +29,8 @@ public class GamygdalaTest {
   @Test
   public void testGamygdala() {
 
-    assertNotNull(gamyg.gamygdalaMap.getAgentMap());
-    assertNotNull(gamyg.gamygdalaMap.getGoalMap());
+    assertNotNull(gamyg.gamydgalaMap.getAgentMap());
+    assertNotNull(gamyg.gamydgalaMap.getGoalMap());
     assertNotNull(gamyg.decayFunction);
 
   }
@@ -56,8 +56,8 @@ public class GamygdalaTest {
   public void testRegisterAgent() {
     Agent agent = new Agent("RegisteredAgent");
     gamyg.registerAgent(agent);
-    assertNotNull(gamyg.gamygdalaMap.getAgentMap().get("RegisteredAgent"));
-    assertEquals(agent, gamyg.gamygdalaMap.getAgentMap().get("RegisteredAgent"));
+    assertNotNull(gamyg.gamydgalaMap.getAgentMap().get("RegisteredAgent"));
+    assertEquals(agent, gamyg.gamydgalaMap.getAgentMap().get("RegisteredAgent"));
   }
 
   // @Test

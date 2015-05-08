@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import observer.AgentObserver;
 import agent.Agent;
 import agent.Relation;
 import data.Belief;
@@ -30,7 +29,7 @@ public class Gamygdala {
     /**
      * The collection of agents in this Gamygdala instance.
      */
-    public GamygdalaMap gamygdalaMap;
+    public GamygdalaMap gamydgalaMap;
 
     /**
      * The decay function used to calculate emotion intensity.
@@ -58,7 +57,7 @@ public class Gamygdala {
     public Gamygdala() {
 
         // Init agent and goal maps
-        this.gamygdalaMap = new GamygdalaMap();
+        this.gamydgalaMap = new GamygdalaMap();
 
         // Set default decay factor
         this.decayFactor = .8;
@@ -77,7 +76,7 @@ public class Gamygdala {
      */
     public void registerAgent(Agent agent) {
 //        agent.setGamygdalaInstance(this);
-        this.gamygdalaMap.getAgentMap().put(agent.name, agent);
+        this.gamydgalaMap.getAgentMap().put(agent.name, agent);
     }
 
     /**
@@ -89,7 +88,7 @@ public class Gamygdala {
      * @param goal The goal to be registered.
      */
     public void registerGoal(Goal goal) {
-        this.gamygdalaMap.getGoalMap().put(goal.getName(), goal);
+        this.gamydgalaMap.getGoalMap().put(goal.getName(), goal);
     }
 
     /**
@@ -118,7 +117,7 @@ public class Gamygdala {
         }
 
         // Check goal list size
-        if (this.gamygdalaMap.getGoalMap().size() == 0) {
+        if (this.gamydgalaMap.getGoalMap().size() == 0) {
             Gamygdala.debug("Warning: no goals registered to Gamygdala.");
             return;
         }
@@ -175,7 +174,7 @@ public class Gamygdala {
         Agent owner;
 
         // Find the owners and update their emotional states
-        Iterator<Entry<String, Agent>> it = this.gamygdalaMap.getAgentMap().getIterator();
+        Iterator<Entry<String, Agent>> it = this.gamydgalaMap.getAgentMap().getIterator();
         while (it.hasNext()) {
 
             Map.Entry<String, Agent> pair = it.next();
@@ -193,7 +192,7 @@ public class Gamygdala {
 
     private void evaluateAgentEmotions(Belief belief, Agent owner, Goal currentGoal, double utility, double deltaLikelihood, double desirability) {
 
-        Iterator<Entry<String, Agent>> it = this.gamygdalaMap.getAgentMap().getIterator();
+        Iterator<Entry<String, Agent>> it = this.gamydgalaMap.getAgentMap().getIterator();
         Agent temp;
         Relation relation;
 
@@ -465,7 +464,7 @@ public class Gamygdala {
             return;
         }
 
-        Iterator<Entry<String, Agent>> it = this.gamygdalaMap.getAgentMap().getIterator();
+        Iterator<Entry<String, Agent>> it = this.gamydgalaMap.getAgentMap().getIterator();
         Agent temp;
         while (it.hasNext()) {
             Map.Entry<String, Agent> pair = it.next();
@@ -502,7 +501,7 @@ public class Gamygdala {
         this.millisPassed = now - this.lastMillis;
         this.lastMillis = now;
 
-        Iterator<Entry<String, Agent>> it = this.gamygdalaMap.getAgentMap().getIterator();
+        Iterator<Entry<String, Agent>> it = this.gamydgalaMap.getAgentMap().getIterator();
         Agent agent;
         while (it.hasNext()) {
             Map.Entry<String, Agent> pair = it.next();
@@ -555,7 +554,7 @@ public class Gamygdala {
      */
     public void printAllEmotions(boolean gain) {
 
-        Iterator<Entry<String, Agent>> it = this.gamygdalaMap.getAgentMap().getIterator();
+        Iterator<Entry<String, Agent>> it = this.gamydgalaMap.getAgentMap().getIterator();
         Agent agent;
         while (it.hasNext()) {
             Map.Entry<String, Agent> pair = it.next();

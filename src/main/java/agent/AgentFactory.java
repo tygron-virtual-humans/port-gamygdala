@@ -1,7 +1,5 @@
 package agent;
 
-import gamygdala.Gamygdala;
-
 /**
  * Create Agent objects.
  */
@@ -13,9 +11,9 @@ public class AgentFactory {
      * @param agentName Name of the Agent.
      * @return The newly created Agent.
      */
-    public static Agent createAgent(String agentName, Gamygdala engine) {
+    public static Agent createAgent(String agentName) {
 
-        Agent agent = new Agent(agentName, engine.gamygdalaMap);
+        Agent agent = new Agent(agentName);
         return agent;
     }
 
