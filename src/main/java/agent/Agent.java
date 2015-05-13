@@ -210,16 +210,21 @@ public class Agent {
 
     public void agentActions(Agent affectedAgent, Agent causalAgent, double desirability, double utility, double deltaLikelihood) {
 
+        // Check for empty agent
         if (causalAgent == null) {
             return;
         }
+
+        // Init emotion variable
         Emotion emotion = new Emotion(null, 0);
         Relation relation;
 
+        // If we are the affectedAgent, and we are not causing the action
         if (affectedAgent.equals(this) && !this.equals(causalAgent)) {
             emotion.name = (desirability >= 0) ? "gratitude" : "anger";
             emotion.intensity = Math.abs(utility * deltaLikelihood);
 
+            // Update the relation with other agents based on this new emotion
             if (this.hasRelationWith(causalAgent)) {
                 relation = this.getRelation(causalAgent);
             } else {
@@ -233,29 +238,16 @@ public class Agent {
             Gamygdala.debug("[Gamygdala.agentActions] This case is not included in Gamygdala.");
 
         } else if (!affectedAgent.equals(this) && causalAgent.equals(this)) {
+            
             if (causalAgent.hasRelationWith(affectedAgent)) {
-
+                // Update the relations with other agents
                 relation = causalAgent.getRelation(affectedAgent);
-                if (desirability >= 0) {
-
-                    if (relation.like >= 0) {
-                        emotion.name = "gratification";
-                        emotion.intensity = Math.abs(utility * deltaLikelihood * relation.like);
-                        relation.addEmotion(emotion);
-                        causalAgent.updateEmotionalState(emotion);
-                    }
-
-                } else {
-
-                    if (relation.like >= 0) {
-                        emotion.name = "remorse";
-                        emotion.intensity = Math.abs(utility * deltaLikelihood * relation.like);
-                        relation.addEmotion(emotion);
-                        causalAgent.updateEmotionalState(emotion);
-                    }
-
+                if (relation.like >= 0) {
+                    emotion.name = desirability >= 0 ? "gratification" : "remorse";
+                    emotion.intensity = Math.abs(utility * deltaLikelihood * relation.like);
+                    relation.addEmotion(emotion);
+                    causalAgent.updateEmotionalState(emotion);
                 }
-
             }
 
         }
