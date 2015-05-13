@@ -62,16 +62,31 @@ public class Main {
 
     affectedGoals.add(rescuePeachGoal);
     affectedGoals.add(killMarioGoal);
-    goalCongruences.add(0.6);
+    goalCongruences.add(0.3);
     goalCongruences.add(0.8);
 
-    Belief b = new Belief(1, mario, affectedGoals, goalCongruences, true);
+    Belief b = new Belief(1, bowser, affectedGoals, goalCongruences, true);
 
     engine.appraise(b, null);
 
+    Thread n = new Thread() {
+      public void run() {
+        System.out.println("Waiting...");
+        try {
+          sleep(1000);
+          System.out.println("Go!");
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }
+    };
+
+    n.start();
+    n.join();
+
     engine.decayAll();
 
-    engine.printAllEmotions(false);
+    engine.printAllEmotions(true);
     /* // ---
     // Display initial state
     engine.printAllEmotions(false);

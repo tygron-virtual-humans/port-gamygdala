@@ -151,7 +151,7 @@ public class AgentTest {
 
     // Verify new relation is added
     Agent agent = new Agent("TestAgent");
-    agent.updateRelation(new Agent("TestName"), 2);
+    agent.updateRelation(new Agent("TestName"), 0.5);
 
     assertTrue(agent.hasRelationWith(new Agent("TestName")));
 
