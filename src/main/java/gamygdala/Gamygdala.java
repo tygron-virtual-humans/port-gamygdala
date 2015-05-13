@@ -75,7 +75,7 @@ public class Gamygdala {
      * @param agent The agent to be registered.
      */
     public void registerAgent(Agent agent) {
-//        agent.setGamygdalaInstance(this);
+        // agent.setGamygdalaInstance(this);
         this.gamydgalaMap.getAgentMap().put(agent.name, agent);
     }
 
@@ -148,13 +148,12 @@ public class Gamygdala {
     }
 
     public void appraiseAll(Belief belief) {
-//        belief.calculate()
+        // belief.calculate()
     }
 
     public void appraiseOne(Belief belief) {
-//        belief.calculate()
+        // belief.calculate()
     }
-
 
     /**
      * Appraise a belief by all agents in the engine.
@@ -382,7 +381,10 @@ public class Gamygdala {
             return;
         }
 
-        boolean positive = (deltaLikelh >= 0);
+        boolean positive = false;
+        if (utility >= 0 && deltaLikelh >= 0 || utility < 0 && deltaLikelh < 0) {
+            positive = true;
+        }
 
         ArrayList<String> emotion = this.determineEmotions(utility, deltaLikelh, likelihood, positive);
 
