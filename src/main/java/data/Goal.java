@@ -5,10 +5,10 @@ package data;
  */
 public class Goal {
 
-    String name;
-    double utility;
-    double likelihood;
-    boolean isMaintenanceGoal;
+    private String name;
+    private double utility;
+    private double likelihood;
+    private boolean isMaintenanceGoal;
 
     /**
      * Construct new Goal.
@@ -24,15 +24,11 @@ public class Goal {
         this.likelihood = 0.5; // The likelihood is unknown at the start so it starts in the middle
         // between disconfirmed (0) and confirmed (1)
 
-        if (isMaintenanceGoal) {
-            // There are maintenance and achievement goals.
-            // When an achievement goal is reached (or not), this is definite (e.g., to a the promotion or
-            // not).
-            // A maintenance goal can become true/false indefinitely (e.g., to be well-fed)
-            this.isMaintenanceGoal = isMaintenanceGoal;
-        } else {
-            this.isMaintenanceGoal = false;
-        }
+        // There are maintenance and achievement goals.
+        // When an achievement goal is reached (or not), this is definite (e.g., to a the promotion or
+        // not).
+        // A maintenance goal can become true/false indefinitely (e.g., to be well-fed)
+        this.isMaintenanceGoal = isMaintenanceGoal;
 
     }
 

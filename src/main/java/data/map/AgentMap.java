@@ -36,7 +36,7 @@ public class AgentMap extends HashMap<String, Agent> {
      * Get the EntrySet iterator.
      * @return Iterator
      */
-    public Iterator<Entry<String, Agent>> getIterator() {
+    public Iterator<Map.Entry<String, Agent>> getIterator() {
         return this.entrySet().iterator();
     }
 
@@ -47,11 +47,9 @@ public class AgentMap extends HashMap<String, Agent> {
      *             non-gained (false).
      */
     public void printAllEmotions(boolean gain) {
-        Iterator<Entry<String, Agent>> it = this.getIterator();
         Agent agent;
 
-        while (it.hasNext()) {
-            Map.Entry<String, Agent> pair = it.next();
+        for (Map.Entry<String, Agent> pair : this.entrySet()) {
             agent = pair.getValue();
 
             agent.printEmotionalState(gain);

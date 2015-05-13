@@ -171,7 +171,7 @@ public class Agent {
     public void printEmotionalState(boolean gained) {
         String output = this.name + " feels ";
         Double gain = gained ? this.gain : null;
-        output += this.internalState.getEmotionalState(gain);
+        output += internalState.printEmotionalState(gain);
 
         System.out.println(output);
     }

@@ -26,20 +26,18 @@ public class GoalTest {
   }
 
   @Test
+  public void testGoal() {
+    assertEquals("TestGoal", goal.getName());
+    assertEquals(.5, goal.getUtility(), 10E-15);
+    assertEquals(false, goal.isMaintenanceGoal());
+  }
+
+  @Test
   public void testGoalGoal() {
-
-    // Check regular constructor
-
-    assertEquals("TestGoal", goal.name);
-    assertEquals(.5, goal.utility, 10E-15);
-    assertEquals(false, goal.isMaintenanceGoal);
-
-    // Check Goal copy constructor
     Goal g2 = new Goal(goal);
-    assertEquals("TestGoal", g2.name);
-    assertEquals(.5, g2.utility, 10E-15);
-    assertEquals(false, g2.isMaintenanceGoal);
-
+    assertEquals("TestGoal", g2.getName());
+    assertEquals(.5, g2.getUtility(), 10E-15);
+    assertEquals(false, g2.isMaintenanceGoal());
   }
 
   @Test
@@ -54,6 +52,27 @@ public class GoalTest {
     String s1 = "ThisIsObviouslyNotAGoal";
     assertFalse(goal.equals(s1));
 
+  }
+
+  @Test
+  public void testGetters() {
+    assertEquals("TestGoal", goal.getName());
+    assertEquals(.5, goal.getUtility(), 10E-15);
+    assertEquals(false, goal.isMaintenanceGoal());
+    assertEquals(.5, goal.getLikelihood(), 10E-15);
+  }
+
+  @Test
+  public void testSetters() {
+    goal.setName("TestGoalTest");
+    goal.setLikelihood(.2);
+    goal.setUtility(.8);
+    goal.setMaintenanceGoal(true);
+
+    assertEquals("TestGoalTest", goal.getName());
+    assertEquals(.2, goal.getLikelihood(), 10E-15);
+    assertEquals(.8, goal.getUtility(), 10E-15);
+    assertEquals(true, goal.isMaintenanceGoal());
   }
 
 }

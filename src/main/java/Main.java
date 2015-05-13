@@ -4,6 +4,9 @@ import agent.Agent;
 import agent.AgentFactory;
 import data.Belief;
 import data.Goal;
+import decayfunction.DecayFunction;
+import decayfunction.ExponentialDecay;
+import decayfunction.LinearDecay;
 import gamygdala.Gamygdala;
 
 /**
@@ -44,7 +47,47 @@ public class Main {
     bowser.addGoal(killMarioGoal);
     engine.registerGoal(killMarioGoal);
 
-    // ---
+    double decayFactor = 0.6;
+    double gain = 15;
+
+    engine.setDecay(decayFactor, new ExponentialDecay(decayFactor));
+    engine.setGain(gain);
+
+    ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
+    ArrayList<Double> goalCongruences = new ArrayList<Double>();
+
+    // First, mario can't find peach
+    affectedGoals.clear();
+    goalCongruences.clear();
+
+    affectedGoals.add(rescuePeachGoal);
+    affectedGoals.add(killMarioGoal);
+    goalCongruences.add(0.3);
+    goalCongruences.add(0.8);
+
+    Belief b = new Belief(1, bowser, affectedGoals, goalCongruences, true);
+
+    engine.appraise(b, null);
+
+    Thread n = new Thread() {
+      public void run() {
+        System.out.println("Waiting...");
+        try {
+          sleep(1000);
+          System.out.println("Go!");
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }
+    };
+
+    n.start();
+    n.join();
+
+    engine.decayAll();
+
+    engine.printAllEmotions(true);
+    /* // ---
     // Display initial state
     engine.printAllEmotions(false);
     System.out.println("===\n");
@@ -64,14 +107,14 @@ public class Main {
     engine.appraise(new Belief(1, mario, affectedGoals, goalCongruences, true), null);
     
     // Then, he finds her!
-    
+    engine.decayAll();
     
     // ---
     // Display emotions
     engine.printAllEmotions(false);
     engine.printAllEmotions(true);
     System.out.println("===\n");
-    // ---
+    // --- */
 
   }
 

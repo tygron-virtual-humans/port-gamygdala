@@ -35,11 +35,7 @@ public class Belief {
      *            using the belief as "state" defining the absolute likelihood
      */
     public Belief(double likelihood, Agent agent, ArrayList<Goal> affectedGoals, ArrayList<Double> goalCongruences, boolean isIncremental) {
-        if (isIncremental) {
-            this.isIncremental = isIncremental;
-        } else {
-            this.isIncremental = false;
-        }
+        this.isIncremental = isIncremental;
 
         this.likelihood = Math.min(1, Math.max(-1, likelihood));
         this.causalAgentObject = agent;
