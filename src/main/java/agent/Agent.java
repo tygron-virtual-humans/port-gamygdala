@@ -38,11 +38,6 @@ public class Agent {
     public double gain;
 
     /**
-     * The Gamygdala instance to which this Agent is linked.
-     */
-    private Gamygdala gamygdalaInstance;
-
-    /**
      * Pleasure Arousal Dominance mapping.
      */
     private MapPad mapPad;
@@ -124,18 +119,6 @@ public class Agent {
         } else {
             this.gain = gain;
         }
-    }
-
-    /**
-     * A facilitating method to be able to appraise one event only from the
-     * perspective of the current agent (this). Needs an instantiated Gamygdala
-     * object (automatic when the agent is registered with
-     * Gamygdala.registerAgent(agent) to a Gamygdala instance).
-     *
-     * @param belief The belief to be appraised.
-     */
-    public void appraise(Belief belief) {
-        this.gamygdalaInstance.appraise(belief, this);
     }
 
     /**
