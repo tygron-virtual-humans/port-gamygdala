@@ -1,4 +1,4 @@
-package data.map;
+package data_map;
 
 /**
  * Created by svenpopping on 06/05/15.

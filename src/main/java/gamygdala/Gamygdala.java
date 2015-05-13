@@ -10,7 +10,7 @@ import agent.Relation;
 import data.Belief;
 import data.Emotion;
 import data.Goal;
-import data.map.GamygdalaMap;
+import data_map.GamygdalaMap;
 import decayfunction.DecayFunction;
 import decayfunction.LinearDecay;
 
