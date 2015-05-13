@@ -1,4 +1,4 @@
-package data_map;
+package data.map;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -36,7 +36,7 @@ public class AgentMap extends HashMap<String, Agent> {
      * Get the EntrySet iterator.
      * @return Iterator
      */
-    public Iterator<Entry<String, Agent>> getIterator() {
+    public Iterator<Map.Entry<String, Agent>> getIterator() {
         return this.entrySet().iterator();
     }
 
