@@ -71,30 +71,32 @@ public class AgentRelations extends ArrayList<Relation> {
      *            all relations are printed.
      */
     public String printRelations(Agent agent) {
-        boolean found = false;
         String output = "";
 
+        int size = size();
+        int emotionListSize = 0;
+        
         for (int i = 0; i < size(); i++) {
 
             if (agent == null || get(i).agent.equals(agent)) {
-                for (int j = 0; j < get(i).emotionList.size(); j++) {
-                    output += get(i).emotionList.get(j).name + "(" + get(i).emotionList.get(j).intensity + ") ";
-                    found = true;
+                emotionListSize = get(i).emotionList.size();
+                for (int j = 0; j < emotionListSize; j++) {
+                    output += get(i).emotionList.get(j).name + "(" + get(i).emotionList.get(j).intensity + ")";
+                    
+                    if (j < emotionListSize - 1) {
+                        output += ", and ";
+                    }
                 }
             }
 
             output += " for " + get(i).agent;
 
             if (i < size() - 1) {
-                output += ", and\n   ";
+                output += ", and\n";
             }
         }
 
-        if (found) {
-            return output;
-        }
-
-        return "";
+        return output;
     }
 
 }

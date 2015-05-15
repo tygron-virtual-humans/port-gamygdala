@@ -13,7 +13,7 @@ import gamygdala.Gamygdala;
 public class Belief {
 
     private double likelihood;
-    private Agent causalAgentObject;
+    private Agent causalAgent;
     private HashMap<Goal, Double> goalCongruenceMap;
     private boolean isIncremental;
 
@@ -38,7 +38,7 @@ public class Belief {
         this.isIncremental = isIncremental;
 
         this.likelihood = Math.min(1, Math.max(-1, likelihood));
-        this.causalAgentObject = agent;
+        this.causalAgent = agent;
 
         this.goalCongruenceMap = new HashMap<Goal, Double>();
 
@@ -72,15 +72,6 @@ public class Belief {
     // this.likelihood = likelihood;
     // }
 
-    /**
-     * Get the name of the causal Agent.
-     *
-     * @return the causalAgentName
-     */
-    public Agent getCausalAgent() {
-        return causalAgentObject;
-    }
-
     // /**
     // * Set the name of the causal Agent.
     // *
@@ -108,20 +99,32 @@ public class Belief {
         return isIncremental;
     }
 
-    // /**
-    // * Set whether or not belief is incremental.
-    // *
-    // * @param isIncremental the isIncremental to set
-    // */
-    // public void setIncremental(boolean isIncremental) {
-    // this.isIncremental = isIncremental;
-    // }
+
+    public void setLikelihood(double likelihood) {
+        this.likelihood = Math.min(1, Math.max(-1, likelihood));
+    }
+
+    public Agent getCausalAgent() {
+        return causalAgent;
+    }
+
+    public void setCausalAgent(Agent causalAgentObject) {
+        this.causalAgent = causalAgentObject;
+    }
+
+    public void setGoalCongruenceMap(HashMap<Goal, Double> goalCongruenceMap) {
+        this.goalCongruenceMap = goalCongruenceMap;
+    }
+
+    public void setIsIncremental(boolean isIncremental) {
+        this.isIncremental = isIncremental;
+    }
 
     /**
      * Return string representation of Belief.
      */
     public String toString() {
-        String str = "<Belief[CausalAgent = " + causalAgentObject + ", likelihood = " + likelihood + ", incremental = " + isIncremental + "]>";
+        String str = "<Belief[CausalAgent = " + causalAgent + ", likelihood = " + likelihood + ", incremental = " + isIncremental + "]>";
         return str;
     }
 

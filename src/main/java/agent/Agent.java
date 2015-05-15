@@ -38,11 +38,6 @@ public class Agent {
     public double gain;
 
     /**
-     * The Gamygdala instance to which this Agent is linked.
-     */
-    private Gamygdala gamygdalaInstance;
-
-    /**
      * Pleasure Arousal Dominance mapping.
      */
     private MapPad mapPad;
@@ -124,18 +119,6 @@ public class Agent {
         } else {
             this.gain = gain;
         }
-    }
-
-    /**
-     * A facilitating method to be able to appraise one event only from the
-     * perspective of the current agent (this). Needs an instantiated Gamygdala
-     * object (automatic when the agent is registered with
-     * Gamygdala.registerAgent(agent) to a Gamygdala instance).
-     *
-     * @param belief The belief to be appraised.
-     */
-    public void appraise(Belief belief) {
-        this.gamygdalaInstance.appraise(belief, this);
     }
 
     /**
@@ -225,57 +208,52 @@ public class Agent {
         System.out.println(output);
     }
 
-    public void agentActions(Agent affectedAgent, Agent causalAgent, double desirability, double utility, double deltaLikelihood) {
+    public Emotion agentActions(Agent affectedAgent, Agent causalAgent, double desirability) {
 
+        // Check for empty agent
         if (causalAgent == null) {
-            return;
+            return null;
         }
+
+        // Init emotion variable
         Emotion emotion = new Emotion(null, 0);
         Relation relation;
 
-        if (affectedAgent.equals(this) && !this.equals(causalAgent)) {
-            emotion.name = (desirability >= 0) ? "gratitude" : "anger";
-            emotion.intensity = Math.abs(utility * deltaLikelihood);
+        // If we are the affectedAgent, and we are not causing the action
+        if (affectedAgent.equals(this)) {
 
-            if (this.hasRelationWith(causalAgent)) {
-                relation = this.getRelation(causalAgent);
-            } else {
-                this.updateRelation(causalAgent, 0.0);
-                relation = this.getRelation(causalAgent);
-            }
-            relation.addEmotion(emotion);
-            this.updateEmotionalState(emotion);
+            if (!this.equals(causalAgent)) {
+                emotion.name = (desirability >= 0) ? "gratitude" : "anger";
+                emotion.intensity = Math.abs(desirability);
+                this.updateEmotionalState(emotion);
 
-        } else if (affectedAgent.equals(this) && this.equals(causalAgent)) {
-            Gamygdala.debug("[Gamygdala.agentActions] This case is not included in Gamygdala.");
-
-        } else if (!affectedAgent.equals(this) && causalAgent.equals(this)) {
-            if (causalAgent.hasRelationWith(affectedAgent)) {
-
-                relation = causalAgent.getRelation(affectedAgent);
-                if (desirability >= 0) {
-
-                    if (relation.like >= 0) {
-                        emotion.name = "gratification";
-                        emotion.intensity = Math.abs(utility * deltaLikelihood * relation.like);
-                        relation.addEmotion(emotion);
-                        causalAgent.updateEmotionalState(emotion);
-                    }
-
-                } else {
-
-                    if (relation.like >= 0) {
-                        emotion.name = "remorse";
-                        emotion.intensity = Math.abs(utility * deltaLikelihood * relation.like);
-                        relation.addEmotion(emotion);
-                        causalAgent.updateEmotionalState(emotion);
-                    }
-
+                // Update the relation with other agents based on this new
+                // emotion
+                if (!this.hasRelationWith(causalAgent)) {
+                    this.updateRelation(causalAgent, 0.0);
                 }
 
+                relation = this.getRelation(causalAgent);
+                relation.addEmotion(emotion);
+
+            } else {
+                Gamygdala.debug("[Gamygdala.agentActions] This case is not included in Gamygdala.");
+                return null;
             }
 
+        } else if (causalAgent.equals(this) && causalAgent.hasRelationWith(affectedAgent)) {
+
+            // Update the relations with other agents
+            relation = causalAgent.getRelation(affectedAgent);
+            if (relation.like >= 0) {
+                emotion.name = desirability >= 0 ? "gratification" : "remorse";
+                emotion.intensity = Math.abs(desirability * relation.like);
+                relation.addEmotion(emotion);
+                causalAgent.updateEmotionalState(emotion);
+            }
         }
+
+        return emotion;
     }
 
     /**
@@ -290,21 +268,22 @@ public class Agent {
      * @param relation A relation object between the agent being evaluated and
      *            the goal owner of the affected goal.
      */
-    public void evaluateSocialEmotion(double utility, double desirability, double deltaLikelihood, Relation relation) {
+    public Emotion evaluateSocialEmotion(double desirability, Relation relation) {
         Emotion emotion = new Emotion(null, 0);
 
         if (desirability >= 0) {
-            emotion.name = relation.like >= 0 ? "happy-for" : "resentment";
+            emotion.name = relation.getLike() >= 0 ? "happy-for" : "resentment";
         } else {
-            emotion.name = relation.like >= 0 ? "pity" : "gloating";
+            emotion.name = relation.getLike() >= 0 ? "pity" : "gloating";
         }
 
-        emotion.intensity = Math.abs(utility * deltaLikelihood * relation.like);
+        emotion.intensity = Math.abs(desirability * relation.getLike());
         if (emotion.intensity != 0) {
             relation.addEmotion(emotion);
             this.updateEmotionalState(emotion);
         }
-
+        
+        return emotion;
     }
 
     /**

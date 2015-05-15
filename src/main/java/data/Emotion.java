@@ -18,7 +18,7 @@ public class Emotion {
     /**
      * Construct a new Emotion.
      *
-     * @param name      Name of the emotion.
+     * @param name Name of the emotion.
      * @param intensity Intensity of the emotion.
      */
     public Emotion(String name, double intensity) {
@@ -41,7 +41,7 @@ public class Emotion {
     public boolean equals(Object obj) {
         if (obj instanceof Emotion) {
             Emotion em = (Emotion) obj;
-            return (em.name.equals(this.name) && Double.compare(em.intensity, this.intensity) == 0);
+            return (((em.name == null && this.name == null) || em.name.equals(this.name)) && Double.compare(em.intensity, this.intensity) == 0);
         }
         return false;
     }

@@ -194,7 +194,7 @@ public class Gamygdala {
         Relation relation;
 
         this.evaluateInternalEmotion(currentGoal.getUtility(), deltaLikelihood, currentGoal.getLikelihood(), owner);
-        this.agentActions(owner, belief.getCausalAgent(), owner, currentGoal.getUtility() * deltaLikelihood);
+        owner.agentActions(belief.getCausalAgent(), owner, currentGoal.getUtility() * deltaLikelihood);
 
         // now check if anyone has a relation to this goal owner, and update the
         // social emotions accordingly.
@@ -210,121 +210,16 @@ public class Gamygdala {
                 Gamygdala.debug(relation);
 
                 // The agent has relationship with the goal owner which has
-                // nonzero
-                // utility, add relational effects to the relations for
+                // nonzero utility, add relational effects to the relations for
                 // agent[k].
-                this.evaluateSocialEmotion(currentGoal.getUtility() * deltaLikelihood, relation, temp);
+                temp.evaluateSocialEmotion(currentGoal.getUtility() * deltaLikelihood, relation);
 
                 // also add remorse and gratification if conditions are met
-                // within
-                // (i.e., agent[k] did something bad/good for owner)
-                this.agentActions(owner, belief.getCausalAgent(), temp, currentGoal.getUtility() * deltaLikelihood);
+                // within (i.e., agent[k] did something bad/good for owner)
+                owner.agentActions(belief.getCausalAgent(), temp, currentGoal.getUtility() * deltaLikelihood);
 
             } else {
                 Gamygdala.debug(temp.name + " has NO relationship with " + owner.name);
-            }
-        }
-    }
-
-    /**
-     * This function is used to evaluate happy-for, pity, gloating or
-     * resentment. Emotions that arise when we evaluate events that affect goals
-     * of others.
-     *
-     * @param desirability The desirability is the desirability from the goal
-     *            owner's perspective.
-     * @param relation A relation object between the agent being evaluated and
-     *            the goal owner of the affected goal.
-     * @param agent The agent getting evaluated (the agent that gets the social
-     *            emotion added to his emotional state).
-     */
-    private void evaluateSocialEmotion(double desirability, Relation relation, Agent agent) {
-
-        Emotion emotion = new Emotion(null, 0);
-
-        if (desirability >= 0) {
-            emotion.name = relation.like >= 0 ? "happy-for" : "resentment";
-        } else {
-            emotion.name = relation.like >= 0 ? "pity" : "gloating";
-        }
-
-        emotion.intensity = Math.abs(desirability * relation.like);
-        if (emotion.intensity != 0) {
-            relation.addEmotion(emotion);
-
-            // also add relation emotion the emotion to the emotional state
-            agent.updateEmotionalState(emotion);
-        }
-
-    }
-
-    private void agentActions(Agent affectedAgent, Agent causalAgent, Agent self, double desirability) {
-
-        if (causalAgent != null) {
-            // If the causal agent is null or empty, then we we assume the event
-            // was
-            // not caused by an
-            // agent.
-            // There are three cases here.
-            // The affected agent is SELF and causal agent is other.
-            // The affected agent is SELF and causal agent is SELF.
-            // The affected agent is OTHER and causal agent is SELF.
-
-            Emotion emotion = new Emotion(null, 0);
-            Relation relation;
-
-            if (affectedAgent.equals(self) && !self.equals(causalAgent)) {
-
-                // Case one
-                emotion.name = (desirability >= 0) ? "gratitude" : "anger";
-                emotion.intensity = Math.abs(desirability);
-
-                if (self.hasRelationWith(causalAgent)) {
-                    relation = self.getRelation(causalAgent);
-                } else {
-                    self.updateRelation(causalAgent, 0.0);
-                    relation = self.getRelation(causalAgent);
-                }
-                relation.addEmotion(emotion);
-
-                // also add relation emotion the emotion to the emotional state
-                self.updateEmotionalState(emotion);
-
-            } else if (affectedAgent.equals(self) && self.equals(causalAgent)) {
-                // Case two
-
-                // This case is not included in TUDelft.Gamygdala.
-                // This should include pride and shame
-                Gamygdala.debug("[Gamygdala.agentActions] This case is not included in Gamygdala.");
-
-            } else if (!affectedAgent.equals(self) && causalAgent.equals(self)) {
-
-                // Case three
-                if (causalAgent.hasRelationWith(affectedAgent)) {
-
-                    relation = causalAgent.getRelation(affectedAgent);
-                    if (desirability >= 0) {
-
-                        if (relation.like >= 0) {
-                            emotion.name = "gratification";
-                            emotion.intensity = Math.abs(desirability * relation.like);
-                            relation.addEmotion(emotion);
-                            causalAgent.updateEmotionalState(emotion);
-                        }
-
-                    } else {
-
-                        if (relation.like >= 0) {
-                            emotion.name = "remorse";
-                            emotion.intensity = Math.abs(desirability * relation.like);
-                            relation.addEmotion(emotion);
-                            causalAgent.updateEmotionalState(emotion);
-                        }
-
-                    }
-
-                }
-
             }
         }
     }
