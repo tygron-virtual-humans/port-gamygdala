@@ -92,17 +92,15 @@ public class Relation {
         for (int i = 0; i < this.emotionList.size(); i++) {
 
             Emotion emotion = this.emotionList.get(i);
-
             double newIntensity = dfunc.decay(emotion.intensity, millisPassed);
-
+            
             if (newIntensity < 0) {
                 // This emotion has decayed below zero, we need to remove it.
                 this.emotionList.remove(i);
             } else {
-
+                // Update intensity
                 emotion.intensity = newIntensity;
-                // Check if this works just by ref, else:
-                // this.emotionList.set(i, e);
+                this.emotionList.set(i, emotion);
             }
         }
     }
