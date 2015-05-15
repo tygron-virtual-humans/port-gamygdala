@@ -6,21 +6,26 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import data.Emotion;
+
 /**
  * Unit tests for AgentRelation.
  */
 public class AgentRelationsTest {
 
     AgentRelations ar;
+    Agent testAgent;
     
     @Before
     public void setUp() {
         ar = new AgentRelations();
+        testAgent = new Agent("TestAgent");
     }
     
     @After
     public void tearDown() {
         ar = null;
+        testAgent = null;
     }
     
     @Test
@@ -29,14 +34,13 @@ public class AgentRelationsTest {
         assertEquals(0, ar.size());
         
         // Create new relation
-        ar.updateRelation(new Agent("TestAgent"), 1);
+        ar.updateRelation(testAgent, 1);
         assertEquals(1, ar.size());
     }
     
     @Test
     public void testUpdateRelationExisting() {
         
-        Agent testAgent = new Agent("TestAgent");
         ar.updateRelation(testAgent, 0);
         
         // Update existing relation
@@ -49,7 +53,6 @@ public class AgentRelationsTest {
     @Test
     public void testHasRelationWith() {
         
-        Agent testAgent = new Agent("TestAgent");
         assertFalse(ar.hasRelationWith(testAgent));
         
         ar.updateRelation(testAgent, 10);
@@ -61,7 +64,6 @@ public class AgentRelationsTest {
     @Test
     public void testGetRelation() {
         
-        Agent testAgent = new Agent("TestAgent");
         assertNull(ar.getRelation(testAgent));
         
         ar.updateRelation(testAgent, 10);
@@ -73,7 +75,26 @@ public class AgentRelationsTest {
 
     @Test
     public void testPrintRelations() {
-        fail("Not yet implemented");
+        
+        // Empty Agent, empty Relations
+        assertEquals("", ar.printRelations(null));
+        
+        // Non-empty Agent, empty Relations
+        assertEquals("", ar.printRelations(testAgent));
+        
+        // Non-empty Agent, non-empty Relations
+        ar.updateRelation(testAgent, 1);
+        
+        Emotion testEmotion = new Emotion("TestEmotion", 10);
+        ar.getRelation(testAgent).addEmotion(testEmotion);
+        
+        String expected = "TestEmotion(10.0) for <Agent[TestAgent]>";
+        assertEquals(expected, ar.printRelations(testAgent));
+        
+        // Multiple relations
+        ar.getRelation(testAgent).addEmotion(new Emotion("TestEmotion2", 2));
+        expected = "TestEmotion(10.0), and TestEmotion2(2.0) for <Agent[TestAgent]>";
+        assertEquals(expected, ar.printRelations(testAgent));
     }
 
 }
