@@ -1,16 +1,10 @@
 package gamygdala;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import agent.Agent;
 import agent.Relation;
 import data.Belief;
-import data.Emotion;
 import data.Goal;
 import data.map.GamygdalaMap;
 import decayfunction.DecayFunction;
@@ -26,7 +20,7 @@ public class Gamygdala {
     /**
      * The collection of agents in this Gamygdala instance.
      */
-    public GamygdalaMap gamydgalaMap;
+    private GamygdalaMap gamygdalaMap;
 
     /**
      * The decay function used to calculate emotion intensity.
@@ -44,7 +38,7 @@ public class Gamygdala {
     public Gamygdala() {
 
         // Init agent and goal maps
-        this.gamydgalaMap = new GamygdalaMap();
+        this.gamygdalaMap = new GamygdalaMap();
 
         // Set default decay factor
         this.decayFactor = .8;
@@ -82,7 +76,7 @@ public class Gamygdala {
         }
 
         // Check goal list size
-        if (this.gamydgalaMap.getGoalMap().size() == 0) {
+        if (this.gamygdalaMap.getGoalMap().size() == 0) {
             Engine.debug("Warning: no goals registered to Gamygdala.");
             return true;
         }
@@ -113,7 +107,7 @@ public class Gamygdala {
                 Agent owner;
 
                 // Loop all agents
-                for (Map.Entry<String, Agent> pair : gamydgalaMap.getAgentSet()) {
+                for (Map.Entry<String, Agent> pair : gamygdalaMap.getAgentSet()) {
                     owner = pair.getValue();
 
                     // Update emotional state if has goal
@@ -165,7 +159,7 @@ public class Gamygdala {
 
         // Now check if anyone has a relation with this goal owner, and update
         // the social emotions accordingly.
-        for (Map.Entry<String, Agent> pair : gamydgalaMap.getAgentSet()) {
+        for (Map.Entry<String, Agent> pair : gamygdalaMap.getAgentSet()) {
             agent = pair.getValue();
 
             relation = agent.getRelation(owner);
@@ -194,7 +188,7 @@ public class Gamygdala {
         long millisPassed = currentMillis - lastMillis;
 
         Agent agent;
-        for (Map.Entry<String, Agent> pair : gamydgalaMap.getAgentSet()) {
+        for (Map.Entry<String, Agent> pair : gamygdalaMap.getAgentSet()) {
             agent = pair.getValue();
 
             if (agent != null) {
@@ -237,6 +231,14 @@ public class Gamygdala {
         goal.setLikelihood(newLikelihood);
 
         return newLikelihood - oldLikelihood;
+    }
+
+    /**
+     * Get the GamygdalaMap containing all Agents and Goals.
+     * @return GamygdalaMap
+     */
+    public GamygdalaMap getGamygdalaMap() {
+        return gamygdalaMap;
     }
 
 }

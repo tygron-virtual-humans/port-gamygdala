@@ -46,7 +46,7 @@ public class Engine {
      */
     public Agent createAgent(String name) {
         Agent agent = new Agent(name);
-        gamygdala.gamydgalaMap.registerAgent(agent);
+        gamygdala.getGamygdalaMap().registerAgent(agent);
         return agent;
     }
 
@@ -66,7 +66,7 @@ public class Engine {
         agent.addGoal(goal);
 
         // Register Goal with Engine
-        gamygdala.gamydgalaMap.registerGoal(goal);
+        gamygdala.getGamygdalaMap().registerGoal(goal);
 
         return goal;
 
@@ -135,7 +135,7 @@ public class Engine {
             return;
         }
 
-        Iterator<Entry<String, Agent>> it = gamygdala.gamydgalaMap.getAgentIterator();
+        Iterator<Entry<String, Agent>> it = gamygdala.getGamygdalaMap().getAgentIterator();
         Agent temp;
         while (it.hasNext()) {
             Map.Entry<String, Agent> pair = it.next();
@@ -180,7 +180,7 @@ public class Engine {
      */
     public void printAllEmotions(boolean gain) {
 
-        Iterator<Entry<String, Agent>> it = gamygdala.gamydgalaMap.getAgentIterator();
+        Iterator<Entry<String, Agent>> it = gamygdala.getGamygdalaMap().getAgentIterator();
         Agent agent;
         while (it.hasNext()) {
             Map.Entry<String, Agent> pair = it.next();

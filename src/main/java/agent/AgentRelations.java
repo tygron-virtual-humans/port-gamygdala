@@ -30,12 +30,11 @@ public class AgentRelations extends ArrayList<Relation> {
             add(relation);
         } else {
             // The relation already exists, update it.
-            for (int i = 0; i < size(); i++) {
-                relation = get(i);
-                if (relation.agent.equals(agent)) {
-                    relation.like = like;
+            for (Relation rel: this) {
+                if (rel.agent.equals(agent)) {
+                    rel.like = like;
                 }
-                break;
+                return rel;
             }
         }
         
