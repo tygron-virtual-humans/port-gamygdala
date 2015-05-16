@@ -1,7 +1,7 @@
 package data.map;
 
-import agent.Agent;
-import data.Emotion;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,8 +9,12 @@ import org.junit.Test;
 import java.util.Iterator;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import agent.Agent;
+import data.Emotion;
 
+/**
+ * Tests for AgentMap.
+ */
 public class AgentMapTest {
 
     AgentMap map;

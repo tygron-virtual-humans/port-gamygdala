@@ -1,14 +1,17 @@
 package data.map;
 
-import data.Goal;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import data.Goal;
 
 /**
- * Created by Nordin on 13-5-2015.
+ * Tests for GoalMap.
  */
 public class GoalMapTest {
 
