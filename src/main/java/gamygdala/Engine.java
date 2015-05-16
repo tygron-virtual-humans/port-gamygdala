@@ -98,7 +98,9 @@ public class Engine {
      * "frame rate" of the decay (as this doesn't change the rate).
      */
     public void decayAll() {
-
+        
+        Engine.debug("\n=====\nDecaying all emotions\n=====\n");
+        
         // Record current time
         long now = System.currentTimeMillis();
 

@@ -1,7 +1,11 @@
 package gamygdala;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import agent.Agent;
 import agent.Relation;
@@ -69,6 +73,8 @@ public class Gamygdala {
      */
     public boolean appraise(Belief belief, Agent affectedAgent) {
 
+        Engine.debug("\n=====\nStarting appraisal for:\n" + belief + "\nwith affectedAgent: " + affectedAgent + "\n=====\n");
+
         // Check belief
         if (belief == null) {
             Engine.debug("Error: belief is null.");
@@ -94,18 +100,90 @@ public class Gamygdala {
                 continue;
             }
 
+            Engine.debug("Processing goal: " + currentGoal);
+
             // Calculate goal values
             double deltaLikelihood = this.calculateDeltaLikelihood(currentGoal, currentCongruence, belief.getLikelihood(), belief.isIncremental());
 
-            // if affectedAgent is null, than calculate all agent emotions.
+            Engine.debug("   deltaLikelihood: " + deltaLikelihood);
+
+            // if affectedAgent is null, calculate emotions for all agents.
             if (affectedAgent == null) {
-                this.appraiseByAllAgents(currentGoal, belief, deltaLikelihood);
+
+                Agent owner;
+
+                // Loop all agents
+                for (Map.Entry<String, Agent> pair : gamydgalaMap.getAgentSet()) {
+                    owner = pair.getValue();
+
+                    // Update emotional state if has goal
+                    if (owner != null && owner.hasGoal(currentGoal)) {
+                        this.evaluateAgentEmotions(owner, currentGoal, belief, deltaLikelihood);
+                    }
+                }
+
             } else {
+
+                // Update emotional state for single agent
                 this.evaluateAgentEmotions(affectedAgent, currentGoal, belief, deltaLikelihood);
             }
+            
+            // Newline
+            Engine.debug("");
         }
+        
+        Engine.debug("\n=====\nFinished appraisal round\n=====\n");
 
         return true;
+    }
+
+    /**
+     * Re-evaluate an Agent's emotions by processing a Goal and a Belief.
+     * 
+     * @param owner The Goal owner.
+     * @param currentGoal
+     * @param belief
+     * @param deltaLikelihood
+     */
+    void evaluateAgentEmotions(Agent owner, Goal currentGoal, Belief belief, double deltaLikelihood) {
+
+        double utility = currentGoal.getUtility();
+        double likelihood = currentGoal.getLikelihood();
+        double desirability = utility * deltaLikelihood;
+
+        Engine.debug("   utility: " + utility + "\n   likelihood: " + likelihood);
+
+        // Determine new emotions for Agent
+        owner.evaluateInternalEmotion(utility, deltaLikelihood, likelihood);
+
+        // also add remorse and gratification if conditions are met
+        // (i.e., agent did something bad/good for owner)
+        owner.agentActions(owner, belief.getCausalAgent(), utility * deltaLikelihood);
+
+        Agent agent;
+        Relation relation;
+
+        // Now check if anyone has a relation with this goal owner, and update
+        // the social emotions accordingly.
+        for (Map.Entry<String, Agent> pair : gamydgalaMap.getAgentSet()) {
+            agent = pair.getValue();
+
+            relation = agent.getRelation(owner);
+            if (relation != null) {
+                
+                Engine.debug("   Processing relation: " + relation);
+                
+                // The agent has relationship with the goal owner which has
+                // nonzero utility, add relational effects to the relations for
+                // agent[k].
+                agent.evaluateSocialEmotion(desirability, relation);
+
+                // also add remorse and gratification if conditions are met
+                // (i.e., agent did something bad/good for owner)
+                agent.agentActions(owner, belief.getCausalAgent(), desirability);
+
+            }
+        }
     }
 
     /**
@@ -121,70 +199,6 @@ public class Gamygdala {
 
             if (agent != null) {
                 agent.decay(decayFunction, millisPassed);
-            }
-        }
-    }
-
-    /**
-     * Appraise a belief by all agents in the engine.
-     *
-     * @param currentGoal The goal to be considered.
-     * @param belief The belief to be appraised.
-     * @param deltaLikelihood The delta likelihood of the goal.
-     */
-    void appraiseByAllAgents(Goal currentGoal, Belief belief, double deltaLikelihood) {
-
-        // Debug
-        Engine.debug("Evaluated goal: " + currentGoal.getName() + "(" + currentGoal.getUtility() + ", " + deltaLikelihood + ")");
-
-        Agent owner;
-
-        // Find the owners and update their emotional states
-        for (Map.Entry<String, Agent> pair : gamydgalaMap.getAgentSet()) {
-
-            owner = pair.getValue();
-
-            if (owner != null && owner.hasGoal(currentGoal)) {
-                Engine.debug("....owned by " + owner.name);
-                this.evaluateAgentEmotions(owner, currentGoal, belief, deltaLikelihood);
-            }
-        }
-
-    }
-
-    void evaluateAgentEmotions(Agent owner, Goal currentGoal, Belief belief, double deltaLikelihood) {
-        System.out.println("EvaluateAgentEmotions!");
-
-        Agent temp;
-        Relation relation;
-
-        // Calculate and update emotions for Goal owner
-        updateAgentEmotions(owner, currentGoal.getUtility(), deltaLikelihood, currentGoal.getLikelihood());
-        
-        owner.agentActions(belief.getCausalAgent(), owner, currentGoal.getUtility() * deltaLikelihood);
-
-        // now check if anyone has a relation to this goal owner, and update the
-        // social emotions accordingly.
-        for (Map.Entry<String, Agent> pair : gamydgalaMap.getAgentSet()) {
-            temp = pair.getValue();
-
-            relation = temp.getRelation(owner);
-            if (relation != null) {
-
-                Engine.debug(temp.name + " has a relationship with " + owner.name);
-                Engine.debug(relation);
-
-                // The agent has relationship with the goal owner which has
-                // nonzero utility, add relational effects to the relations for
-                // agent[k].
-                temp.evaluateSocialEmotion(currentGoal.getUtility() * deltaLikelihood, relation);
-
-                // also add remorse and gratification if conditions are met
-                // within (i.e., agent[k] did something bad/good for owner)
-                owner.agentActions(belief.getCausalAgent(), temp, currentGoal.getUtility() * deltaLikelihood);
-
-            } else {
-                Engine.debug(temp.name + " has NO relationship with " + owner.name);
             }
         }
     }
@@ -209,7 +223,7 @@ public class Gamygdala {
         Double oldLikelihood = goal.getLikelihood();
         double newLikelihood;
 
-        if (!goal.isMaintenanceGoal() && (oldLikelihood >= 1 | oldLikelihood <= -1)) {
+        if (!goal.isMaintenanceGoal() && (oldLikelihood >= 1 || oldLikelihood <= -1)) {
             return 0;
         }
 
@@ -217,40 +231,12 @@ public class Gamygdala {
             newLikelihood = oldLikelihood + likelihood * congruence;
             newLikelihood = Math.max(Math.min(newLikelihood, 1), -1);
         } else {
-            newLikelihood = (congruence * likelihood + 1.0) / 2.0;
+            newLikelihood = (congruence * likelihood + 1d) / 2d;
         }
 
         goal.setLikelihood(newLikelihood);
 
         return newLikelihood - oldLikelihood;
-    }
-
-    /**
-     * This method evaluates the event in terms of internal emotions that do not
-     * need relations to exist, such as hope, fear, etc..
-     *
-     * @param utility the utility.
-     * @param deltaLikelh the delta likelihood.
-     * @param likelihood the likelihood.
-     * @param agent the agent for which to evaluate the internal emotion.
-     */
-    boolean updateAgentEmotions(Agent agent, double utility, double deltaLikelh, double likelihood) {
-
-        if (agent == null) {
-            Engine.debug("[Gamygdala.evaluateInternalEmotion] Error: empty Agent object.");
-            return false;
-        }
-
-        ArrayList<String> emotion = Emotion.determineEmotions(utility, deltaLikelh, likelihood);
-
-        double intensity = Math.abs(utility * deltaLikelh);
-        if (intensity != 0) {
-            for (String emo : emotion) {
-                agent.updateEmotionalState(new Emotion(emo, intensity));
-            }
-        }
-        
-        return true;
     }
 
 }

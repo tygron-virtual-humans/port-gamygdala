@@ -3,6 +3,7 @@ package agent;
 import java.util.ArrayList;
 
 import data.Emotion;
+import gamygdala.Engine;
 
 /**
  * The internal state of an Agent. Contains all it's emotions.
@@ -20,9 +21,10 @@ public class AgentInternalState extends ArrayList<Emotion> {
      * @param emotion The emotion with which this Agent should be updated.
      */
     public void updateEmotionalState(Emotion emotion) {
-        Emotion temp;
-        for (int i = 0; i < size(); i++) {
-            temp = get(i);
+        
+        Engine.debug("      updating emotion: " + emotion);
+        
+        for (Emotion temp : this) {
 
             if (temp.name == emotion.name) {
 
@@ -31,10 +33,12 @@ public class AgentInternalState extends ArrayList<Emotion> {
                 // the appraisals over time. To decay the emotional state, call
                 // Gamygdala.decay(decayFunction).
                 temp.intensity += emotion.intensity;
-
+                Engine.debug("         new emotion: " + temp);
                 return;
             }
         }
+
+        Engine.debug("         new emotion: " + emotion);
 
         // copy on keep, we need to maintain a list of current emotions for the
         // state, not a list references to the appraisal engine
@@ -56,11 +60,10 @@ public class AgentInternalState extends ArrayList<Emotion> {
     public AgentInternalState getEmotionalState(Double gain) {
 
         if (gain != null) {
-            AgentInternalState gainState = new AgentInternalState();
-            Emotion emotion;
-            for (int i = 0; i < size(); i++) {
-                emotion = get(i);
 
+            AgentInternalState gainState = new AgentInternalState();
+
+            for (Emotion emotion : this) {
                 if (emotion != null) {
                     double gainEmo = (gain * emotion.intensity) / (gain * emotion.intensity + 1);
                     gainState.add(new Emotion(emotion.name, gainEmo));
@@ -90,9 +93,7 @@ public class AgentInternalState extends ArrayList<Emotion> {
 
         AgentInternalState emotionalState = this.getEmotionalState(gain);
 
-        Emotion emotion;
-        for (int i = 0; i < emotionalState.size(); i++) {
-            emotion = emotionalState.get(i);
+        for (Emotion emotion : emotionalState) {
             output += emotion.name + ": " + emotion.intensity + ", ";
         }
 
