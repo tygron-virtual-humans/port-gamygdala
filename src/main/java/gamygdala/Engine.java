@@ -98,9 +98,9 @@ public class Engine {
      * "frame rate" of the decay (as this doesn't change the rate).
      */
     public void decayAll() {
-        
+
         Engine.debug("\n=====\nDecaying all emotions\n=====\n");
-        
+
         // Record current time
         long now = System.currentTimeMillis();
 
@@ -122,17 +122,17 @@ public class Engine {
 
     /**
      * Facilitator to set the gain for the whole set of agents known to
-     * TUDelft.Gamygdala. For more realistic, complex games, you would typically
-     * set the gain for each agent type separately, to finetune the intensity of
-     * the response.
+     * Gamygdala. For more realistic, complex games, you would typically set the
+     * gain for each agent type separately, to finetune the intensity of the
+     * response.
      *
      * @param gain The gain value [0 and 20].
      */
-    public void setGain(double gain) {
+    public boolean setGain(double gain) {
 
         if (gain <= 0 || gain > 20) {
-            Engine.debug("[Gamygdala.setGain] Error: " + "gain factor for appraisal integration must be between 0 and 20.");
-            return;
+            Engine.debug("[Engine.setGain] Error: " + "gain factor for appraisal integration must be between 0 and 20.");
+            return false;
         }
 
         Iterator<Entry<String, Agent>> it = gamygdala.getGamygdalaMap().getAgentIterator();
@@ -149,6 +149,7 @@ public class Engine {
 
         }
 
+        return true;
     }
 
     /**
@@ -162,10 +163,10 @@ public class Engine {
      */
     public void setDecay(double decayFactor, DecayFunction decayFunction) {
 
-        gamygdala.decayFactor = decayFactor;
+        gamygdala.setDecayFactor(decayFactor);
 
         if (decayFunction != null) {
-            gamygdala.decayFunction = decayFunction;
+            gamygdala.setDecayFunction(decayFunction);
         } else {
             Engine.debug("[Engine.setDecay] DecayFunction is null.");
         }

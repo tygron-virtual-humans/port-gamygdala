@@ -25,12 +25,12 @@ public class Gamygdala {
     /**
      * The decay function used to calculate emotion intensity.
      */
-    public DecayFunction decayFunction;
+    private DecayFunction decayFunction;
 
     /**
      * The decay factor used in the DecayFunction.
      */
-    public double decayFactor;
+    private double decayFactor;
 
     /**
      * Constructor for Gamygdala Emotion Engine.
@@ -239,6 +239,34 @@ public class Gamygdala {
      */
     public GamygdalaMap getGamygdalaMap() {
         return gamygdalaMap;
+    }
+
+    /**
+     * @return the decayFunction
+     */
+    public DecayFunction getDecayFunction() {
+        return decayFunction;
+    }
+
+    /**
+     * @param decayFunction the decayFunction to set
+     */
+    public void setDecayFunction(DecayFunction decayFunction) {
+        this.decayFunction = decayFunction;
+    }
+
+    /**
+     * @return the decayFactor
+     */
+    public double getDecayFactor() {
+        return decayFactor;
+    }
+
+    /**
+     * @param decayFactor the decayFactor to set
+     */
+    public void setDecayFactor(double decayFactor) {
+        this.decayFactor = decayFactor;
     }
 
 }
