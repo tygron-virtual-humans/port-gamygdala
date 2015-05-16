@@ -3,11 +3,11 @@ package data.map;
 import java.util.HashMap;
 
 import data.Goal;
-import gamygdala.Gamygdala;
+import gamygdala.Engine;
 
 /**
- * HashMap to store Goals.
- * Extended with add / remove / has goal methods for quick and concise access.
+ * HashMap to store Goals. Extended with add / remove / has goal methods for
+ * quick and concise access.
  */
 public class GoalMap extends HashMap<String, Goal> {
 
@@ -23,11 +23,23 @@ public class GoalMap extends HashMap<String, Goal> {
      * @return True if goal was added successfully, false if not.
      */
     public boolean addGoal(Goal goal) {
-        if (goal != null && !containsKey(goal.getName())) {
-            put(goal.getName(), goal);
-            return true;
+
+        // Check for empty Goal
+        if (goal == null) {
+            Engine.debug("[GoalMap.addGoal] Goal is null ");
+            return false;
         }
-        return false;
+
+        // Check for duplicate Goal
+        if (containsKey(goal.getName())) {
+            Engine.debug("[GoalMap.addGoal] Goal already exists for Agent.");
+            return false;
+        }
+
+        // Add goal to GoalMap.
+        put(goal.getName(), goal);
+        return true;
+
     }
 
     /**
@@ -61,7 +73,8 @@ public class GoalMap extends HashMap<String, Goal> {
     }
 
     /**
-     * If this GoalMap contains a goal named goalName, this method returns that goal.
+     * If this GoalMap contains a goal named goalName, this method returns that
+     * goal.
      *
      * @param goalName The name of the goal to be found.
      * @return the reference to the goal.
@@ -70,7 +83,7 @@ public class GoalMap extends HashMap<String, Goal> {
         if (containsKey(goalName)) {
             return get(goalName);
         }
-        Gamygdala.debug("Warning: goal \"" + goalName + "\" not found.");
+        Engine.debug("Warning: goal \"" + goalName + "\" not found.");
         return null;
     }
 
@@ -79,9 +92,7 @@ public class GoalMap extends HashMap<String, Goal> {
         if (!this.containsKey(goal.getName())) {
             return super.put(goal.getName(), goal);
         } else {
-            Gamygdala
-                    .debug("Warning: failed adding a second goal with the same name: "
-                            + goal.getName());
+            Engine.debug("Warning: failed adding a second goal with the same name: " + goal.getName());
         }
         return null;
     }

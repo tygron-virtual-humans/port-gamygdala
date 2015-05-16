@@ -22,11 +22,6 @@ import decayfunction.LinearDecay;
 public class Gamygdala {
 
     /**
-     * Debug flag.
-     */
-    public static final boolean DEBUG = true;
-
-    /**
      * The collection of agents in this Gamygdala instance.
      */
     public GamygdalaMap gamydgalaMap;
@@ -42,16 +37,6 @@ public class Gamygdala {
     public double decayFactor;
 
     /**
-     * Timestamp of last emotion calculation.
-     */
-    private long lastMillis;
-
-    /**
-     * Seconds since last emotion calculation.
-     */
-    private long millisPassed;
-
-    /**
      * Constructor for Gamygdala Emotion Engine.
      */
     public Gamygdala() {
@@ -65,30 +50,6 @@ public class Gamygdala {
         // Set default decay function
         this.decayFunction = new LinearDecay(this.decayFactor);
 
-        // Record current time
-        this.lastMillis = System.currentTimeMillis();
-    }
-
-    /**
-     * Add an agent to this Gamygdala instance.
-     *
-     * @param agent The agent to be registered.
-     */
-    public void registerAgent(Agent agent) {
-        // agent.setGamygdalaInstance(this);
-        this.gamydgalaMap.getAgentMap().put(agent.name, agent);
-    }
-
-    /**
-     * For every goal that NPC's or player characters can have you have to first
-     * create a Goal object and then register it using this method. Registering
-     * the goals makes sure that Gamygdala will be able to find the correct goal
-     * references when a Beliefs about the game state comes in.
-     *
-     * @param goal The goal to be registered.
-     */
-    public void registerGoal(Goal goal) {
-        this.gamydgalaMap.getGoalMap().put(goal.getName(), goal);
     }
 
     /**
@@ -112,13 +73,13 @@ public class Gamygdala {
 
         // Check belief
         if (belief == null) {
-            Gamygdala.debug("Error: belief is null.");
+            Engine.debug("Error: belief is null.");
             return;
         }
 
         // Check goal list size
         if (this.gamydgalaMap.getGoalMap().size() == 0) {
-            Gamygdala.debug("Warning: no goals registered to Gamygdala.");
+            Engine.debug("Warning: no goals registered to Gamygdala.");
             return;
         }
 
@@ -147,14 +108,6 @@ public class Gamygdala {
         }
     }
 
-    public void appraiseAll(Belief belief) {
-        // belief.calculate()
-    }
-
-    public void appraiseOne(Belief belief) {
-        // belief.calculate()
-    }
-
     /**
      * Appraise a belief by all agents in the engine.
      *
@@ -165,7 +118,7 @@ public class Gamygdala {
     private void appraiseByAllAgents(Goal currentGoal, Belief belief, double deltaLikelihood) {
 
         // Debug
-        Gamygdala.debug("Evaluated goal: " + currentGoal.getName() + "(" + currentGoal.getUtility() + ", " + deltaLikelihood + ")");
+        Engine.debug("Evaluated goal: " + currentGoal.getName() + "(" + currentGoal.getUtility() + ", " + deltaLikelihood + ")");
 
         Agent owner;
 
@@ -178,7 +131,7 @@ public class Gamygdala {
 
             if (owner != null && owner.hasGoal(currentGoal)) {
 
-                Gamygdala.debug("....owned by " + owner.name);
+                Engine.debug("....owned by " + owner.name);
 
                 this.evaluateAgentEmotions(owner, currentGoal, belief, deltaLikelihood);
             }
@@ -206,8 +159,8 @@ public class Gamygdala {
             relation = temp.getRelation(owner);
             if (relation != null) {
 
-                Gamygdala.debug(temp.name + " has a relationship with " + owner.name);
-                Gamygdala.debug(relation);
+                Engine.debug(temp.name + " has a relationship with " + owner.name);
+                Engine.debug(relation);
 
                 // The agent has relationship with the goal owner which has
                 // nonzero utility, add relational effects to the relations for
@@ -219,7 +172,7 @@ public class Gamygdala {
                 owner.agentActions(belief.getCausalAgent(), temp, currentGoal.getUtility() * deltaLikelihood);
 
             } else {
-                Gamygdala.debug(temp.name + " has NO relationship with " + owner.name);
+                Engine.debug(temp.name + " has NO relationship with " + owner.name);
             }
         }
     }
@@ -272,7 +225,7 @@ public class Gamygdala {
     private void evaluateInternalEmotion(double utility, double deltaLikelh, double likelihood, Agent agent) {
 
         if (agent == null) {
-            Gamygdala.debug("Error: Gamygdala.evaluateInternalEmotion has been passed an empty Agent object.");
+            Engine.debug("Error: Gamygdala.evaluateInternalEmotion has been passed an empty Agent object.");
             return;
         }
 
@@ -337,56 +290,11 @@ public class Gamygdala {
     }
 
     /**
-     * Facilitator to set the gain for the whole set of agents known to
-     * TUDelft.Gamygdala. For more realistic, complex games, you would typically
-     * set the gain for each agent type separately, to finetune the intensity of
-     * the response.
-     *
-     * @param gain The gain value [0 and 20].
+     * Decay emotional state of all Agents.
      */
-    public void setGain(double gain) {
+    public void decayAll(long lastMillis, long currentMillis) {
 
-        if (gain <= 0 || gain > 20) {
-            Gamygdala.debug("[Gamygdala.setGain] Error: " + "gain factor for appraisal integration must be between 0 and 20.");
-            return;
-        }
-
-        Iterator<Entry<String, Agent>> it = this.gamydgalaMap.getAgentMap().getIterator();
-        Agent temp;
-        while (it.hasNext()) {
-            Map.Entry<String, Agent> pair = it.next();
-
-            temp = pair.getValue();
-            if (temp != null) {
-                temp.setGain(gain);
-            } else {
-                it.remove();
-            }
-
-        }
-
-    }
-
-    /**
-     * This method decays for all registered agents the emotional state and
-     * relations. It performs the decay according to the time passed, so longer
-     * intervals between consecutive calls result in bigger clunky steps.
-     * Typically this is called automatically when you use startDecay(), but you
-     * can use it yourself if you want to manage the timing. This function is
-     * keeping track of the millis passed since the last call, and will (try to)
-     * keep the decay close to the desired decay factor, regardless the time
-     * passed So you can call this any time you want (or, e.g., have the game
-     * loop call it, or have e.g., Phaser call it in the plugin update, which is
-     * default now). Further, if you want to tweak the emotional intensity decay
-     * of individual agents, you should tweak the decayFactor per agent not the
-     * "frame rate" of the decay (as this doesn't change the rate).
-     */
-    public void decayAll() {
-
-        long now = System.currentTimeMillis();
-
-        this.millisPassed = now - this.lastMillis;
-        this.lastMillis = now;
+        long millisPassed = currentMillis - lastMillis;
 
         Iterator<Entry<String, Agent>> it = this.gamydgalaMap.getAgentMap().getIterator();
         Agent agent;
@@ -395,71 +303,8 @@ public class Gamygdala {
             agent = pair.getValue();
 
             if (agent != null) {
-                agent.decay(decayFunction, getMillisPassed());
+                agent.decay(decayFunction, millisPassed);
             }
-        }
-    }
-
-    /**
-     * Sets the decay factor and function for emotional decay. It sets the decay
-     * factor and type for emotional decay, so that an emotion will slowly get
-     * lower in intensity. Whenever decayAll is called, all emotions for all
-     * agents are decayed according to the factor and function set here.
-     *
-     * @param decayFactor The decayfactor used. A factor of 1 means no decay, a
-     *            factor
-     * @param decayFunction The decay function tobe used. choose between
-     *            linearDecay or exponentialDecay (see the corresponding
-     *            methods)
-     */
-    public void setDecay(double decayFactor, DecayFunction decayFunction) {
-
-        if (decayFunction != null) {
-            this.decayFunction = decayFunction;
-        } else {
-            Gamygdala.debug("[Gamygdala.setDecay] DecayFunction is null.");
-        }
-
-        this.decayFactor = decayFactor;
-    }
-
-    /**
-     * Get the amount of milliseconds that has passed since the last decay
-     * function was called.
-     *
-     * @return long Milliseconds passed.
-     */
-    public long getMillisPassed() {
-        return millisPassed;
-    }
-
-    /**
-     * Facilitator method to print all emotional states to the console.
-     *
-     * @param gain Whether you want to print the gained (true) emotional states
-     *            or non-gained (false).
-     */
-    public void printAllEmotions(boolean gain) {
-
-        Iterator<Entry<String, Agent>> it = this.gamydgalaMap.getAgentMap().getIterator();
-        Agent agent;
-        while (it.hasNext()) {
-            Map.Entry<String, Agent> pair = it.next();
-            agent = pair.getValue();
-
-            agent.printEmotionalState(gain);
-            agent.printRelations(null);
-        }
-    }
-
-    /**
-     * Print debug information to console if the debug flag is set to true.
-     *
-     * @param what Object to print to console.
-     */
-    public static void debug(Object what) {
-        if (Gamygdala.DEBUG) {
-            System.out.println(what);
         }
     }
 

@@ -5,7 +5,7 @@ import data.Emotion;
 import data.Goal;
 import data.map.GoalMap;
 import decayfunction.DecayFunction;
-import gamygdala.Gamygdala;
+import gamygdala.Engine;
 
 /**
  * The main interacting character in the Gamygdala engine.
@@ -115,7 +115,7 @@ public class Agent {
 
         // Gain has to be between 0 and 20.
         if (gain <= 0 || gain > 20) {
-            Gamygdala.debug("Error: gain factor for appraisal integration must be between 0 and 20.");
+            Engine.debug("Error: gain factor for appraisal integration must be between 0 and 20.");
         } else {
             this.gain = gain;
         }
@@ -171,7 +171,7 @@ public class Agent {
         if (relation >= -1 && relation <= 1) {
             this.currentRelations.updateRelation(agent, relation);
         } else {
-            Gamygdala.debug("Error: cannot relate " + this + " to " + agent + " with intensity " + relation);
+            Engine.debug("Error: cannot relate " + this + " to " + agent + " with intensity " + relation);
         }
     }
 
@@ -237,7 +237,7 @@ public class Agent {
                 relation.addEmotion(emotion);
 
             } else {
-                Gamygdala.debug("[Gamygdala.agentActions] This case is not included in Gamygdala.");
+                Engine.debug("[Gamygdala.agentActions] This case is not included in Gamygdala.");
                 return null;
             }
 

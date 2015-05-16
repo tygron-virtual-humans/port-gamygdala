@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import agent.Agent;
-import gamygdala.Gamygdala;
+import gamygdala.Engine;
 
 /**
  * A Belief contains information about actions of a particular Agent and about
@@ -43,7 +43,7 @@ public class Belief {
         this.goalCongruenceMap = new HashMap<Goal, Double>();
 
         if (affectedGoals.size() != goalCongruences.size()) {
-            Gamygdala.debug("Error: the congruence list is not of the same size " + "as the affected goal list.");
+            Engine.debug("Error: the congruence list is not of the same size " + "as the affected goal list.");
             return;
         }
 
