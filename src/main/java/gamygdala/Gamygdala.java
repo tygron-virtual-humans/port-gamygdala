@@ -49,21 +49,12 @@ public class Gamygdala {
     }
 
     /**
-     * The main emotional interpretation logic entry point. Performs the
-     * complete appraisal of a single event (belief) for all agents
-     * (affectedAgent == null) or for only one agent. If affectedAgent is set,
-     * then the complete appraisal logic is executed including the effect on
-     * relations (possibly influencing the emotional state of other agents), but
-     * only if the affected agent (the one owning the goal) == affectedAgent
-     * this is sometimes needed for efficiency, if you as a game developer know
-     * that particular agents can never appraise an event, then you can force
-     * Gamygdala to only look at a subset of agents. Gamygdala assumes that the
-     * affectedAgent is indeed the only goal owner affected, that the belief is
-     * well-formed, and will not perform any checks, nor use Gamygdala's list of
-     * known goals to find other agents that share this goal. (!!!)
-     *
-     * @param belief The current event to be appraised.
-     * @param affectedAgent The reference to the agent who appraises the event.
+     * Performs the complete appraisal of a single event (belief) for all
+     * agents.
+     * 
+     * @param belief The belief to appraise.
+     * @param affectedAgent The agent who appraises the event.
+     * @return True on success, false on error.
      */
     public boolean appraise(Belief belief, Agent affectedAgent) {
 
@@ -97,7 +88,8 @@ public class Gamygdala {
             Engine.debug("Processing goal: " + currentGoal);
 
             // Calculate goal values
-            double deltaLikelihood = this.calculateDeltaLikelihood(currentGoal, currentCongruence, belief.getLikelihood(), belief.isIncremental());
+            double deltaLikelihood = this.calculateDeltaLikelihood(currentGoal, currentCongruence,
+                    belief.getLikelihood(), belief.isIncremental());
 
             Engine.debug("   deltaLikelihood: " + deltaLikelihood);
 
@@ -121,11 +113,11 @@ public class Gamygdala {
                 // Update emotional state for single agent
                 this.evaluateAgentEmotions(affectedAgent, currentGoal, belief, deltaLikelihood);
             }
-            
+
             // Newline
             Engine.debug("");
         }
-        
+
         Engine.debug("\n=====\nFinished appraisal round\n=====\n");
 
         return true;
@@ -164,9 +156,9 @@ public class Gamygdala {
 
             relation = agent.getRelation(owner);
             if (relation != null) {
-                
+
                 Engine.debug("   Processing relation: " + relation);
-                
+
                 // The agent has relationship with the goal owner which has
                 // nonzero utility, add relational effects to the relations for
                 // agent[k].
@@ -235,6 +227,7 @@ public class Gamygdala {
 
     /**
      * Get the GamygdalaMap containing all Agents and Goals.
+     * 
      * @return GamygdalaMap
      */
     public GamygdalaMap getGamygdalaMap() {

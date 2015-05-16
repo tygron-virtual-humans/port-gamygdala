@@ -87,7 +87,7 @@ public class AgentRelations extends ArrayList<Relation> {
                 emotionListSize = get(i).emotionList.size();
                 for (int j = 0; j < emotionListSize; j++) {
                     output += get(i).emotionList.get(j).name + "(" + get(i).emotionList.get(j).intensity + ")";
-                    
+
                     if (j < emotionListSize - 1) {
                         output += ", and ";
                     }

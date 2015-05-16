@@ -3,7 +3,7 @@ package data;
 import java.util.ArrayList;
 
 /**
- * This class is mainly a data structure to store an emotion with its intensity.
+ * Data structure to store an Emotion. Emotions have a name and intensity.
  */
 public class Emotion {
 
@@ -59,12 +59,12 @@ public class Emotion {
     public static ArrayList<String> determineEmotions(double utility, double deltaLikelihood, double likelihood) {
 
         ArrayList<String> emotion = new ArrayList<String>();
-        
+
         boolean positive = false;
         if (utility >= 0 && deltaLikelihood >= 0 || utility < 0 && deltaLikelihood < 0) {
             positive = true;
         }
-        
+
         if (likelihood > 0 && likelihood < 1) {
 
             if (positive) {

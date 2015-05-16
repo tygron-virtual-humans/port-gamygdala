@@ -13,17 +13,17 @@ import data.Goal;
 public class GamygdalaMap {
 
     /**
-     *
+     * Collection of Agents.
      */
     private AgentMap agentMap;
 
     /**
-     *
+     * Collection of Goals.
      */
     private GoalMap goalMap;
 
     /**
-     *
+     * Construct a new GamygdalaMap.
      */
     public GamygdalaMap() {
         this.agentMap = new AgentMap();
@@ -38,24 +38,12 @@ public class GamygdalaMap {
     }
 
     /**
-     * @param agentMap
-     */
-    public void setAgentMap(AgentMap agentMap) {
-        this.agentMap = agentMap;
-    }
-
-    /**
-     * @return
+     * Get the GoalMap.
+     * 
+     * @return GoalMap.
      */
     public GoalMap getGoalMap() {
         return goalMap;
-    }
-
-    /**
-     * @param goalMap
-     */
-    public void setGoalMap(GoalMap goalMap) {
-        this.goalMap = goalMap;
     }
 
     /**
@@ -76,10 +64,18 @@ public class GamygdalaMap {
         getGoalMap().put(goal.getName(), goal);
     }
     
+    /**
+     * Get iterator for the AgentMap.
+     * @return
+     */
     public Iterator<Map.Entry<String, Agent>> getAgentIterator() {
         return getAgentMap().getIterator();
     }
     
+    /**
+     * Get entry set from AgentMap.
+     * @return
+     */
     public Set<Map.Entry<String, Agent>> getAgentSet() {
         return getAgentMap().entrySet();
     }

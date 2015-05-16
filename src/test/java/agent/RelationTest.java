@@ -14,8 +14,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-
 import data.Emotion;
 import decayfunction.DecayFunction;
 
@@ -133,39 +131,6 @@ public class RelationTest {
 
         // Null
         assertFalse(rel.equals(null));
-    }
-
-    @Test
-    public void testGetSetAgent() {
-
-        Agent a2 = new Agent("Agent2");
-        assertEquals(agent, rel.getAgent());
-
-        rel.setAgent(a2);
-        assertEquals(a2, rel.getAgent());
-
-    }
-
-    @Test
-    public void testGetSetLike() {
-
-        assertEquals(0, rel.getLike(), 10E-15);
-
-        rel.setLike(59d);
-        assertEquals(59d, rel.getLike(), 10E-15);
-    }
-
-    @Test
-    public void testGetSetEmotionList() {
-
-        ArrayList<Emotion> el = new ArrayList<Emotion>();
-        el.add(new Emotion("", 0d));
-
-        assertNotEquals(el, rel.getEmotionList());
-
-        rel.setEmotionList(el);
-        assertEquals(el, rel.getEmotionList());
-
     }
 
     @Test

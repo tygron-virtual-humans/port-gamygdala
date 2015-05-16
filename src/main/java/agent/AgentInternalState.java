@@ -23,7 +23,7 @@ public class AgentInternalState extends ArrayList<Emotion> {
     public void updateEmotionalState(Emotion emotion) {
         
         Engine.debug("      updating emotion: " + emotion);
-        
+
         for (Emotion temp : this) {
 
             if (temp.name == emotion.name) {

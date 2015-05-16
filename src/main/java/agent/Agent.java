@@ -210,6 +210,15 @@ public class Agent {
         System.out.println(output);
     }
 
+    /**
+     * Update Agent's emotion based on actions by other Agents.
+     * 
+     * @param affectedAgent The Agent affected by the action.
+     * @param causalAgent The Agent causal to the action.
+     * @param desirability How much the current Agent desires the Goal subject
+     *            to the action.
+     * @return The Emotion arising from the action.
+     */
     public Emotion agentActions(Agent affectedAgent, Agent causalAgent, double desirability) {
 
         // Check for empty agent
@@ -232,7 +241,7 @@ public class Agent {
 
                 emotion.name = (desirability >= 0) ? "gratitude" : "anger";
                 emotion.intensity = Math.abs(desirability);
-                
+
                 Engine.debug("      Emotion: " + emotion);
 
                 // Update the relation with other agents based on this new

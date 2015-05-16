@@ -29,6 +29,11 @@ public class Engine {
      */
     private long lastMillis;
 
+    /**
+     * Instantiate new Engine.
+     * 
+     * @param gamygdala Gamygdala instance.
+     */
     public Engine(Gamygdala gamygdala) {
 
         // Store Gamygdala instance
@@ -112,19 +117,40 @@ public class Engine {
 
     }
 
+    /**
+     * The main emotional interpretation logic entry point. Performs the
+     * complete appraisal of a single event (belief) for all agents.
+     *
+     * @param belief The current event to be appraised.
+     */
     public void appraise(Belief belief) {
         gamygdala.appraise(belief, null);
     }
 
+    /**
+     * The main emotional interpretation logic entry point. Performs the
+     * complete appraisal of a single event (belief) for only one agent. The
+     * complete appraisal logic is executed including the effect on relations
+     * (possibly influencing the emotional state of other agents), but only if
+     * the affected agent (the one owning the goal) == affectedAgent. This is
+     * sometimes needed for efficiency. If you as a game developer know that
+     * particular agents can never appraise an event, then you can force
+     * Gamygdala to only look at a subset of agents. Gamygdala assumes that the
+     * affectedAgent is indeed the only goal owner affected and will not perform
+     * any checks, nor use Gamygdala's list of known goals to find other agents
+     * that share this goal.
+     *
+     * @param belief The current event to be appraised.
+     * @param agent The reference to the agent who appraises the event.
+     */
     public void appraise(Belief belief, Agent agent) {
         gamygdala.appraise(belief, agent);
     }
 
     /**
-     * Facilitator to set the gain for the whole set of agents known to
-     * Gamygdala. For more realistic, complex games, you would typically set the
-     * gain for each agent type separately, to finetune the intensity of the
-     * response.
+     * Set the gain for the whole set of agents known to Gamygdala. For more
+     * realistic, complex games, you would typically set the gain for each agent
+     * type separately, to finetune the intensity of the response.
      *
      * @param gain The gain value [0 and 20].
      */
@@ -153,10 +179,10 @@ public class Engine {
     }
 
     /**
-     * Sets the decay factor and function for emotional decay. It sets the decay
-     * factor and type for emotional decay, so that an emotion will slowly get
-     * lower in intensity. Whenever decayAll is called, all emotions for all
-     * agents are decayed according to the factor and function set here.
+     * Sets the decay factor and type for emotional decay, so that an emotion
+     * will slowly get lower in intensity. Whenever decayAll is called, all
+     * emotions for all agents are decayed according to the factor and function
+     * set here.
      *
      * @param decayFactor The decay factor. A factor of 1 means no decay.
      * @param decayFunction The decay function to be used.

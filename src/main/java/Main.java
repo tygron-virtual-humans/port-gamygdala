@@ -33,7 +33,7 @@ public class Main {
         // Create goals for Bowser
         Goal killMarioGoal = engine.createGoalForAgent(bowser, "kill-mario", 1, false);
 
-        double decayFactor = 0.6;
+        double decayFactor = 0.8;
         double gain = 15;
 
         engine.setDecay(decayFactor, new ExponentialDecay(decayFactor));
@@ -42,58 +42,19 @@ public class Main {
         ArrayList<Goal> affectedGoals = new ArrayList<Goal>();
         ArrayList<Double> goalCongruences = new ArrayList<Double>();
 
-        // First, mario can't find peach
-        affectedGoals.clear();
-        goalCongruences.clear();
-
         affectedGoals.add(rescuePeachGoal);
         affectedGoals.add(killMarioGoal);
         goalCongruences.add(0.3);
         goalCongruences.add(0.8);
 
-        Belief b = new Belief(1, bowser, affectedGoals, goalCongruences, true);
+        engine.appraise(new Belief(1, bowser, affectedGoals, goalCongruences, true));
+        engine.printAllEmotions(false);
 
-        engine.appraise(b);
-
-        Thread n = new Thread() {
-            public void run() {
-                System.out.println("Waiting...");
-                try {
-                    sleep(1000);
-                    System.out.println("Go!");
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-
-        n.start();
-        n.join();
+        Thread.sleep(1000L);
 
         engine.decayAll();
 
-        engine.printAllEmotions(true);
-        /*
-         * // --- // Display initial state engine.printAllEmotions(false);
-         * System.out.println("===\n"); // ---
-         * 
-         * // Init commonly used variables ArrayList<Goal> affectedGoals = new
-         * ArrayList<Goal>(); ArrayList<Double> goalCongruences = new
-         * ArrayList<Double>();
-         * 
-         * // First, mario can't find peach affectedGoals.clear();
-         * goalCongruences.clear();
-         * 
-         * affectedGoals.add(rescuePeachGoal); goalCongruences.add(0.25);
-         * 
-         * engine.appraise(new Belief(1, mario, affectedGoals, goalCongruences,
-         * true), null);
-         * 
-         * // Then, he finds her! engine.decayAll();
-         * 
-         * // --- // Display emotions engine.printAllEmotions(false);
-         * engine.printAllEmotions(true); System.out.println("===\n"); // ---
-         */
+        engine.printAllEmotions(false);
 
     }
 

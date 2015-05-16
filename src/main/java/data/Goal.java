@@ -5,9 +5,26 @@ package data;
  */
 public class Goal {
 
+    /**
+     * Name of the Goal.
+     */
     private String name;
+
+    /**
+     * Utility of the goal (usefulness when achieved).
+     */
     private double utility;
+
+    /**
+     * Likelihood of achieving the goal.
+     */
     private double likelihood;
+
+    /**
+     * Whether or not this goal is a maintenance goal. Maintenance goals are
+     * kept when achieved, so whenever events cause an Agent to forfeit that
+     * particular goal, it'll want to achieve it again after.
+     */
     private boolean isMaintenanceGoal;
 
     /**
@@ -21,16 +38,11 @@ public class Goal {
 
         this.name = name;
         this.utility = utility;
-        this.likelihood = 0.5; // The likelihood is unknown at the start so it
-                               // starts in the middle
-        // between disconfirmed (0) and confirmed (1)
 
-        // There are maintenance and achievement goals.
-        // When an achievement goal is reached (or not), this is definite (e.g.,
-        // to a the promotion or
-        // not).
-        // A maintenance goal can become true/false indefinitely (e.g., to be
-        // well-fed)
+        // Initialize the likelihood in the middle between disconfirmed (0) and
+        // confirmed (1).
+        this.likelihood = 0.5;
+
         this.isMaintenanceGoal = isMaintenanceGoal;
 
     }
@@ -52,16 +64,13 @@ public class Goal {
      */
     @Override
     public boolean equals(Object obj) {
-
         if (obj instanceof Goal) {
-
             Goal other = (Goal) obj;
-
-            return this.name.equals(other.name) && Double.compare(this.utility, other.utility) == 0 && Double.compare(this.likelihood, other.likelihood) == 0
+            return this.name.equals(other.name) && Double.compare(this.utility, other.utility) == 0
+                    && Double.compare(this.likelihood, other.likelihood) == 0
                     && this.isMaintenanceGoal == other.isMaintenanceGoal;
 
         }
-
         return false;
     }
 
@@ -120,7 +129,7 @@ public class Goal {
     }
 
     /**
-     * Whether or not the goal is a maintainance goal.
+     * Whether or not the goal is a maintenance goal.
      *
      * @return the isMaintenanceGoal
      */
@@ -129,7 +138,7 @@ public class Goal {
     }
 
     /**
-     * Set whether or not the goal is a maintainance goal.
+     * Set whether or not the goal is a maintenance goal.
      *
      * @param isMaintenanceGoal the isMaintenanceGoal to set
      */
@@ -137,6 +146,9 @@ public class Goal {
         this.isMaintenanceGoal = isMaintenanceGoal;
     }
 
+    /**
+     * String representation of Goal.
+     */
     @Override
     public String toString() {
         return "<Goal[" + getName() + ", " + getLikelihood() + ", " + Boolean.toString(isMaintenanceGoal()) + "]>";
