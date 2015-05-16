@@ -76,7 +76,7 @@ public class AgentRelations extends ArrayList<Relation> {
         int size = size();
         int emotionListSize = 0;
         
-        for (int i = 0; i < size(); i++) {
+        for (int i = 0; i < size; i++) {
 
             if (agent == null || get(i).agent.equals(agent)) {
                 emotionListSize = get(i).emotionList.size();
@@ -91,7 +91,7 @@ public class AgentRelations extends ArrayList<Relation> {
 
             output += " for " + get(i).agent;
 
-            if (i < size() - 1) {
+            if (i < size - 1) {
                 output += ", and\n";
             }
         }

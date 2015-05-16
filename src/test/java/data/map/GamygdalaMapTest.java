@@ -1,13 +1,14 @@
 package data.map;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 /**
- * Created by Nordin on 13-5-2015.
+ * Tests for GamygdalaMap.
  */
 public class GamygdalaMapTest {
 

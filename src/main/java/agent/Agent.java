@@ -1,6 +1,5 @@
 package agent;
 
-import data.Belief;
 import data.Emotion;
 import data.Goal;
 import data.map.GoalMap;
