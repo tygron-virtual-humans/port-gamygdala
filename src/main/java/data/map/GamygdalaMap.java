@@ -2,6 +2,7 @@ package data.map;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import agent.Agent;
 import data.Goal;
@@ -77,5 +78,9 @@ public class GamygdalaMap {
     
     public Iterator<Map.Entry<String, Agent>> getAgentIterator() {
         return getAgentMap().getIterator();
+    }
+    
+    public Set<Map.Entry<String, Agent>> getAgentSet() {
+        return getAgentMap().entrySet();
     }
 }

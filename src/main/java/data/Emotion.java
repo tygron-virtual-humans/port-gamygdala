@@ -1,5 +1,7 @@
 package data;
 
+import java.util.ArrayList;
+
 /**
  * This class is mainly a data structure to store an emotion with its intensity.
  */
@@ -44,5 +46,63 @@ public class Emotion {
             return (((em.name == null && this.name == null) || em.name.equals(this.name)) && Double.compare(em.intensity, this.intensity) == 0);
         }
         return false;
+    }
+
+    /**
+     * Determine emotions based on three Goal parameters.
+     * 
+     * @param utility The goal utility.
+     * @param deltaLikelihood The goal delta likelihood.
+     * @param likelihood The goal likelihood.
+     * @return List of emotion names.
+     */
+    public static ArrayList<String> determineEmotions(double utility, double deltaLikelihood, double likelihood) {
+
+        ArrayList<String> emotion = new ArrayList<String>();
+        
+        boolean positive = false;
+        if (utility >= 0 && deltaLikelihood >= 0 || utility < 0 && deltaLikelihood < 0) {
+            positive = true;
+        }
+        
+        if (likelihood > 0 && likelihood < 1) {
+
+            if (positive) {
+                emotion.add("hope");
+            } else {
+                emotion.add("fear");
+            }
+
+        } else if (likelihood == 1) {
+
+            if (utility >= 0) {
+                if (deltaLikelihood < 0.5) {
+                    emotion.add("satisfaction");
+                }
+                emotion.add("joy");
+            } else {
+                if (deltaLikelihood < 0.5) {
+                    emotion.add("fear-confirmed");
+                }
+                emotion.add("distress");
+            }
+
+        } else if (likelihood == 0) {
+
+            if (utility >= 0) {
+                if (deltaLikelihood > 0.5) {
+                    emotion.add("disappointment");
+                }
+                emotion.add("distress");
+            } else {
+                if (deltaLikelihood > 0.5) {
+                    emotion.add("relief");
+                }
+                emotion.add("joy");
+            }
+
+        }
+
+        return emotion;
     }
 }
