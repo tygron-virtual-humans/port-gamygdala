@@ -29,28 +29,31 @@ public class Relation {
         this.emotionList = new ArrayList<Emotion>();
     }
 
+    /**
+     * Get the target Agent of this relation.
+     * 
+     * @return Target Agent.
+     */
     public Agent getAgent() {
         return agent;
     }
 
-    public void setAgent(Agent agent) {
-        this.agent = agent;
-    }
-
+    /**
+     * Get the intensity of the relation.
+     * 
+     * @return Intensity of the relation.
+     */
     public double getLike() {
         return like;
     }
 
-    public void setLike(double like) {
-        this.like = like;
-    }
-
+    /**
+     * Get the emotions stored in this relation.
+     * 
+     * @return List of emotions.
+     */
     public ArrayList<Emotion> getEmotionList() {
         return emotionList;
-    }
-
-    public void setEmotionList(ArrayList<Emotion> emotionList) {
-        this.emotionList = emotionList;
     }
 
     /**
@@ -93,7 +96,7 @@ public class Relation {
 
             Emotion emotion = this.emotionList.get(i);
             double newIntensity = dfunc.decay(emotion.intensity, millisPassed);
-            
+
             if (newIntensity < 0) {
                 // This emotion has decayed below zero, we need to remove it.
                 this.emotionList.remove(i);
@@ -112,11 +115,15 @@ public class Relation {
     public boolean equals(Object obj) {
         if (obj instanceof Relation) {
             Relation rel = (Relation) obj;
-            return rel.agent.equals(this.agent) && Double.compare(this.like, rel.like) == 0 && rel.emotionList.equals(this.emotionList);
+            return rel.agent.equals(this.agent) && Double.compare(this.like, rel.like) == 0
+                    && rel.emotionList.equals(this.emotionList);
         }
         return false;
     }
 
+    /**
+     * String representation of Relation.
+     */
     @Override
     public String toString() {
         String str = "<Relation[causalAgent=" + this.agent + ", like=" + this.like + "]>";

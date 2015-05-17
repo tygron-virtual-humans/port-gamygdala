@@ -4,17 +4,32 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import agent.Agent;
-import gamygdala.Gamygdala;
+import gamygdala.Engine;
 
 /**
- * A Belief contains information about actions of a particular Agent and about
- * how much those actions affect goals.
+ * A Belief contains information about events (Goals) and the amount of positive
+ * or negative influence on a particular Agent.
  */
 public class Belief {
 
+    /**
+     * The likelihood of this belief to be true.
+     */
     private double likelihood;
+
+    /**
+     * The Agent object of the causal agent of this belief.
+     */
     private Agent causalAgent;
+
+    /**
+     * A Map of Goals and their congruence.
+     */
     private HashMap<Goal, Double> goalCongruenceMap;
+
+    /**
+     * Whether or not this Belief is incremental.
+     */
     private boolean isIncremental;
 
     /**
@@ -43,7 +58,7 @@ public class Belief {
         this.goalCongruenceMap = new HashMap<Goal, Double>();
 
         if (affectedGoals.size() != goalCongruences.size()) {
-            Gamygdala.debug("Error: the congruence list is not of the same size " + "as the affected goal list.");
+            Engine.debug("Error: the congruence list is not of the same size " + "as the affected goal list.");
             return;
         }
 
@@ -63,24 +78,6 @@ public class Belief {
         return likelihood;
     }
 
-    // /**
-    // * Set the likelihood of this belief.
-    // *
-    // * @param likelihood the likelihood to set
-    // */
-    // public void setLikelihood(double likelihood) {
-    // this.likelihood = likelihood;
-    // }
-
-    // /**
-    // * Set the name of the causal Agent.
-    // *
-    // * @param causalAgentName the causalAgentName to set
-    // */
-    // public void setCausalAgentName(String causalAgentName) {
-    // this.causalAgentName = causalAgentName;
-    // }
-
     /**
      * Get the names of the goals affected and their congruences.
      *
@@ -99,25 +96,13 @@ public class Belief {
         return isIncremental;
     }
 
-
-    public void setLikelihood(double likelihood) {
-        this.likelihood = Math.min(1, Math.max(-1, likelihood));
-    }
-
+    /**
+     * Get the Agent causal to this Belief.
+     * 
+     * @return Causal Agent.
+     */
     public Agent getCausalAgent() {
         return causalAgent;
-    }
-
-    public void setCausalAgent(Agent causalAgentObject) {
-        this.causalAgent = causalAgentObject;
-    }
-
-    public void setGoalCongruenceMap(HashMap<Goal, Double> goalCongruenceMap) {
-        this.goalCongruenceMap = goalCongruenceMap;
-    }
-
-    public void setIsIncremental(boolean isIncremental) {
-        this.isIncremental = isIncremental;
     }
 
     /**

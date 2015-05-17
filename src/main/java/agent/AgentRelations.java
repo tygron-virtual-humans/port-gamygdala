@@ -20,20 +20,25 @@ public class AgentRelations extends ArrayList<Relation> {
      * @param agent The agent who is the target of the relation.
      * @param like The relation (between -1 and 1).
      */
-    public void updateRelation(Agent agent, double like) {
+    public Relation updateRelation(Agent agent, double like) {
+        
+        Relation relation = null;
+        
         if (!this.hasRelationWith(agent)) {
             // This relation does not exist, just add it.
-            add(new Relation(agent, like));
+            relation = new Relation(agent, like);
+            add(relation);
         } else {
             // The relation already exists, update it.
-            Relation relation;
-            for (int i = 0; i < size(); i++) {
-                relation = get(i);
-                if (relation.agent.equals(agent)) {
-                    relation.like = like;
+            for (Relation rel: this) {
+                if (rel.agent.equals(agent)) {
+                    rel.like = like;
                 }
+                return rel;
             }
         }
+        
+        return relation;
     }
 
     /**
@@ -82,7 +87,7 @@ public class AgentRelations extends ArrayList<Relation> {
                 emotionListSize = get(i).emotionList.size();
                 for (int j = 0; j < emotionListSize; j++) {
                     output += get(i).emotionList.get(j).name + "(" + get(i).emotionList.get(j).intensity + ")";
-                    
+
                     if (j < emotionListSize - 1) {
                         output += ", and ";
                     }

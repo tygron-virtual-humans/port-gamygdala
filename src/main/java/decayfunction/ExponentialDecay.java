@@ -7,6 +7,7 @@ public class ExponentialDecay extends DecayFunction {
 
     /**
      * Constructor.
+     * 
      * @param decayFactor The decay factor.
      */
     public ExponentialDecay(double decayFactor) {
@@ -15,7 +16,8 @@ public class ExponentialDecay extends DecayFunction {
 
     /**
      * Returns the decay outcome.
-     * @param initial      Initial emotion intensity.
+     * 
+     * @param initial Initial emotion intensity.
      * @param millisPassed Milliseconds since last decay function execution.
      * @return the decay outcome of the function.
      */

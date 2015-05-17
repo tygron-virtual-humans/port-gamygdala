@@ -1,140 +1,81 @@
 package gamygdala;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 import agent.Agent;
+import data.Belief;
+import data.Goal;
 
 /**
- * Test main Gamygdala engine.
+ * Tests for the core Gamygdala functionality.
  */
 public class GamygdalaTest {
 
-  Gamygdala gamyg;
+    private Gamygdala engine;
 
-  @Before
-  public void setUp() {
-    gamyg = new Gamygdala();
-  }
+    @Before
+    public void setUp() {
+        engine = new Gamygdala();
+    }
 
-  @After
-  public void cleanUp() {
-    gamyg = null;
-  }
+    @After
+    public void tearDown() {
+        engine = null;
+    }
 
-  @Test
-  public void testGamygdala() {
+    @Test
+    public void testGamygdala() {
 
-    assertNotNull(gamyg.gamydgalaMap.getAgentMap());
-    assertNotNull(gamyg.gamydgalaMap.getGoalMap());
-    assertNotNull(gamyg.decayFunction);
+        // Verify that constructor properly initializes attributes
+        assertNotNull(engine.getGamygdalaMap());
+        assertEquals(.8, engine.getDecayFactor(), 10E-15);
+        assertNotNull(engine.getDecayFunction());
 
-  }
+    }
 
-//  @Test
-//  public void testCreateAgent() {
-//
-//    // Start empty
-//    assertTrue(gamyg.gamydgalaMap.getAgentMap().size() == 0);
-//
-//    // Add Agents
-//    gamyg.createAgent(new Agent("testAgent"));
-//
-//    // Has added agent?
-//    assertTrue(gamyg.gamydgalaMap.getAgentMap().size() == 1);
-//
-//    // Verify agent exists
-//    assertNotNull(gamyg.gamydgalaMap.getAgentMap().get("testAgent"));
-//
-//  }
+    @Test
+    public void testAppraiseAssertions() {
 
-  @Test
-  public void testRegisterAgent() {
-    Agent agent = new Agent("RegisteredAgent");
-    gamyg.registerAgent(agent);
-    assertNotNull(gamyg.gamydgalaMap.getAgentMap().get("RegisteredAgent"));
-    assertEquals(agent, gamyg.gamydgalaMap.getAgentMap().get("RegisteredAgent"));
-  }
+        // Empty Belief
+        assertFalse(engine.appraise(null, mock(Agent.class)));
 
-  // @Test
-  // public void testCreateGoalForAgentAgentStringDouble() {
-  // fail("Not yet implemented");
-  // }
+        // No Goals
+        assertTrue(engine.appraise(mock(Belief.class), mock(Agent.class)));
+    }
 
-//  @Test
-//  public void testCreateGoalForAgentAgentStringDoubleBoolean() {
-//
-//    Agent agent = new Agent("TestAgent");
-//
-//    // Can't add goal for agent that does not exist.
-//    assertNull(gamyg.createGoalForAgent(agent, "", 0, true));
-//    gamyg.registerAgent(agent);
-//
-//    // Goal does not already exist
-//    Goal target = new Goal("TestGoal", .5, true);
-//    Goal test = gamyg.createGoalForAgent(agent, "TestGoal", .5, true);
-//    assertEquals(target, test);
-//
-//  }
+    @Test
+    public void testAppraiseAffectedAgent() {
 
-//  @Test
-//  public void testCreateGoalForAgentAgentStringDoubleBoolean2() {
-//
-//    Agent agent = new Agent("TestAgent");
-//    gamyg.registerAgent(agent);
-//
-//    // Register three goals with the same name
-//    // (first one original, other two with different maintenanceGoal attr but same name)
-//    Goal test1 = gamyg.createGoalForAgent(agent, "TestGoal", .5, false);
-//    Goal test2 = gamyg.createGoalForAgent(agent, "TestGoal", .7, false);
-//    Goal test3 = gamyg.createGoalForAgent(agent, "TestGoal", .7, true);
-//
-//    // Verify the original Goal is returned when a goal with a similar name is added,
-//    // with the isMaintenanceGoal attribute of the last instance.
-//    assertEquals(test1, test2);
-//    assertNotEquals(test2, test3);
-//    assertNotEquals(test1, test3);
-//
-//    // Verify he goal stored with it's name is the first goal
-//    assertEquals(test1, gamyg.gamydgalaMap.getGoalMap().get("TestGoal"));
-//
-//  }
+        // Set-up environment (two agents with one goal)
+        Agent agent1 = new Agent("TestAgent_1");
+        Agent agent2 = new Agent("TestAgent_2");
+        engine.getGamygdalaMap().registerAgent(agent1);
+        engine.getGamygdalaMap().registerAgent(agent1);
 
-  // @Test
-  // public void testCreateRelation() {
-  // fail("Not yet implemented");
-  // }
+        Goal goal = new Goal("TestGoal", .59, false);
+        engine.getGamygdalaMap().registerGoal(goal);
+        agent1.addGoal(goal);
+        agent2.addGoal(goal);
+        
+        // Create a belief
+        ArrayList<Goal> affectedGoals = new ArrayList<Goal>(1);
+        affectedGoals.add(goal);
+        ArrayList<Double> goalCongruences = new ArrayList<Double>(1);
+        goalCongruences.add(2d);
+        Belief belief = new Belief(-1, agent2, affectedGoals, goalCongruences, false);
 
-//  @Test
-//  public void testGetAgentByName() {
-//
-//    assertNull(gamyg.getAgentByName("TestAgent"));
-//    gamyg.createAgent("TestAgent");
-//    assertNotNull(gamyg.getAgentByName("TestAgent"));
-//
-//  }
-
-//  @Test
-//  public void testGetGoalByName() {
-//
-//    assertNull(gamyg.getGoalByName("TestGoal"));
-//    gamyg.registerGoal(new Goal("TestGoal", 1, false));
-//    assertNotNull(gamyg.getGoalByName("TestGoal"));
-//
-//  }
-
-  // @Test
-  // public void testGetMillisPassed() {
-  // fail("Not yet implemented");
-  // }
-  //
-  // @Test
-  // public void testDebug() {
-  // fail("Not yet implemented");
-  // }
+        assertTrue(engine.appraise(belief, agent1));
+        
+    }
 
 }

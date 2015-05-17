@@ -1,6 +1,5 @@
 package data.map;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 import org.junit.After;
@@ -37,21 +36,8 @@ public class GamygdalaMapTest {
     }
 
     @Test
-    public void testSetAgentMap() throws Exception {
-        gamygdalaMap.setAgentMap(agentMap);
-
-        assertEquals(agentMap, gamygdalaMap.getAgentMap());
-    }
-
-    @Test
     public void testGetGoalMap() throws Exception {
         assertNotEquals(null, gamygdalaMap.getAgentMap());
     }
 
-    @Test
-    public void testSetGoalMap() throws Exception {
-        gamygdalaMap.setGoalMap(goalMap);
-
-        assertEquals(goalMap, gamygdalaMap.getGoalMap());
-    }
 }

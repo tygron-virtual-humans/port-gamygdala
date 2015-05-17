@@ -1,7 +1,6 @@
 package data;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
@@ -53,24 +52,6 @@ public class BeliefTest {
         goalCongruenceTestMap.put(goal, .5);
 
         assertEquals(goalCongruenceTestMap, belief.getGoalCongruenceMap());
-    }
-
-    @Test
-    public void testSetters() {
-        belief.setIsIncremental(false);
-        assertFalse(belief.isIncremental());
-
-        belief.setLikelihood(3.5);
-        assertEquals(1.0, belief.getLikelihood(), 10E-15);
-
-        Agent newAgent = new Agent("TestAgent2");
-        belief.setCausalAgent(newAgent);
-        assertEquals(newAgent, belief.getCausalAgent());
-
-        HashMap<Goal, Double> newGoalCongruenceMap = new HashMap<Goal, Double>();
-        newGoalCongruenceMap.put(new Goal("TestGoal2", 0.5, false), 0.2);
-        belief.setGoalCongruenceMap(newGoalCongruenceMap);
-        assertEquals(newGoalCongruenceMap, belief.getGoalCongruenceMap());
     }
 
     @Test

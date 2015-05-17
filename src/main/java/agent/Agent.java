@@ -1,10 +1,12 @@
 package agent;
 
+import java.util.ArrayList;
+
 import data.Emotion;
 import data.Goal;
 import data.map.GoalMap;
 import decayfunction.DecayFunction;
-import gamygdala.Gamygdala;
+import gamygdala.Engine;
 
 /**
  * The main interacting character in the Gamygdala engine.
@@ -114,7 +116,7 @@ public class Agent {
 
         // Gain has to be between 0 and 20.
         if (gain <= 0 || gain > 20) {
-            Gamygdala.debug("Error: gain factor for appraisal integration must be between 0 and 20.");
+            Engine.debug("Error: gain factor for appraisal integration must be between 0 and 20.");
         } else {
             this.gain = gain;
         }
@@ -166,12 +168,13 @@ public class Agent {
      * @param agent The agent who is the target of the relation.
      * @param relation The relation (between -1 and 1).
      */
-    public void updateRelation(Agent agent, double relation) {
+    public Relation updateRelation(Agent agent, double relation) {
         if (relation >= -1 && relation <= 1) {
-            this.currentRelations.updateRelation(agent, relation);
+            return this.currentRelations.updateRelation(agent, relation);
         } else {
-            Gamygdala.debug("Error: cannot relate " + this + " to " + agent + " with intensity " + relation);
+            Engine.debug("Error: cannot relate " + this + " to " + agent + " with intensity " + relation);
         }
+        return null;
     }
 
     /**
@@ -207,12 +210,23 @@ public class Agent {
         System.out.println(output);
     }
 
+    /**
+     * Update Agent's emotion based on actions by other Agents.
+     * 
+     * @param affectedAgent The Agent affected by the action.
+     * @param causalAgent The Agent causal to the action.
+     * @param desirability How much the current Agent desires the Goal subject
+     *            to the action.
+     * @return The Emotion arising from the action.
+     */
     public Emotion agentActions(Agent affectedAgent, Agent causalAgent, double desirability) {
 
         // Check for empty agent
         if (causalAgent == null) {
             return null;
         }
+
+        Engine.debug("   agentActions: self=" + this + " affected=" + affectedAgent + "  causal=" + causalAgent);
 
         // Init emotion variable
         Emotion emotion = new Emotion(null, 0);
@@ -222,25 +236,32 @@ public class Agent {
         if (affectedAgent.equals(this)) {
 
             if (!this.equals(causalAgent)) {
+
+                Engine.debug("      Entering CASE 1.");
+
                 emotion.name = (desirability >= 0) ? "gratitude" : "anger";
                 emotion.intensity = Math.abs(desirability);
-                this.updateEmotionalState(emotion);
+
+                Engine.debug("      Emotion: " + emotion);
 
                 // Update the relation with other agents based on this new
                 // emotion
                 if (!this.hasRelationWith(causalAgent)) {
-                    this.updateRelation(causalAgent, 0.0);
+                    relation = this.updateRelation(causalAgent, 0.0);
+                } else {
+                    relation = this.getRelation(causalAgent);
                 }
-
-                relation = this.getRelation(causalAgent);
                 relation.addEmotion(emotion);
+                updateEmotionalState(emotion);
 
             } else {
-                Gamygdala.debug("[Gamygdala.agentActions] This case is not included in Gamygdala.");
+                Engine.debug("      Entering CASE 2. This case is not included in Gamygdala.");
                 return null;
             }
 
         } else if (causalAgent.equals(this) && causalAgent.hasRelationWith(affectedAgent)) {
+
+            Engine.debug("      Entering CASE 3.");
 
             // Update the relations with other agents
             relation = causalAgent.getRelation(affectedAgent);
@@ -281,8 +302,32 @@ public class Agent {
             relation.addEmotion(emotion);
             this.updateEmotionalState(emotion);
         }
-        
+
         return emotion;
+    }
+
+    /**
+     * This method evaluates the event in terms of internal emotions that do not
+     * need relations to exist, such as hope, fear, etc..
+     *
+     * @param utility the utility.
+     * @param deltaLikelh the delta likelihood.
+     * @param likelihood the likelihood.
+     */
+    public boolean evaluateInternalEmotion(double utility, double deltaLikelh, double likelihood) {
+
+        ArrayList<String> emotion = Emotion.determineEmotions(utility, deltaLikelh, likelihood);
+
+        Engine.debug("   evaluateInternalEmotion: " + emotion);
+
+        double intensity = Math.abs(utility * deltaLikelh);
+        if (intensity != 0) {
+            for (String emo : emotion) {
+                updateEmotionalState(new Emotion(emo, intensity));
+            }
+        }
+
+        return true;
     }
 
     /**
