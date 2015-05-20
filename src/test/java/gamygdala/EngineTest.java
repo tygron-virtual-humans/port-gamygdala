@@ -2,6 +2,7 @@ package gamygdala;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -40,6 +41,17 @@ public class EngineTest {
         engine = null;
     }
 
+    @Test
+    public void testSingleton() {
+        
+        // Create "new" Engine instance
+        Engine engine2 = Engine.getInstance();
+        
+        // Verify that it's the same object
+        assertTrue(engine == engine2);
+        
+    }
+    
     @Test
     public void testCreateAgent() {
 
@@ -148,5 +160,18 @@ public class EngineTest {
         verify(gamygdala).setDecayFactor(10d);
         verify(gamygdala).setDecayFunction(df);
 
+    }
+    
+    @Test
+    public void testGetSetGamygdala() {
+        
+        assertEquals(gamygdala, engine.getGamygdala());
+        
+        Gamygdala gam = new Gamygdala();
+        assertNotEquals(engine.getGamygdala(), gam);
+        
+        engine.setGamygdala(gam);
+        assertEquals(gam, engine.getGamygdala());
+        
     }
 }
