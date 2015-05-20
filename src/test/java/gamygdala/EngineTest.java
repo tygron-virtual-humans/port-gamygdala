@@ -30,7 +30,8 @@ public class EngineTest {
     @Before
     public void setUp() {
         gamygdala = mock(Gamygdala.class);
-        engine = new Engine(gamygdala);
+        engine = Engine.getInstance();
+        engine.setGamygdala(gamygdala);
     }
 
     @After
