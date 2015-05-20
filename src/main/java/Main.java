@@ -20,7 +20,7 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
 
         // Create new Gamygdala engine
-        Engine engine = new Engine(new Gamygdala());
+        Engine engine = Engine.getInstance();
 
         // Create new Agents
         Agent mario = engine.createAgent("mario");
