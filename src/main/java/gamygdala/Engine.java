@@ -15,6 +15,11 @@ import decayfunction.DecayFunction;
 public class Engine {
 
     /**
+     * Singleton Engine object.
+     */
+    private static Engine engineInstance;
+
+    /**
      * Debug flag.
      */
     public static final boolean DEBUG = true;
@@ -22,26 +27,31 @@ public class Engine {
     /**
      * Gamygdala instance.
      */
-    private Gamygdala gamygdala;
+    private Gamygdala gamygdala = new Gamygdala();
 
     /**
      * Timestamp of last emotion calculation.
      */
-    private long lastMillis;
+    private long lastMillis = System.currentTimeMillis();
 
     /**
-     * Instantiate new Engine.
-     * 
-     * @param gamygdala Gamygdala instance.
+     * Empty constructor to prevent instantiating.
+     * Use Engine.getInstance() instead.
      */
-    public Engine(Gamygdala gamygdala) {
+    private Engine() {
+    }
 
-        // Store Gamygdala instance
-        this.gamygdala = gamygdala;
+    /**
+     * Get the Engine object. If no Engine has been instantiated,
+     * create a new Engine with a fresh Gamygdala instance.
+     */
+    public static synchronized Engine getInstance() {
 
-        // Record current time on creation
-        this.lastMillis = System.currentTimeMillis();
+        if (Engine.engineInstance == null) {
+            Engine.engineInstance = new Engine();
+        }
 
+        return engineInstance;
     }
 
     /**
@@ -64,7 +74,8 @@ public class Engine {
      * @param isMaintenanceGoal Whether or not this Goal is a maintenance goal.
      * @return The newly created Goal.
      */
-    public Goal createGoalForAgent(Agent agent, String goalName, double goalUtility, boolean isMaintenanceGoal) {
+    public Goal createGoalForAgent(Agent agent, String goalName, double goalUtility,
+                    boolean isMaintenanceGoal) {
         Goal goal = new Goal(goalName, goalUtility, isMaintenanceGoal);
 
         // Add Goal to Agent
@@ -157,7 +168,8 @@ public class Engine {
     public boolean setGain(double gain) {
 
         if (gain <= 0 || gain > 20) {
-            Engine.debug("[Engine.setGain] Error: " + "gain factor for appraisal integration must be between 0 and 20.");
+            Engine.debug("[Engine.setGain] Error: "
+                            + "gain factor for appraisal integration must be between 0 and 20.");
             return false;
         }
 
@@ -197,6 +209,24 @@ public class Engine {
             Engine.debug("[Engine.setDecay] DecayFunction is null.");
         }
 
+    }
+
+    /**
+     * Get the Gamygdala instance for this Engine.
+     * 
+     * @return The Gamygdala instance.
+     */
+    public Gamygdala getGamygdala() {
+        return gamygdala;
+    }
+
+    /**
+     * Set a new Gamygdala instance for this Engine.
+     * 
+     * @param gamygdala The Gamygdala instance.
+     */
+    public void setGamygdala(Gamygdala gamygdala) {
+        this.gamygdala = gamygdala;
     }
 
     /**
