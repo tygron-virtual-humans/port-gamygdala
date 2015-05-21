@@ -63,7 +63,22 @@ public class GoalMapTest {
     }
 
     @Test
+    public void testGetGoalByNameGoalNotInMap() throws Exception{
+        goalMap.addGoal(testGoal);
+
+        assertEquals(null, goalMap.getGoalByName("TestGoalNameNotInMap"));
+    }
+
+    @Test
     public void testPut() throws Exception {
+        assertEquals(null, goalMap.put(testGoal.getName(), testGoal));
+
+        assertTrue(goalMap.hasGoal(testGoal));
+    }
+
+    @Test
+    public void testPutAddingGoalASecondTime() throws Exception {
+        goalMap.put(testGoal.getName(), testGoal);
         assertEquals(null, goalMap.put(testGoal.getName(), testGoal));
 
         assertTrue(goalMap.hasGoal(testGoal));
