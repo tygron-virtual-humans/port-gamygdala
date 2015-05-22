@@ -7,6 +7,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import exception.GoalCongruenceMapException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -23,7 +25,7 @@ public class BeliefTest {
     ArrayList<Double> goalCongruence;
 
     @Before
-    public void setUp() {
+    public void setUp() throws GoalCongruenceMapException {
         a = new Agent("TestAgent");
         goal = new Goal("TestGoal", .2, true);
 
@@ -52,6 +54,14 @@ public class BeliefTest {
         goalCongruenceTestMap.put(goal, .5);
 
         assertEquals(goalCongruenceTestMap, belief.getGoalCongruenceMap());
+    }
+    
+    @Test(expected=GoalCongruenceMapException.class)
+    public void testException() throws GoalCongruenceMapException {
+        
+        goalCongruence.add(.59);
+        Belief belief_exception = new Belief(.8, new Agent(""), affectedGoals, goalCongruence, true);
+
     }
 
     @Test
