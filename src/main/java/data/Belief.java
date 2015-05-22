@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import agent.Agent;
-import gamygdala.Engine;
+import exception.GoalCongruenceMapException;
 
 /**
  * A Belief contains information about events (Goals) and the amount of positive
@@ -48,8 +48,10 @@ public class Belief {
      *            goals provided, i.e, it will add or subtract this belief's
      *            likelihood*congruence from the goal likelihood instead of
      *            using the belief as "state" defining the absolute likelihood
+     * @throws GoalCongruenceMapException
      */
-    public Belief(double likelihood, Agent agent, ArrayList<Goal> affectedGoals, ArrayList<Double> goalCongruences, boolean isIncremental) {
+    public Belief(double likelihood, Agent agent, ArrayList<Goal> affectedGoals, ArrayList<Double> goalCongruences,
+            boolean isIncremental) throws GoalCongruenceMapException {
         this.isIncremental = isIncremental;
 
         this.likelihood = Math.min(1, Math.max(-1, likelihood));
@@ -58,8 +60,8 @@ public class Belief {
         this.goalCongruenceMap = new HashMap<Goal, Double>();
 
         if (affectedGoals.size() != goalCongruences.size()) {
-            Engine.debug("Error: the congruence list is not of the same size " + "as the affected goal list.");
-            return;
+            throw new GoalCongruenceMapException(
+                    "Error: the congruence list does not have the same size as the affected goal list.");
         }
 
         // Add goals and congruences to Map.
@@ -109,7 +111,8 @@ public class Belief {
      * Return string representation of Belief.
      */
     public String toString() {
-        String str = "<Belief[CausalAgent = " + causalAgent + ", likelihood = " + likelihood + ", incremental = " + isIncremental + "]>";
+        String str = "<Belief[CausalAgent = " + causalAgent + ", likelihood = " + likelihood + ", incremental = "
+                + isIncremental + "]>";
         return str;
     }
 
