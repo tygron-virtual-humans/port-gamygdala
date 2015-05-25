@@ -38,11 +38,6 @@ public class Agent {
      */
     public double gain;
 
-    /**
-     * Pleasure Arousal Dominance mapping.
-     */
-    private MapPad mapPad;
-
     public static final double DEFAULT_GAIN = 1;
 
     /**
@@ -63,8 +58,6 @@ public class Agent {
         // Set gain
         this.gain = Agent.DEFAULT_GAIN;
 
-        // Initialize PAD map
-        this.mapPad = new MapPad();
     }
 
     /**
