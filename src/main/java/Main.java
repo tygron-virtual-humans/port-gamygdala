@@ -50,7 +50,6 @@ public class Main {
         goalCongruences.add(0.8);
 
         engine.appraise(new Belief(1, bowser, affectedGoals, goalCongruences, true));
-        
         engine.printAllEmotions(false);
 
         Thread.sleep(1000L);
