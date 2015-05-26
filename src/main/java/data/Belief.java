@@ -1,10 +1,10 @@
 package data;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import agent.Agent;
 import exception.GoalCongruenceMapException;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * A Belief contains information about events (Goals) and the amount of positive
@@ -57,12 +57,12 @@ public class Belief {
         this.likelihood = Math.min(1, Math.max(-1, likelihood));
         this.causalAgent = agent;
 
-        this.goalCongruenceMap = new HashMap<Goal, Double>();
-
         if (affectedGoals.size() != goalCongruences.size()) {
             throw new GoalCongruenceMapException(
                     "Error: the congruence list does not have the same size as the affected goal list.");
         }
+
+        this.goalCongruenceMap = new HashMap<Goal, Double>();
 
         // Add goals and congruences to Map.
         for (int i = 0; i < affectedGoals.size(); i++) {

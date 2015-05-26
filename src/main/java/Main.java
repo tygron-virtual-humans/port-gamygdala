@@ -107,7 +107,6 @@ public class Main {
         goalCongruences.add(-0.3);
 
         engine.appraise(new Belief(1, mario, affectedGoals, goalCongruences, true));
-
         engine.printAllEmotions(true);
 
         // Event 4: Mario hits a turtle and losses the abilities of the mushroom
