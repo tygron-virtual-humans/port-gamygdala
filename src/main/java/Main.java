@@ -4,6 +4,7 @@ import agent.Agent;
 import data.Belief;
 import data.Goal;
 import decayfunction.ExponentialDecay;
+import exception.GoalCongruenceMapException;
 import gamygdala.Engine;
 import gamygdala.Gamygdala;
 
@@ -16,8 +17,9 @@ public class Main {
      * Run test.
      * 
      * @throws InterruptedException
+     * @throws GoalCongruenceMapException 
      */
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, GoalCongruenceMapException {
 
         // Create new Gamygdala engine
         Engine engine = Engine.getInstance();
@@ -48,6 +50,7 @@ public class Main {
         goalCongruences.add(0.8);
 
         engine.appraise(new Belief(1, bowser, affectedGoals, goalCongruences, true));
+        
         engine.printAllEmotions(false);
 
         Thread.sleep(1000L);
