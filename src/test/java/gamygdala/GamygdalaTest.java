@@ -72,7 +72,12 @@ public class GamygdalaTest {
         affectedGoals.add(goal);
         ArrayList<Double> goalCongruences = new ArrayList<Double>(1);
         goalCongruences.add(2d);
-        Belief belief = new Belief(-1, agent2, affectedGoals, goalCongruences, false);
+        Belief belief = null;
+        try {
+            belief = new Belief(-1, agent2, affectedGoals, goalCongruences, false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         assertTrue(engine.appraise(belief, agent1));
         

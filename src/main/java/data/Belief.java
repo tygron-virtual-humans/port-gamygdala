@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import agent.Agent;
 import gamygdala.Engine;
+import sun.jvm.hotspot.runtime.ConstructionException;
 
 /**
  * A Belief contains information about events (Goals) and the amount of positive
@@ -48,19 +49,20 @@ public class Belief {
      *            goals provided, i.e, it will add or subtract this belief's
      *            likelihood*congruence from the goal likelihood instead of
      *            using the belief as "state" defining the absolute likelihood
+     * @exception
      */
-    public Belief(double likelihood, Agent agent, ArrayList<Goal> affectedGoals, ArrayList<Double> goalCongruences, boolean isIncremental) {
+    public Belief(double likelihood, Agent agent, ArrayList<Goal> affectedGoals, ArrayList<Double> goalCongruences, boolean isIncremental) throws IllegalArgumentException {
         this.isIncremental = isIncremental;
 
         this.likelihood = Math.min(1, Math.max(-1, likelihood));
         this.causalAgent = agent;
 
-        this.goalCongruenceMap = new HashMap<Goal, Double>();
-
         if (affectedGoals.size() != goalCongruences.size()) {
             Engine.debug("Error: the congruence list is not of the same size " + "as the affected goal list.");
-            return;
+            throw new IllegalArgumentException();
         }
+
+        this.goalCongruenceMap = new HashMap<Goal, Double>();
 
         // Add goals and congruences to Map.
         for (int i = 0; i < affectedGoals.size(); i++) {

@@ -47,7 +47,11 @@ public class Main {
         goalCongruences.add(0.3);
         goalCongruences.add(0.8);
 
-        engine.appraise(new Belief(1, bowser, affectedGoals, goalCongruences, true));
+        try {
+            engine.appraise(new Belief(1, bowser, affectedGoals, goalCongruences, true));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         engine.printAllEmotions(false);
 
         Thread.sleep(1000L);

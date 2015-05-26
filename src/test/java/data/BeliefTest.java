@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import agent.Agent;
+import sun.jvm.hotspot.runtime.ConstructionException;
 
 /**
  * Unit tests for Belief.
@@ -33,7 +34,12 @@ public class BeliefTest {
         affectedGoals.add(goal);
         goalCongruence.add(.5);
 
-        belief = new Belief(.8, a, affectedGoals, goalCongruence, true);
+
+        try {
+            belief = new Belief(.8, a, affectedGoals, goalCongruence, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @After
@@ -57,5 +63,10 @@ public class BeliefTest {
     @Test
     public void testToString() {
         assertEquals("<Belief[CausalAgent = <Agent[TestAgent]>, likelihood = 0.8, incremental = true]>", belief.toString());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructionEngineDebug() {
+        new Belief(.8, a, affectedGoals, new ArrayList<Double>(){{ add(.8); add(.7); }}, true);
     }
 }
