@@ -1,9 +1,9 @@
 package agent;
 
+import data.Emotion;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import data.Emotion;
 
 /**
  * Pleasure Arousal Dominance mapping of the emotional states.
@@ -16,7 +16,6 @@ public class MapPad {
      * Construct a new mapping with default emotions.
      */
     public MapPad() {
-
         // Initialize PAD hashmap
         this.mapPad = new HashMap<String, double[]>(16, 1);
 
@@ -62,21 +61,19 @@ public class MapPad {
      * index [2].
      */
     public double[] getPadState(ArrayList<Emotion> emotions, double gain, boolean useGain) {
-        double[] pad = new double[3];
-        pad[0] = 0;
-        pad[1] = 0;
-        pad[2] = 0;
+        double[] pad = new double[] {0, 0, 0};
 
         Emotion emotion;
-        for (int i = 0; i < emotions.size(); i++) {
-            emotion = emotions.get(i);
-            pad[0] += (emotion.intensity * this.mapPad.get(emotion.name)[0]);
-            pad[1] += (emotion.intensity * this.mapPad.get(emotion.name)[1]);
-            pad[2] += (emotion.intensity * this.mapPad.get(emotion.name)[2]);
+        for (Emotion emotion1 : emotions) {
+            emotion = emotion1;
+
+            for (int j = 0; j < pad.length; j++) {
+                pad[j] += emotion.intensity * this.mapPad.get(emotion.name)[j];
+            }
         }
 
         if (useGain) {
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < pad.length; i++) {
                 pad[i] = (pad[i] >= 0 ? gain * pad[i] / (gain * pad[i] + 1) : -gain * pad[i]
                         / (gain * pad[i] - 1));
             }

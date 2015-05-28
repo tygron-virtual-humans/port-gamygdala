@@ -1,11 +1,10 @@
-import java.util.ArrayList;
-
 import agent.Agent;
 import data.Belief;
 import data.Goal;
 import decayfunction.ExponentialDecay;
 import gamygdala.Engine;
-import gamygdala.Gamygdala;
+
+import java.util.ArrayList;
 
 /**
  * Function test case during development.
