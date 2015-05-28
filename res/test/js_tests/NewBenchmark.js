@@ -1,6 +1,6 @@
 function benchmark(){
     //There are totla 87 test cases. Those will be run one by one!
-    var evaluatingChecker = false //This variable determines if the test is running on the occChecker or not.
+    var evaluatingChecker = false; //This variable determines if the test is running on the occChecker or not.
     //These are the 9 variables that need to be set before each test!
     var congruence;
     var utility;

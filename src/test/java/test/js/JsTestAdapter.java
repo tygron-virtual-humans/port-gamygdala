@@ -79,7 +79,7 @@ public class JsTestAdapter {
             adapt();
 
             Object o = scriptEngine.get("TUDelft");
-            System.out.println(o);
+            System.out.println(o.toString());
 
             System.out.println();
 

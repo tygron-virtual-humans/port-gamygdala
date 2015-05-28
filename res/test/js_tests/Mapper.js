@@ -1,4 +1,4 @@
-var Mapper = function(scenario){
+var Mapper = function(scenario) {
     var congruence = scenario.getCongruence();
     var utility = scenario.getUtility();
     var affectedAgent = scenario.getAffectedAgent();
@@ -8,7 +8,7 @@ var Mapper = function(scenario){
     var causalAgent = scenario.getCausalAgent();
     var standardAdherence = scenario.getStandardAdherence();
     var objectAttractiveness = scenario.getObjectAttractiveness();
-    
+
     //Affected agent can either be 'self' or 'other.
     //Causal agent is either 'none', 'self' or 'other'.
     //Every goal starts with 0.5 so every belief that has likelihood 1.0 and congruence > 0 will result in positive deltalikelihood.
@@ -16,12 +16,16 @@ var Mapper = function(scenario){
     //      and if likelihood is 1 that means the congruence is 1.
     //relation with affected is only needed in cases when affected is NOT self. Then we just create relationship and put the value in it.
     this.mappable = true;
-    var emotionEngine=new TUDelft.Gamygdala();
-    this.emotionEngine = emotionEngine
+    var JavaClass = Java.type("gamygdala.Engine");
+    var emotionEngine = JavaClass.getInstance();
+    this.emotionEngine = emotionEngine;
     var agentSelf = emotionEngine.createAgent('self');
     var agentAffected = emotionEngine.createAgent('affected');
     var agentCausal = emotionEngine.createAgent('causal');
-    if (affectedAgent === 'self'){
+
+    print(agentCausal);
+};
+    /*if (affectedAgent === 'self'){
         emotionEngine.createGoalForAgent('self','goal', utility)
     } else if(affectedAgent === 'other'){
         emotionEngine.createGoalForAgent('affected','goal', utility)
@@ -59,11 +63,11 @@ var Mapper = function(scenario){
         }
         this.belief = new TUDelft.Gamygdala.Belief(eventLikelihood, agentCausal.name, ['goal'], [congruence], false);         
     } 
-};
+};*/
 
 Mapper.prototype.getMappable = function(){
     return this.mappable;   
-};
+}
 
 Mapper.prototype.evaluateEmotion = function(){
     this.emotionEngine.appraise(this.belief, null);
