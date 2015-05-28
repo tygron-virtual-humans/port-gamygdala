@@ -48,15 +48,6 @@ public class Relation {
     }
 
     /**
-     * Get the emotions stored in this relation.
-     * 
-     * @return List of emotions.
-     */
-    public ArrayList<Emotion> getEmotionList() {
-        return emotionList;
-    }
-
-    /**
      * Add an emotion to this relation.
      *
      * @param emotion The emotion to add.
