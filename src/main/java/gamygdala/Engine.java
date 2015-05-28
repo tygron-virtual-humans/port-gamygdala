@@ -1,13 +1,13 @@
 package gamygdala;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import agent.Agent;
 import data.Belief;
 import data.Goal;
 import decayfunction.DecayFunction;
+
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Gaming Engine adapter for Gamygdala.
