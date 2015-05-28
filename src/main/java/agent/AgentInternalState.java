@@ -1,9 +1,9 @@
 package agent;
 
-import java.util.ArrayList;
-
 import data.Emotion;
 import gamygdala.Engine;
+
+import java.util.ArrayList;
 
 /**
  * The internal state of an Agent. Contains all it's emotions.

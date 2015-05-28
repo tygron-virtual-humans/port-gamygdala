@@ -74,9 +74,4 @@ public class BeliefTest {
     public void testToString() {
         assertEquals("<Belief[CausalAgent = <Agent[TestAgent]>, likelihood = 0.8, incremental = true]>", belief.toString());
     }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testConstructionEngineDebug() {
-        new Belief(.8, a, affectedGoals, new ArrayList<Double>(){{ add(.8); add(.7); }}, true);
-    }
 }
