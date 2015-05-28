@@ -2296,10 +2296,10 @@ function benchmark(){
         if(testResults[i].getTestResult() === false){
             numberOfMapped++;
         }
-        console.log("Test number: " + testResults[i].getNumber() + ", expected emotions: " + testResults[i].getExpected() + ", output: " + testResults[i].getOutput() + ", result: " + testResults[i].getTestResult());   
+        print("Test number: " + testResults[i].getNumber() + ", expected emotions: " + testResults[i].getExpected() + ", output: " + testResults[i].getOutput() + ", result: " + testResults[i].getTestResult());
     }
-    console.log("Total number of mapped tests: " + numberOfMapped + " of " + number);
-    console.log("Total number of passed tests: " + numberOfPassed + " of " + numberOfMapped);
+    print("Total number of mapped tests: " + numberOfMapped + " of " + number);
+    print("Total number of passed tests: " + numberOfPassed + " of " + numberOfMapped);
 }
 
 function compareStringArrays(a, b){

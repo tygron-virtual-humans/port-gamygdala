@@ -54,6 +54,14 @@ public class Engine {
         return engineInstance;
     }
 
+    public static synchronized Engine reset() {
+        if (Engine.engineInstance != null) {
+            Engine.engineInstance = new Engine();
+        }
+
+        return engineInstance;
+    }
+
     /**
      * Create and add an Agent to the Engine.
      *
