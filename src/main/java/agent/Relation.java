@@ -54,22 +54,18 @@ public class Relation {
      */
     public void addEmotion(Emotion emotion) {
         boolean added = false;
-        for (int i = 0; i < this.emotionList.size(); i++) {
+        for (Emotion anEmotionList : this.emotionList) {
 
-            Emotion temp;
-            temp = this.emotionList.get(i);
-
-            if (temp.name == emotion.name) {
-                temp.intensity += emotion.intensity;
+            if (emotion.name.equals(anEmotionList.name)) {
+                anEmotionList.intensity += emotion.intensity;
                 // Check if this works just by ref, else:
                 // this.emotionList.set(i, e);
                 added = true;
             }
         }
-        if (added == false) {
+        if (!added) {
             // copy on keep, we need to maintain a list of current emotions for
-            // the
-            // relation, not a list
+            // the relation, not a list
             // refs to the appraisal engine
             this.emotionList.add(new Emotion(emotion.name, emotion.intensity));
         }
