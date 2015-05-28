@@ -55,8 +55,7 @@ public class Relation {
     public void addEmotion(Emotion emotion) {
         boolean added = false;
         for (Emotion anEmotionList : this.emotionList) {
-
-            if (emotion.name.equals(anEmotionList.name)) {
+            if (anEmotionList.name.equals(emotion.name)) {
                 anEmotionList.intensity += emotion.intensity;
                 // Check if this works just by ref, else:
                 // this.emotionList.set(i, e);
