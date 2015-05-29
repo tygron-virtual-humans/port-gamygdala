@@ -60,6 +60,10 @@ public class Agent {
 
     }
 
+    public AgentRelations getCurrentRelations() {
+        return this.currentRelations;
+    }
+
     /**
      * Add Goal.
      *
