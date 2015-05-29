@@ -65,7 +65,6 @@ public class BenchmarkAdapter {
         try {
             // Benchmark
             scriptEngine.eval("benchmark()");
-
         } catch (ScriptException e) {
             e.printStackTrace();
         }
