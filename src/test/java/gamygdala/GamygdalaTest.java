@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import agent.Agent;
 import data.Belief;
 import data.Goal;
+import exception.GoalCongruenceMapException;
 
 /**
  * Tests for the core Gamygdala functionality.
@@ -54,7 +55,7 @@ public class GamygdalaTest {
     }
 
     @Test
-    public void testAppraiseAffectedAgent() {
+    public void testAppraiseAffectedAgent() throws GoalCongruenceMapException {
 
         // Set-up environment (two agents with one goal)
         Agent agent1 = new Agent("TestAgent_1");

@@ -34,10 +34,6 @@ public class Agent {
      * Collection of emotions for this Agent.
      */
     AgentInternalState internalState;
-    /**
-     * Pleasure Arousal Dominance mapping.
-     */
-    private MapPad mapPad;
 
     /**
      * Create new Agent.
@@ -57,8 +53,10 @@ public class Agent {
         // Set gain
         this.gain = Agent.DEFAULT_GAIN;
 
-        // Initialize PAD map
-        this.mapPad = new MapPad();
+    }
+
+    public AgentRelations getCurrentRelations() {
+        return this.currentRelations;
     }
 
     /**
@@ -275,10 +273,8 @@ public class Agent {
      * resentment. Emotions that arise when we evaluate events that affect goals
      * of others.
      *
-     * @param utility
      * @param desirability    The desirability is the desirability from the goal
      *                        owner's perspective.
-     * @param deltaLikelihood
      * @param relation        A relation object between the agent being evaluated and
      *                        the goal owner of the affected goal.
      */
