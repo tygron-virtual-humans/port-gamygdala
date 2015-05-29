@@ -1,11 +1,7 @@
 package data;
 
 import agent.Agent;
-<<<<<<< HEAD
-import gamygdala.Engine;
-=======
 import exception.GoalCongruenceMapException;
->>>>>>> d45dba2c563b2eafd73aeff09b54ec0460c345fd
 
 import java.util.ArrayList;
 import java.util.HashMap;
