@@ -10,9 +10,9 @@ import java.util.ArrayList;
  */
 public class Relation {
 
-    public Agent agent;
+    public final Agent agent;
     public double like;
-    public ArrayList<Emotion> emotionList;
+    public final ArrayList<Emotion> emotionList;
 
     /**
      * This is the class that represents a relation one agent has with other
@@ -54,9 +54,9 @@ public class Relation {
      */
     public void addEmotion(Emotion emotion) {
         boolean added = false;
-        for (Emotion anEmotionList : this.emotionList) {
-            if (anEmotionList.name.equals(emotion.name)) {
-                anEmotionList.intensity += emotion.intensity;
+        for (Emotion temp : this.emotionList) {
+            if (temp.name.equals(emotion.name)) {
+                temp.intensity += emotion.intensity;
                 // Check if this works just by ref, else:
                 // this.emotionList.set(i, e);
                 added = true;
@@ -112,8 +112,7 @@ public class Relation {
      */
     @Override
     public String toString() {
-        String str = "<Relation[causalAgent=" + this.agent + ", like=" + this.like + "]>";
-        return str;
+        return "<Relation[causalAgent=" + this.agent + ", like=" + this.like + "]>";
     }
 
 }
