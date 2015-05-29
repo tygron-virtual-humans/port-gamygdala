@@ -54,6 +54,10 @@ public class Engine {
         return engineInstance;
     }
 
+    /**
+     * Reset Engine by creating an Engine.
+     * @return Engine
+     */
     public static Engine reset() {
         if (engineInstance != null) {
             synchronized (Engine.class) {
@@ -248,7 +252,6 @@ public class Engine {
      *            or non-gained (false).
      */
     public void printAllEmotions(boolean gain) {
-
         Iterator<Entry<String, Agent>> it = gamygdala.getGamygdalaMap().getAgentIterator();
         Agent agent;
         while (it.hasNext()) {
