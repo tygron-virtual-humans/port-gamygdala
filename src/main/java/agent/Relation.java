@@ -108,6 +108,21 @@ public class Relation {
     }
 
     /**
+     * Return the hash code of this Object
+     * @return int hash code
+     */
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = agent != null ? agent.hashCode() : 0;
+        temp = Double.doubleToLongBits(like);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (emotionList.hashCode());
+        return result;
+    }
+
+    /**
      * String representation of Relation.
      */
     @Override
