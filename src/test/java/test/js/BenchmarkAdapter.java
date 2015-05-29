@@ -5,7 +5,6 @@ import gamygdala.Engine;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 
-import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -13,7 +12,7 @@ import javax.script.ScriptException;
 /**
  * Adapter for the Gamygdala Test Suite in Javascript.
  */
-public class JsTestAdapter {
+public class BenchmarkAdapter {
 
     private ScriptEngine scriptEngine;
 
@@ -28,15 +27,14 @@ public class JsTestAdapter {
     };
 
     public static void main(String[] args) {
-        JsTestAdapter jsta = new JsTestAdapter();
+        BenchmarkAdapter jsta = new BenchmarkAdapter();
         jsta.runTests();
     }
 
     /**
      * Initialize JS Test Adapter.
      */
-    public JsTestAdapter() {
-
+    public BenchmarkAdapter() {
         // Create script engine manager
         ScriptEngineManager factory = new ScriptEngineManager();
 
@@ -45,14 +43,12 @@ public class JsTestAdapter {
 
         // Load test files
         loadScriptFiles();
-
     }
 
     /**
      * Loads Javascript Test files.
      */
     private void loadScriptFiles() {
-
         // Load source files
         for (String file : sourceFiles) {
             try {
@@ -63,33 +59,15 @@ public class JsTestAdapter {
                 Engine.debug("[JSTest] Script exception in source test files: " + e.getMessage());
             }
         }
-
-    }
-
-    private void adapt() throws ScriptException {
-
-        scriptEngine.eval("var TUDelft = {}; TUDelft.Gamygdala = Packages.gamygdala.Engine;");
     }
 
     public void runTests() {
-
         try {
-
-            // Adapt
-            adapt();
-
-            Object o = scriptEngine.get("TUDelft");
-            System.out.println(o.toString());
-
-            System.out.println();
-
             // Benchmark
             scriptEngine.eval("benchmark()");
 
         } catch (ScriptException e) {
             e.printStackTrace();
         }
-
     }
-
 }

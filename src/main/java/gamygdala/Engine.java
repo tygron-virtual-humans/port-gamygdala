@@ -47,16 +47,20 @@ public class Engine {
      */
     public static synchronized Engine getInstance() {
 
-        if (Engine.engineInstance == null) {
-            Engine.engineInstance = new Engine();
+        if (engineInstance == null) {
+            engineInstance = new Engine();
         }
 
         return engineInstance;
     }
 
-    public static synchronized Engine reset() {
-        if (Engine.engineInstance != null) {
-            Engine.engineInstance = new Engine();
+    public static Engine reset() {
+        if (engineInstance != null) {
+            synchronized (Engine.class) {
+                if (engineInstance != null) {
+                    engineInstance = new Engine();
+                }
+            }
         }
 
         return engineInstance;
