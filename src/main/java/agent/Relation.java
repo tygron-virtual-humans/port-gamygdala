@@ -1,9 +1,9 @@
 package agent;
 
-import java.util.ArrayList;
-
 import data.Emotion;
 import decayfunction.DecayFunction;
+
+import java.util.ArrayList;
 
 /**
  * Describes a Relation between two Agents.
@@ -48,37 +48,23 @@ public class Relation {
     }
 
     /**
-     * Get the emotions stored in this relation.
-     * 
-     * @return List of emotions.
-     */
-    public ArrayList<Emotion> getEmotionList() {
-        return emotionList;
-    }
-
-    /**
      * Add an emotion to this relation.
      *
      * @param emotion The emotion to add.
      */
     public void addEmotion(Emotion emotion) {
         boolean added = false;
-        for (int i = 0; i < this.emotionList.size(); i++) {
-
-            Emotion temp;
-            temp = this.emotionList.get(i);
-
-            if (temp.name == emotion.name) {
-                temp.intensity += emotion.intensity;
+        for (Emotion anEmotionList : this.emotionList) {
+            if (anEmotionList.name.equals(emotion.name)) {
+                anEmotionList.intensity += emotion.intensity;
                 // Check if this works just by ref, else:
                 // this.emotionList.set(i, e);
                 added = true;
             }
         }
-        if (added == false) {
+        if (!added) {
             // copy on keep, we need to maintain a list of current emotions for
-            // the
-            // relation, not a list
+            // the relation, not a list
             // refs to the appraisal engine
             this.emotionList.add(new Emotion(emotion.name, emotion.intensity));
         }

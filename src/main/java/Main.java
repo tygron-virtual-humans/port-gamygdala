@@ -1,12 +1,11 @@
-import java.util.ArrayList;
-
 import agent.Agent;
 import data.Belief;
 import data.Goal;
 import decayfunction.ExponentialDecay;
 import exception.GoalCongruenceMapException;
 import gamygdala.Engine;
-import gamygdala.Gamygdala;
+
+import java.util.ArrayList;
 
 /**
  * Function test case during development.
@@ -107,7 +106,6 @@ public class Main {
         goalCongruences.add(-0.3);
 
         engine.appraise(new Belief(1, mario, affectedGoals, goalCongruences, true));
-
         engine.printAllEmotions(true);
 
         // Event 4: Mario hits a turtle and losses the abilities of the mushroom

@@ -1,7 +1,5 @@
 package gamygdala;
 
-import java.util.Map;
-
 import agent.Agent;
 import agent.Relation;
 import data.Belief;
@@ -9,6 +7,8 @@ import data.Goal;
 import data.map.GamygdalaMap;
 import decayfunction.DecayFunction;
 import decayfunction.LinearDecay;
+
+import java.util.Map;
 
 /**
  * This is the main appraisal engine class taking care of interpreting a

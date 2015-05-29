@@ -1,20 +1,15 @@
 package agent;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-
+import data.Emotion;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import data.Emotion;
+import java.util.ArrayList;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 /**
  * Tests for PADMap.
@@ -129,6 +124,30 @@ public class PADMapTest {
 
         verify(agent).getEmotionalState(59.2);
 
+    }
+
+    @Test
+    public void testGetPadStateNormal() throws Exception {
+        ArrayList<Emotion> emotions = new ArrayList<Emotion>();
+        Emotion emotion = new Emotion("joy", 0.5);
+        emotions.add(emotion);
+
+        double[] expected = new double[]{0.38, 0.24, 0.175};
+        for (int i = 0; i < expected.length; i++) {
+            assertEquals(expected[i], PADMap.getPadState(emotions, null)[i], 0.001);
+        }
+    }
+
+    @Test
+    public void testGetPadStateWithGain() throws Exception {
+        ArrayList<Emotion> emotions = new ArrayList<Emotion>();
+        Emotion emotion = new Emotion("remorse", 0.5);
+        emotions.add(emotion);
+
+        double[] expected = new double[]{-.0277, .0138, -.0167};
+        for (int i = 0; i < expected.length; i++) {
+            assertEquals(expected[i], PADMap.getPadState(emotions, 0.1)[i], 0.001);
+        }
     }
 
 }

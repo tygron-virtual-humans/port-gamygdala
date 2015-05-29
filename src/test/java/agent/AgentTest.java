@@ -1,22 +1,17 @@
 package agent;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
-
+import data.Emotion;
+import data.Goal;
+import decayfunction.DecayFunction;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import data.Emotion;
-import data.Goal;
+import java.util.ArrayList;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 /**
  * Test Agent class.
@@ -337,9 +332,44 @@ public class AgentTest {
     }
 
     @Test
-    public void testDecay() {
-        // TODO()
+    public void testDecayInternalEmotion() {
+        DecayFunction decayFunction = mock(DecayFunction.class);
+        agent.updateEmotionalState(mock(Emotion.class));
+
+        agent.decay(decayFunction, 1);
+
+        verify(decayFunction, times(1)).decay(0.0, 1);
     }
+
+    @Test
+    public void testDecayInternalEmotionTwo() {
+        DecayFunction decayFunction = mock(DecayFunction.class);
+        when(decayFunction.decay(0.6, 1000)).thenReturn(0.2);
+
+        agent.updateEmotionalState(new Emotion("name", 0.6));
+        agent.decay(decayFunction, 1000);
+        verify(decayFunction, times(1)).decay(0.6, 1000);
+
+        agent.decay(decayFunction, 2000);
+        verify(decayFunction, times(1)).decay(0.2, 2000);
+
+        ArrayList<Emotion> expected = new ArrayList<Emotion>(){{ add(new Emotion("name", 0.0)); }};
+        assertEquals(expected, agent.getEmotionalState(0.2));
+    }
+
+//    @Test
+//    public void testDecayRelationState() {
+//        DecayFunction decayFunction = mock(DecayFunction.class);
+//        Relation relation = mock(Relation.class);
+//
+//        when(decayFunction.decay(0.6, 1000)).thenReturn(0.4);
+//        agent.decay(decayFunction, 1000);
+//
+//        agent.updateRelation(mock(Agent.class), 0.5);
+//
+//        when(agent.updateRelation(mock(Agent.class), 0.5)).thenReturn(relation);
+//        verify(agent.currentRelations.get(0), times(1)).decay(decayFunction, 1000);
+//    }
 
     @Test
     public void testToString() {

@@ -2,12 +2,11 @@ package test.js;
 
 import gamygdala.Engine;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 
 /**
  * Adapter for the Gamygdala Test Suite in Javascript.

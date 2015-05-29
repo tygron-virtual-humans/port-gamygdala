@@ -1,12 +1,11 @@
 package agent;
 
-import static org.junit.Assert.*;
-
+import data.Emotion;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import data.Emotion;
+import static org.junit.Assert.*;
 
 /**
  * Unit tests for AgentRelation.

@@ -1,18 +1,16 @@
 package data;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
+import agent.Agent;
+import exception.GoalCongruenceMapException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import exception.GoalCongruenceMapException;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import agent.Agent;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Unit tests for Belief.
@@ -35,7 +33,12 @@ public class BeliefTest {
         affectedGoals.add(goal);
         goalCongruence.add(.5);
 
-        belief = new Belief(.8, a, affectedGoals, goalCongruence, true);
+
+        try {
+            belief = new Belief(.8, a, affectedGoals, goalCongruence, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @After
@@ -68,4 +71,5 @@ public class BeliefTest {
     public void testToString() {
         assertEquals("<Belief[CausalAgent = <Agent[TestAgent]>, likelihood = 0.8, incremental = true]>", belief.toString());
     }
+
 }
