@@ -58,8 +58,8 @@ public class RelationTest {
         assertEquals(1, rel.emotionList.size());
 
         Emotion e3 = rel.emotionList.get(0);
-        assertEquals("TestEmotion", e3.name);
-        assertEquals(30, e3.intensity, 10E-15);
+        assertEquals("TestEmotion", e3.getName());
+        assertEquals(30, e3.getIntensity(), 10E-15);
 
     }
 
@@ -78,17 +78,17 @@ public class RelationTest {
         rel.decay(df, 1000);
 
         // Verify the DecayFunction has been invoked
-        verify(df).decay(e1.intensity, 1000);
+        verify(df).decay(e1.getIntensity(), 1000);
 
         // Emotions are copied, so first retrieve the new emotion,
         // and then check the new intensity value
 
         // Check copy on keep
-        assertNotEquals(59d, e1.intensity, 10E-15);
+        assertNotEquals(59d, e1.getIntensity(), 10E-15);
 
         // Check new emotion value
         Emotion e2 = rel.emotionList.get(0);
-        assertEquals(59d, e2.intensity, 10E-15);
+        assertEquals(59d, e2.getIntensity(), 10E-15);
     }
 
     @Test

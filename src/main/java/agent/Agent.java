@@ -226,8 +226,8 @@ public class Agent {
 
                 Engine.debug("      Entering CASE 1.");
 
-                emotion.name = (desirability >= 0) ? "gratitude" : "anger";
-                emotion.intensity = Math.abs(desirability);
+                emotion.setName(desirability >= 0 ? "gratitude" : "anger");
+                emotion.setIntensity(Math.abs(desirability));
 
                 Engine.debug("      Emotion: " + emotion);
 
@@ -253,8 +253,8 @@ public class Agent {
             // Update the relations with other agents
             relation = causalAgent.getRelation(affectedAgent);
             if (relation.like >= 0) {
-                emotion.name = desirability >= 0 ? "gratification" : "remorse";
-                emotion.intensity = Math.abs(desirability * relation.like);
+                emotion.setName(desirability >= 0 ? "gratification" : "remorse");
+                emotion.setIntensity(Math.abs(desirability * relation.like));
                 relation.addEmotion(emotion);
                 causalAgent.updateEmotionalState(emotion);
             }
@@ -277,13 +277,13 @@ public class Agent {
         Emotion emotion = new Emotion(null, 0);
 
         if (desirability >= 0) {
-            emotion.name = relation.getLike() >= 0 ? "happy-for" : "resentment";
+            emotion.setName(relation.getLike() >= 0 ? "happy-for" : "resentment");
         } else {
-            emotion.name = relation.getLike() >= 0 ? "pity" : "gloating";
+            emotion.setName(relation.getLike() >= 0 ? "pity" : "gloating");
         }
 
-        emotion.intensity = Math.abs(desirability * relation.getLike());
-        if (emotion.intensity != 0) {
+        emotion.setIntensity(Math.abs(desirability * relation.getLike()));
+        if (emotion.getIntensity() != 0) {
             relation.addEmotion(emotion);
             this.updateEmotionalState(emotion);
         }
@@ -333,13 +333,13 @@ public class Agent {
         for (int i = 0; i < this.internalState.size(); i++) {
 
             // Decay emotion
-            double newIntensity = dfunc.decay(this.internalState.get(i).intensity, millisPassed);
+            double newIntensity = dfunc.decay(this.internalState.get(i).getIntensity(), millisPassed);
 
             // If intensity is below zero, remove emotion
             if (newIntensity < 0) {
                 this.internalState.remove(i);
             } else {
-                this.internalState.get(i).intensity = newIntensity;
+                this.internalState.get(i).setIntensity(newIntensity);
             }
         }
 
