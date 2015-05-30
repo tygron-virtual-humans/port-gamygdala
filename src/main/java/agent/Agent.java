@@ -52,12 +52,7 @@ public class Agent {
 
         // Set gain
         this.gain = Agent.DEFAULT_GAIN;
-
     }
-
-//    public AgentRelations getCurrentRelations() {
-//        return this.currentRelations;
-//    }
 
     /**
      * Add Goal.
