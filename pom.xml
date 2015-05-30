@@ -48,7 +48,7 @@
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<version>2.14</version>
 				<configuration>
-					<failOnViolation>false</failOnViolation>
+					<failOnViolation>true</failOnViolation>
 					<configLocation>checkstyle.xml</configLocation>
 				</configuration>
 			</plugin>

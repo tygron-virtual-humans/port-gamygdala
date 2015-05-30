@@ -1,12 +1,12 @@
 package agent;
 
+import java.util.ArrayList;
+
 import data.Emotion;
 import data.Goal;
 import data.map.GoalMap;
 import decayfunction.DecayFunction;
 import gamygdala.Engine;
-
-import java.util.ArrayList;
 
 /**
  * The main interacting character in the Gamygdala engine.
@@ -17,7 +17,7 @@ public class Agent {
     /**
      * The name of this Agent.
      */
-    public String name;
+    public final String name;
     /**
      * The gain for this agent. Must be between 0 and 20 inclusive.
      */
@@ -25,7 +25,7 @@ public class Agent {
     /**
      * Collection of goals for this Agent.
      */
-    GoalMap goals;
+    final GoalMap goals;
     /**
      * Collection of relations for this Agent.
      */
@@ -55,9 +55,9 @@ public class Agent {
 
     }
 
-    public AgentRelations getCurrentRelations() {
-        return this.currentRelations;
-    }
+//    public AgentRelations getCurrentRelations() {
+//        return this.currentRelations;
+//    }
 
     /**
      * Add Goal.
@@ -115,7 +115,7 @@ public class Agent {
     }
 
     /**
-     * Passthrough function to AgentInternalState.
+     * Pass through function to AgentInternalState.
      *
      * @param emotion The emotion with which this Agent should be updated.
      */
@@ -124,7 +124,7 @@ public class Agent {
     }
 
     /**
-     * Passthrough function to AgentInternalState.
+     * Pass through function to AgentInternalState.
      *
      * @param gain The gain factor. Leave blank (null) to ignore gain.
      * @return An array of emotions.
@@ -273,10 +273,10 @@ public class Agent {
      * resentment. Emotions that arise when we evaluate events that affect goals
      * of others.
      *
-     * @param desirability    The desirability is the desirability from the goal
-     *                        owner's perspective.
-     * @param relation        A relation object between the agent being evaluated and
-     *                        the goal owner of the affected goal.
+     * @param desirability The desirability is the desirability from the goal
+     *                     owner's perspective.
+     * @param relation     A relation object between the agent being evaluated and
+     *                     the goal owner of the affected goal.
      */
     public Emotion evaluateSocialEmotion(double desirability, Relation relation) {
         Emotion emotion = new Emotion(null, 0);
@@ -301,22 +301,19 @@ public class Agent {
      * need relations to exist, such as hope, fear, etc..
      *
      * @param utility     the utility.
-     * @param deltaLikelh the delta likelihood.
+     * @param deltaLikelihood the delta likelihood.
      * @param likelihood  the likelihood.
      */
-    public boolean evaluateInternalEmotion(double utility, double deltaLikelh, double likelihood) {
-
-        ArrayList<String> emotion = Emotion.determineEmotions(utility, deltaLikelh, likelihood);
-
+    public boolean evaluateInternalEmotion(double utility, double deltaLikelihood, double likelihood) {
+        ArrayList<String> emotion = Emotion.determineEmotions(utility, deltaLikelihood, likelihood);
         Engine.debug("   evaluateInternalEmotion: " + emotion);
 
-        double intensity = Math.abs(utility * deltaLikelh);
+        double intensity = Math.abs(utility * deltaLikelihood);
         if (intensity != 0) {
             for (String emo : emotion) {
                 updateEmotionalState(new Emotion(emo, intensity));
             }
         }
-
         return true;
     }
 
@@ -353,8 +350,8 @@ public class Agent {
         }
 
         // Decay all relations
-        for (int i = 0; i < this.currentRelations.size(); i++) {
-            this.currentRelations.get(i).decay(dfunc, millisPassed);
+        for (Relation currentRelation : this.currentRelations) {
+            currentRelation.decay(dfunc, millisPassed);
         }
     }
 
