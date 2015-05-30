@@ -21,13 +21,13 @@ public class AgentRelations extends ArrayList<Relation> {
      * @param like The relation (between -1 and 1).
      */
     public Relation updateRelation(Agent agent, double like) {
-        
+
         Relation relation = null;
         
         if (!this.hasRelationWith(agent)) {
             // This relation does not exist, just add it.
             relation = new Relation(agent, like);
-            add(relation);
+            this.add(relation);
         } else {
             // The relation already exists, update it.
             for (Relation rel: this) {
@@ -79,7 +79,7 @@ public class AgentRelations extends ArrayList<Relation> {
         String output = "";
 
         int size = size();
-        int emotionListSize = 0;
+        int emotionListSize;
         
         for (int i = 0; i < size; i++) {
 
