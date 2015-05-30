@@ -304,7 +304,7 @@ public class Agent {
      * @param deltaLikelihood the delta likelihood.
      * @param likelihood  the likelihood.
      */
-    public boolean evaluateInternalEmotion(double utility, double deltaLikelihood, double likelihood) {
+    public void evaluateInternalEmotion(double utility, double deltaLikelihood, double likelihood) {
         ArrayList<String> emotion = Emotion.determineEmotions(utility, deltaLikelihood, likelihood);
         Engine.debug("   evaluateInternalEmotion: " + emotion);
 
@@ -314,7 +314,6 @@ public class Agent {
                 updateEmotionalState(new Emotion(emo, intensity));
             }
         }
-        return true;
     }
 
     /**
