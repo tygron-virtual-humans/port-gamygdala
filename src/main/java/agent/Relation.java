@@ -1,9 +1,9 @@
 package agent;
 
+import java.util.ArrayList;
+
 import data.Emotion;
 import decayfunction.DecayFunction;
-
-import java.util.ArrayList;
 
 /**
  * Describes a Relation between two Agents.
@@ -72,7 +72,6 @@ public class Relation {
 
     /**
      * Decay all emotions in this relation.
-     *
      * @param dfunc The Decay Function used to decay this relation.
      * @param millisPassed The time passed (in milliseconds) since the last
      *            decay.
@@ -99,16 +98,16 @@ public class Relation {
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Relation) {
-            Relation rel = (Relation) obj;
-            return rel.agent.equals(this.agent) && Double.compare(this.like, rel.like) == 0
-                    && rel.emotionList.equals(this.emotionList);
+        if (!(obj instanceof Relation)) {
+            return false;
         }
-        return false;
+        Relation rel = (Relation) obj;
+        return rel.agent.equals(this.agent) && Double.compare(this.like, rel.like) == 0
+                && rel.emotionList.equals(this.emotionList);
     }
 
     /**
-     * Return the hash code of this Object
+     * Return the hash code of this Object.
      * @return int hash code
      */
     @Override
