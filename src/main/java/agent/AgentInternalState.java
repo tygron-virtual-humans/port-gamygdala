@@ -24,12 +24,12 @@ public class AgentInternalState extends ArrayList<Emotion> {
         Engine.debug("      updating emotion: " + emotion);
 
         for (Emotion temp : this) {
-            if (temp.name.equals(emotion.name)) {
+            if (temp.getName().equals(emotion.getName())) {
                 // Appraisals simply add to the old value of the emotion.
                 // Repeated appraisals without decay will result in the sum of
                 // the appraisals over time. To decay the emotional state, call
                 // Gamygdala.decay(decayFunction).
-                temp.intensity += emotion.intensity;
+                temp.setIntensity(temp.getIntensity() + emotion.getIntensity());
                 Engine.debug("         new emotion: " + temp);
                 return;
             }
@@ -38,7 +38,7 @@ public class AgentInternalState extends ArrayList<Emotion> {
 
         // copy on keep, we need to maintain a list of current emotions for the
         // state, not a list references to the appraisal engine
-        this.add(new Emotion(emotion.name, emotion.intensity));
+        this.add(new Emotion(emotion.getName(), emotion.getIntensity()));
     }
 
     /**
@@ -61,8 +61,8 @@ public class AgentInternalState extends ArrayList<Emotion> {
         AgentInternalState gainState = new AgentInternalState();
         for (Emotion emotion : this) {
             if (emotion != null) {
-                double gainEmo = (gain * emotion.intensity) / (gain * emotion.intensity + 1);
-                gainState.add(new Emotion(emotion.name, gainEmo));
+                double gainEmo = (gain * emotion.getIntensity()) / (gain * emotion.getIntensity() + 1);
+                gainState.add(new Emotion(emotion.getName(), gainEmo));
             }
         }
         return gainState;
@@ -82,7 +82,7 @@ public class AgentInternalState extends ArrayList<Emotion> {
     public String printEmotionalState(Double gain) {
         String output = "";
         for (Emotion emotion : this.getEmotionalState(gain)) {
-            output += emotion.name + ": " + emotion.intensity + ", ";
+            output += emotion.getName() + ": " + emotion.getIntensity() + ", ";
         }
         return output;
     }

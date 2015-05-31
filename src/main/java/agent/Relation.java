@@ -48,6 +48,15 @@ public class Relation {
     }
 
     /**
+     * Set the intensity of the relation.
+     *
+     * @param like Intensity of the relation
+     */
+    public void setLike(double like) {
+        this.like = like;
+    }
+
+    /**
      * Add an emotion to this relation.
      *
      * @param emotion The emotion to add.
@@ -55,8 +64,8 @@ public class Relation {
     public void addEmotion(Emotion emotion) {
         boolean added = false;
         for (Emotion temp : this.emotionList) {
-            if (temp.name.equals(emotion.name)) {
-                temp.intensity += emotion.intensity;
+            if (temp.getName().equals(emotion.getName())) {
+                temp.setIntensity(temp.getIntensity() + emotion.getIntensity());
                 // Check if this works just by ref, else:
                 // this.emotionList.set(i, e);
                 added = true;
@@ -66,7 +75,7 @@ public class Relation {
             // copy on keep, we need to maintain a list of current emotions for
             // the relation, not a list
             // refs to the appraisal engine
-            this.emotionList.add(new Emotion(emotion.name, emotion.intensity));
+            this.emotionList.add(new Emotion(emotion.getName(), emotion.getIntensity()));
         }
     }
 
@@ -80,14 +89,14 @@ public class Relation {
         for (int i = 0; i < this.emotionList.size(); i++) {
 
             Emotion emotion = this.emotionList.get(i);
-            double newIntensity = dfunc.decay(emotion.intensity, millisPassed);
+            double newIntensity = dfunc.decay(emotion.getIntensity(), millisPassed);
 
             if (newIntensity < 0) {
                 // This emotion has decayed below zero, we need to remove it.
                 this.emotionList.remove(i);
             } else {
                 // Update intensity
-                emotion.intensity = newIntensity;
+                emotion.setIntensity(newIntensity);
                 this.emotionList.set(i, emotion);
             }
         }
