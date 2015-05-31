@@ -40,7 +40,7 @@ public class Agent {
      *
      * @param name Agent name.
      */
-    public Agent(String name) {
+    public Agent(final String name) {
         this.name = name;
 
         // Init goal map.
@@ -52,6 +52,14 @@ public class Agent {
 
         // Set gain
         this.gain = Agent.DEFAULT_GAIN;
+    }
+
+    /**
+     * Get current relations from this Agent.
+     * @return AgentRelations List of Relations
+     */
+    public AgentRelations getCurrentRelations() {
+        return this.currentRelations;
     }
 
     /**
@@ -100,12 +108,10 @@ public class Agent {
      * @param gain The gain value [0 and 20].
      */
     public void setGain(double gain) {
-
-        // Gain has to be between 0 and 20.
-        if (gain <= 0 || gain > 20) {
-            Engine.debug("Error: gain factor for appraisal integration must be between 0 and 20.");
-        } else {
+        if (gain > 0 && gain <= 20) {
             this.gain = gain;
+        } else {
+            Engine.debug("Error: gain factor for appraisal integration must be between 0 and 20.");
         }
     }
 
@@ -126,25 +132,6 @@ public class Agent {
      */
     public AgentInternalState getEmotionalState(Double gain) {
         return this.internalState.getEmotionalState(gain);
-    }
-
-    /**
-     * This function prints to the console either the state as is (gain=null) or
-     * a state based on gained limiter (limited between 0 and 1), of which the
-     * gain can be set by using setGain(gain). A high gain factor works well
-     * when appraisals are small and rare, and you want to see the effect of
-     * these appraisals. A low gain factor (close to 0 but in any case below 1)
-     * works well for high frequency and/or large appraisals, so that the effect
-     * of these is dampened.
-     *
-     * @param gained Print only gained emotions or not.
-     */
-    public void printEmotionalState(boolean gained) {
-        String output = this.name + " feels ";
-        Double gain = gained ? this.gain : null;
-        output += internalState.printEmotionalState(gain);
-
-        System.out.println(output);
     }
 
     /**
@@ -186,18 +173,6 @@ public class Agent {
     }
 
     /**
-     * Prints the relations this agent has with the agent defined by agentName.
-     *
-     * @param agent The agent who is the target of the relation. When omitted,
-     *              all relations are printed.
-     */
-    public void printRelations(Agent agent) {
-        String output = this.name + " has the following sentiments:\n   ";
-        output += this.currentRelations.printRelations(agent);
-        System.out.println(output);
-    }
-
-    /**
      * Update Agent's emotion based on actions by other Agents.
      *
      * @param affectedAgent The Agent affected by the action.
@@ -207,59 +182,42 @@ public class Agent {
      * @return The Emotion arising from the action.
      */
     public Emotion agentActions(Agent affectedAgent, Agent causalAgent, double desirability) {
+        //Check for empty Agents
+        assert(causalAgent != null && affectedAgent != null);
 
-        // Check for empty agent
-        if (causalAgent == null) {
-            return null;
-        }
+        //Check iff only one of the agents is this.
+        assert(this.equals(affectedAgent) ^ this.equals(causalAgent));
 
-        Engine.debug("   agentActions: self=" + this + " affected=" + affectedAgent + "  causal=" + causalAgent);
-
-        // Init emotion variable
-        Emotion emotion = new Emotion(null, 0);
         Relation relation;
+        Emotion emotion = null;
+        if (this.equals(affectedAgent)) {
+            Engine.debug("      Entering CASE 1.");
+            emotion = new Emotion(
+                    desirability >= 0 ? "gratitude" : "anger",
+                    Math.abs(desirability)
+            );
+            Engine.debug("      Emotion: " + emotion);
 
-        // If we are the affectedAgent, and we are not causing the action
-        if (affectedAgent.equals(this)) {
-
-            if (!this.equals(causalAgent)) {
-
-                Engine.debug("      Entering CASE 1.");
-
-                emotion.setName(desirability >= 0 ? "gratitude" : "anger");
-                emotion.setIntensity(Math.abs(desirability));
-
-                Engine.debug("      Emotion: " + emotion);
-
-                // Update the relation with other agents based on this new
-                // emotion
-                if (!this.hasRelationWith(causalAgent)) {
-                    relation = this.updateRelation(causalAgent, 0.0);
-                } else {
-                    relation = this.getRelation(causalAgent);
-                }
-                relation.addEmotion(emotion);
-                updateEmotionalState(emotion);
-
+            if (this.hasRelationWith(causalAgent)) {
+                relation = this.getRelation(causalAgent);
             } else {
-                Engine.debug("      Entering CASE 2. This case is not included in Gamygdala.");
-                return null;
+                relation = this.updateRelation(causalAgent, .0);
             }
-
-        } else if (causalAgent.equals(this) && causalAgent.hasRelationWith(affectedAgent)) {
+        } else {
+            //Check if the two Agent have a relation.
+            assert(this.hasRelationWith(affectedAgent));
 
             Engine.debug("      Entering CASE 3.");
-
-            // Update the relations with other agents
-            relation = causalAgent.getRelation(affectedAgent);
+            relation = this.getRelation(affectedAgent);
             if (relation.like >= 0) {
-                emotion.setName(desirability >= 0 ? "gratification" : "remorse");
-                emotion.setIntensity(Math.abs(desirability * relation.like));
-                relation.addEmotion(emotion);
-                causalAgent.updateEmotionalState(emotion);
+                emotion = new Emotion(
+                        desirability >= 0 ? "gratification" : "remorse",
+                        Math.abs(desirability * relation.like)
+                );
             }
         }
-
+        relation.addEmotion(emotion);
+        this.updateEmotionalState(emotion);
         return emotion;
     }
 
@@ -275,14 +233,13 @@ public class Agent {
      */
     public Emotion evaluateSocialEmotion(double desirability, Relation relation) {
         Emotion emotion = new Emotion(null, 0);
-
         if (desirability >= 0) {
             emotion.setName(relation.getLike() >= 0 ? "happy-for" : "resentment");
         } else {
             emotion.setName(relation.getLike() >= 0 ? "pity" : "gloating");
         }
-
         emotion.setIntensity(Math.abs(desirability * relation.getLike()));
+
         if (emotion.getIntensity() != 0) {
             relation.addEmotion(emotion);
             this.updateEmotionalState(emotion);
@@ -295,9 +252,9 @@ public class Agent {
      * This method evaluates the event in terms of internal emotions that do not
      * need relations to exist, such as hope, fear, etc..
      *
-     * @param utility     the utility.
+     * @param utility         the utility.
      * @param deltaLikelihood the delta likelihood.
-     * @param likelihood  the likelihood.
+     * @param likelihood      the likelihood.
      */
     public void evaluateInternalEmotion(double utility, double deltaLikelihood, double likelihood) {
         ArrayList<String> emotion = Emotion.determineEmotions(utility, deltaLikelihood, likelihood);
@@ -347,6 +304,37 @@ public class Agent {
         for (Relation currentRelation : this.currentRelations) {
             currentRelation.decay(dfunc, millisPassed);
         }
+    }
+
+    /**
+     * Prints the relations this agent has with the agent defined by agentName.
+     *
+     * @param agent The agent who is the target of the relation. When omitted,
+     *              all relations are printed.
+     */
+    public void printRelations(Agent agent) {
+        String output = this.name + " has the following sentiments:\n   ";
+        output += this.currentRelations.printRelations(agent);
+
+        System.out.println(output);
+    }
+
+    /**
+     * This function prints to the console either the state as is (gain=null) or
+     * a state based on gained limiter (limited between 0 and 1), of which the
+     * gain can be set by using setGain(gain). A high gain factor works well
+     * when appraisals are small and rare, and you want to see the effect of
+     * these appraisals. A low gain factor (close to 0 but in any case below 1)
+     * works well for high frequency and/or large appraisals, so that the effect
+     * of these is dampened.
+     *
+     * @param gained Print only gained emotions or not.
+     */
+    public void printEmotionalState(boolean gained) {
+        String output = this.name + " feels ";
+        output += this.internalState.printEmotionalState(gained ? this.gain : null);
+
+        System.out.println(output);
     }
 
     /**
