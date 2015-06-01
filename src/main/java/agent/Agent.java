@@ -182,13 +182,7 @@ public class Agent {
      * @return The Emotion arising from the action.
      */
     public Emotion agentActions(Agent affectedAgent, Agent causalAgent, double desirability) {
-        //Check for empty Agents
-        assert(causalAgent != null && affectedAgent != null);
-
-        //Check iff only one of the agents is this.
-        assert(this.equals(affectedAgent) ^ this.equals(causalAgent));
-
-        Relation relation;
+        Relation relation = null;
         Emotion emotion = null;
         if (this.equals(affectedAgent)) {
             Engine.debug("      Entering CASE 1.");
@@ -203,7 +197,7 @@ public class Agent {
             } else {
                 relation = this.updateRelation(causalAgent, .0);
             }
-        } else {
+        } else if (this.equals(causalAgent)) {
             //Check if the two Agent have a relation.
             assert(this.hasRelationWith(affectedAgent));
 
@@ -216,8 +210,10 @@ public class Agent {
                 );
             }
         }
-        relation.addEmotion(emotion);
-        this.updateEmotionalState(emotion);
+        if (relation != null) {
+            relation.addEmotion(emotion);
+            this.updateEmotionalState(emotion);
+        }
         return emotion;
     }
 
