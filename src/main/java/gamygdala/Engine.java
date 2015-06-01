@@ -1,13 +1,13 @@
 package gamygdala;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import agent.Agent;
 import data.Belief;
 import data.Goal;
 import decayfunction.DecayFunction;
-
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * Gaming Engine adapter for Gamygdala.
@@ -42,16 +42,18 @@ public class Engine {
 
     }
 
-    //TODO: These methods are really similar so their must be a better
     /**
      * Get the Engine object. If no Engine has been instantiated,
      * create a new Engine with a fresh Gamygdala instance.
      * @return Engine instance of Engine
      */
-    public static synchronized Engine getInstance() {
-
+    public static Engine getInstance() {
         if (engineInstance == null) {
-            engineInstance = new Engine();
+            synchronized (Engine.class) {
+                if (engineInstance == null) {
+                    engineInstance = new Engine();
+                }
+            }
         }
 
         return engineInstance;
@@ -61,7 +63,7 @@ public class Engine {
      * Reset Engine by creating an Engine.
      * @return Engine
      */
-    public static Engine reset() {
+    public static Engine resetEngine() {
         if (engineInstance != null) {
             synchronized (Engine.class) {
                 if (engineInstance != null) {

@@ -168,6 +168,6 @@ public class EngineTest {
     @Test
     public void testResetWithoutInstance() throws Exception {
         Engine e = Engine.getInstance();
-        assertNotEquals(e, Engine.reset());
+        assertNotEquals(e, Engine.resetEngine());
     }
 }
