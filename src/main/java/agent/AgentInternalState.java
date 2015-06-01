@@ -1,9 +1,9 @@
 package agent;
 
+import java.util.ArrayList;
+
 import data.Emotion;
 import gamygdala.Engine;
-
-import java.util.ArrayList;
 
 /**
  * The internal state of an Agent. Contains all it's emotions.
@@ -21,28 +21,24 @@ public class AgentInternalState extends ArrayList<Emotion> {
      * @param emotion The emotion with which this Agent should be updated.
      */
     public void updateEmotionalState(Emotion emotion) {
-        
         Engine.debug("      updating emotion: " + emotion);
 
         for (Emotion temp : this) {
-
-            if (temp.name == emotion.name) {
-
+            if (temp.getName().equals(emotion.getName())) {
                 // Appraisals simply add to the old value of the emotion.
                 // Repeated appraisals without decay will result in the sum of
                 // the appraisals over time. To decay the emotional state, call
                 // Gamygdala.decay(decayFunction).
-                temp.intensity += emotion.intensity;
+                temp.setIntensity(temp.getIntensity() + emotion.getIntensity());
                 Engine.debug("         new emotion: " + temp);
                 return;
             }
         }
-
         Engine.debug("         new emotion: " + emotion);
 
         // copy on keep, we need to maintain a list of current emotions for the
         // state, not a list references to the appraisal engine
-        add(new Emotion(emotion.name, emotion.intensity));
+        this.add(new Emotion(emotion.getName(), emotion.getIntensity()));
     }
 
     /**
@@ -58,22 +54,18 @@ public class AgentInternalState extends ArrayList<Emotion> {
      * @return An array of emotions.
      */
     public AgentInternalState getEmotionalState(Double gain) {
-
-        if (gain != null) {
-
-            AgentInternalState gainState = new AgentInternalState();
-
-            for (Emotion emotion : this) {
-                if (emotion != null) {
-                    double gainEmo = (gain * emotion.intensity) / (gain * emotion.intensity + 1);
-                    gainState.add(new Emotion(emotion.name, gainEmo));
-                }
-            }
-
-            return gainState;
+        if (gain == null) {
+            return this;
         }
 
-        return this;
+        AgentInternalState gainState = new AgentInternalState();
+        for (Emotion emotion : this) {
+            if (emotion != null) {
+                double gainEmo = (gain * emotion.getIntensity()) / (gain * emotion.getIntensity() + 1);
+                gainState.add(new Emotion(emotion.getName(), gainEmo));
+            }
+        }
+        return gainState;
     }
 
     /**
@@ -88,15 +80,10 @@ public class AgentInternalState extends ArrayList<Emotion> {
      * @param gain The gain factor. Leave blank (null) to ignore gain.
      */
     public String printEmotionalState(Double gain) {
-
         String output = "";
-
-        AgentInternalState emotionalState = this.getEmotionalState(gain);
-
-        for (Emotion emotion : emotionalState) {
-            output += emotion.name + ": " + emotion.intensity + ", ";
+        for (Emotion emotion : this.getEmotionalState(gain)) {
+            output += emotion.getName() + ": " + emotion.getIntensity() + ", ";
         }
-
         return output;
     }
 

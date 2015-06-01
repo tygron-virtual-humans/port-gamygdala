@@ -19,25 +19,17 @@ public class AgentRelations extends ArrayList<Relation> {
      *
      * @param agent The agent who is the target of the relation.
      * @param like The relation (between -1 and 1).
+     * @return Relation Relation between this agent and an other one.
      */
     public Relation updateRelation(Agent agent, double like) {
-        
-        Relation relation = null;
-        
-        if (!this.hasRelationWith(agent)) {
-            // This relation does not exist, just add it.
-            relation = new Relation(agent, like);
-            add(relation);
+        Relation relation;
+        if (this.hasRelationWith(agent)) {
+            relation = this.getRelation(agent);
+            relation.setLike(like);
         } else {
-            // The relation already exists, update it.
-            for (Relation rel: this) {
-                if (rel.agent.equals(agent)) {
-                    rel.like = like;
-                }
-                return rel;
-            }
+            relation = new Relation(agent, like);
+            this.add(relation);
         }
-        
         return relation;
     }
 
@@ -59,10 +51,8 @@ public class AgentRelations extends ArrayList<Relation> {
      * @return Relation The relation object or null if non existing.
      */
     public Relation getRelation(Agent agent) {
-        Relation relation;
-        for (int i = 0; i < size(); i++) {
-            relation = get(i);
-            if (relation.agent.equals(agent)) {
+        for (Relation relation : this) {
+            if (relation.getAgent().equals(agent)) {
                 return relation;
             }
         }
@@ -77,16 +67,13 @@ public class AgentRelations extends ArrayList<Relation> {
      */
     public String printRelations(Agent agent) {
         String output = "";
+        int emotionListSize;
 
-        int size = size();
-        int emotionListSize = 0;
-        
-        for (int i = 0; i < size; i++) {
-
-            if (agent == null || get(i).agent.equals(agent)) {
-                emotionListSize = get(i).emotionList.size();
+        for (int i = 0; i < this.size(); i++) {
+            if (agent == null || this.get(i).agent.equals(agent)) {
+                emotionListSize = this.get(i).emotionList.size();
                 for (int j = 0; j < emotionListSize; j++) {
-                    output += get(i).emotionList.get(j).name + "(" + get(i).emotionList.get(j).intensity + ")";
+                    output += get(i).emotionList.get(j).getName() + "(" + get(i).emotionList.get(j).getIntensity() + ")";
 
                     if (j < emotionListSize - 1) {
                         output += ", and ";
@@ -96,7 +83,7 @@ public class AgentRelations extends ArrayList<Relation> {
 
             output += " for " + get(i).agent;
 
-            if (i < size - 1) {
+            if (i < this.size() - 1) {
                 output += ", and\n";
             }
         }

@@ -10,12 +10,12 @@ public class Emotion {
     /**
      * Name of the emotion.
      */
-    public String name;
+    private String name;
 
     /**
      * Intensity of the emotion.
      */
-    public double intensity;
+    private double intensity;
 
     /**
      * Construct a new Emotion.
@@ -25,6 +25,37 @@ public class Emotion {
      */
     public Emotion(String name, double intensity) {
         this.name = name;
+        this.intensity = intensity;
+    }
+
+    /**
+     * Get name of the Emotion.
+     * @return String Name of the Emotion.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets name of the Emotion.
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Get intensity of the Emotion.
+     * @return double Intensity of the Emotion.
+     */
+    public double getIntensity() {
+        return intensity;
+    }
+
+    /**
+     * Sets intensity of the Emotion.
+     * @return double Intensity of the Emotion.
+     */
+    public void setIntensity(double intensity) {
         this.intensity = intensity;
     }
 

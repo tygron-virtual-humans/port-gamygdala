@@ -1,9 +1,9 @@
 package agent;
 
-import data.Emotion;
-
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import data.Emotion;
 
 /**
  * Pleasure Arousal Dominance mapping of the emotional states.
@@ -95,9 +95,9 @@ public class PADMap {
         Emotion emotion;
         for (int i = 0; i < emotions.size(); i++) {
             emotion = emotions.get(i);
-            pad[0] += (emotion.intensity * mapPad.get(emotion.name)[0]);
-            pad[1] += (emotion.intensity * mapPad.get(emotion.name)[1]);
-            pad[2] += (emotion.intensity * mapPad.get(emotion.name)[2]);
+            pad[0] += (emotion.getIntensity() * mapPad.get(emotion.getName())[0]);
+            pad[1] += (emotion.getIntensity() * mapPad.get(emotion.getName())[1]);
+            pad[2] += (emotion.getIntensity() * mapPad.get(emotion.getName())[2]);
         }
 
         if (gain != null) {
