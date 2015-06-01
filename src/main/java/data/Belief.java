@@ -1,10 +1,10 @@
 package data;
 
-import agent.Agent;
-import exception.GoalCongruenceMapException;
-
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import agent.Agent;
+import exception.GoalCongruenceMapException;
 
 /**
  * A Belief contains information about events (Goals) and the amount of positive
