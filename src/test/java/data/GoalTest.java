@@ -40,7 +40,6 @@ public class GoalTest {
 
   @Test
   public void testEqualsObject() {
-
     Goal g2 = new Goal("NotTheSameGoal", 2, true);
     assertFalse(goal.equals(g2));
 
@@ -49,7 +48,6 @@ public class GoalTest {
 
     String s1 = "ThisIsObviouslyNotAGoal";
     assertFalse(goal.equals(s1));
-
   }
 
   @Test

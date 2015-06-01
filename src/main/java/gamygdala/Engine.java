@@ -39,11 +39,14 @@ public class Engine {
      * Use Engine.getInstance() instead.
      */
     private Engine() {
+
     }
 
+    //TODO: These methods are really similar so their must be a better
     /**
      * Get the Engine object. If no Engine has been instantiated,
      * create a new Engine with a fresh Gamygdala instance.
+     * @return Engine instance of Engine
      */
     public static synchronized Engine getInstance() {
 
@@ -54,6 +57,10 @@ public class Engine {
         return engineInstance;
     }
 
+    /**
+     * Reset Engine by creating an Engine.
+     * @return Engine
+     */
     public static Engine reset() {
         if (engineInstance != null) {
             synchronized (Engine.class) {
@@ -68,12 +75,13 @@ public class Engine {
 
     /**
      * Create and add an Agent to the Engine.
-     *
      * @param name The name of the Agent.
+     * @return Agent created Agent
      */
     public Agent createAgent(String name) {
         Agent agent = new Agent(name);
         gamygdala.getGamygdalaMap().registerAgent(agent);
+
         return agent;
     }
 
@@ -212,11 +220,10 @@ public class Engine {
      * @param decayFunction The decay function to be used.
      */
     public void setDecay(double decayFactor, DecayFunction decayFunction) {
-
-        gamygdala.setDecayFactor(decayFactor);
+        this.gamygdala.setDecayFactor(decayFactor);
 
         if (decayFunction != null) {
-            gamygdala.setDecayFunction(decayFunction);
+            this.gamygdala.setDecayFunction(decayFunction);
         } else {
             Engine.debug("[Engine.setDecay] DecayFunction is null.");
         }
@@ -229,7 +236,7 @@ public class Engine {
      * @return The Gamygdala instance.
      */
     public Gamygdala getGamygdala() {
-        return gamygdala;
+        return this.gamygdala;
     }
 
     /**
@@ -248,12 +255,9 @@ public class Engine {
      *            or non-gained (false).
      */
     public void printAllEmotions(boolean gain) {
-
-        Iterator<Entry<String, Agent>> it = gamygdala.getGamygdalaMap().getAgentIterator();
         Agent agent;
-        while (it.hasNext()) {
-            Map.Entry<String, Agent> pair = it.next();
-            agent = pair.getValue();
+        for (Entry<String, Agent> stringAgentEntry : this.gamygdala.getGamygdalaMap().getAgentMap().entrySet()) {
+            agent = stringAgentEntry.getValue();
 
             agent.printEmotionalState(gain);
             agent.printRelations(null);

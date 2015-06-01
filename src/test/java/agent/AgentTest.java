@@ -236,13 +236,9 @@ public class AgentTest {
 
     }
 
-    @Test
+    @Test(expected = AssertionError.class)
     public void testAgentActionsEmptyCausalAgent() {
-
-        // Check for empty causal Agent
-        Emotion result = agent.agentActions(agent, null, 0);
-        assertNull(result);
-
+        agent.agentActions(agent, null, 0);
     }
 
     @Test
@@ -273,24 +269,18 @@ public class AgentTest {
         assertEquals(expected, agent.currentRelations.get(0).emotionList.get(0));
     }
     
-    @Test
+    @Test(expected = AssertionError.class)
     public void testAgentActionsCaseTwo() {
-
-        // CASE 2
-
-        Emotion result = agent.agentActions(agent, agent, .25);
-        assertNull(result);
+        agent.agentActions(agent, agent, .25);
     }
     
-    @Test
+    @Test(expected = AssertionError.class)
     public void testAgentActionsCaseThree_NoRelation() {
 
         Agent causalAgent = new Agent("CausalAgent");
 
         // CASE 3
-
-        Emotion result = agent.agentActions(causalAgent, agent, .25);
-        assertEquals(new Emotion(null, 0.0), result);
+        agent.agentActions(causalAgent, agent, .25);
     }
     
     @Test
@@ -318,16 +308,16 @@ public class AgentTest {
         
         // Test four emotions
         when(relation.getLike()).thenReturn(1d);
-        assertEquals("happy-for", agent.evaluateSocialEmotion(1, relation).name);
+        assertEquals("happy-for", agent.evaluateSocialEmotion(1, relation).getName());
         
         when(relation.getLike()).thenReturn(-1d);
-        assertEquals("resentment", agent.evaluateSocialEmotion(1, relation).name);
+        assertEquals("resentment", agent.evaluateSocialEmotion(1, relation).getName());
         
         when(relation.getLike()).thenReturn(1d);
-        assertEquals("pity", agent.evaluateSocialEmotion(-1, relation).name);
+        assertEquals("pity", agent.evaluateSocialEmotion(-1, relation).getName());
         
         when(relation.getLike()).thenReturn(-1d);
-        assertEquals("gloating", agent.evaluateSocialEmotion(-1, relation).name);
+        assertEquals("gloating", agent.evaluateSocialEmotion(-1, relation).getName());
         
     }
 
