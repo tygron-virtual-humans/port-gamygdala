@@ -207,15 +207,12 @@ public class Agent {
      * @return The Emotion arising from the action.
      */
     public Emotion agentActions(Agent affectedAgent, Agent causalAgent, double desirability) {
+        //Check for empty Agents
+        assert(causalAgent != null && affectedAgent != null);
 
-        // Check for empty agent
-        if (causalAgent == null) {
-            return null;
-        }
+        //Check iff only one of the agents is this.
+        assert(this.equals(affectedAgent) ^ this.equals(causalAgent));
 
-        Engine.debug("   agentActions: self=" + this + " affected=" + affectedAgent + "  causal=" + causalAgent);
-
-        // Init emotion variable
         Relation relation;
         Emotion emotion = null;
         if (this.equals(affectedAgent)) {
@@ -225,27 +222,27 @@ public class Agent {
                     Math.abs(desirability)
             );
             Engine.debug("      Emotion: " + emotion);
-            relation = this.hasRelationWith(causalAgent) ?
-                    this.getRelation(causalAgent) : this.updateRelation(causalAgent, .0);
+
+            if (this.hasRelationWith(causalAgent)) {
+                relation = this.getRelation(causalAgent);
+            } else {
+                relation = this.updateRelation(causalAgent, .0);
+            }
         } else {
             //Check if the two Agent have a relation.
             assert(this.hasRelationWith(affectedAgent));
 
             Engine.debug("      Entering CASE 3.");
-
-            // Update the relations with other agents
-            relation = causalAgent.getRelation(affectedAgent);
+            relation = this.getRelation(affectedAgent);
             if (relation.like >= 0) {
                 emotion = new Emotion(
                         desirability >= 0 ? "gratification" : "remorse",
                         Math.abs(desirability * relation.like)
                 );
-
-                relation.addEmotion(emotion);
-                causalAgent.updateEmotionalState(emotion);
             }
         }
-
+        relation.addEmotion(emotion);
+        this.updateEmotionalState(emotion);
         return emotion;
     }
 
