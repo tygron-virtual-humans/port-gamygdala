@@ -182,6 +182,8 @@ public class Agent {
      * @return The Emotion arising from the action.
      */
     public Emotion agentActions(Agent affectedAgent, Agent causalAgent, double desirability) {
+        assert(causalAgent != null && affectedAgent != null);
+
         Relation relation = null;
         Emotion emotion = null;
         if (this.equals(affectedAgent)) {

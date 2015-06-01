@@ -270,11 +270,6 @@ public class AgentTest {
     }
     
     @Test(expected = AssertionError.class)
-    public void testAgentActionsCaseTwo() {
-        agent.agentActions(agent, agent, .25);
-    }
-    
-    @Test(expected = AssertionError.class)
     public void testAgentActionsCaseThree_NoRelation() {
 
         Agent causalAgent = new Agent("CausalAgent");
