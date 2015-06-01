@@ -1,5 +1,7 @@
 package gamygdala;
 
+import java.util.Map;
+
 import agent.Agent;
 import agent.Relation;
 import data.Belief;
@@ -7,8 +9,6 @@ import data.Goal;
 import data.map.GamygdalaMap;
 import decayfunction.DecayFunction;
 import decayfunction.LinearDecay;
-
-import java.util.Map;
 
 /**
  * This is the main appraisal engine class taking care of interpreting a
@@ -58,7 +58,7 @@ public class Gamygdala {
      */
     public boolean appraise(Belief belief, Agent affectedAgent) {
 
-        Engine.debug("\n=====\nStarting appraisal for:\n" + belief + "\nwith affectedAgent: " + affectedAgent + "\n=====\n");
+        Engine.debug("\n===\nStarting appraisal for:\n" + belief + "\nwith affectedAgent: " + affectedAgent + "\n==\n");
 
         // Check belief
         if (belief == null) {
