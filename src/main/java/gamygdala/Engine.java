@@ -22,7 +22,7 @@ public class Engine {
     /**
      * Debug flag.
      */
-    public static final boolean DEBUG = true;
+    private static final boolean DEBUG = true;
 
     /**
      * Gamygdala instance.
@@ -55,7 +55,6 @@ public class Engine {
                 }
             }
         }
-
         return engineInstance;
     }
 
