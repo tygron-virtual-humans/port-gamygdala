@@ -24,11 +24,12 @@ var Mapper = function(scenario) {
     this.agentSelf = this.emotionEngine.createAgent('self');
     this.agentAffected = this.emotionEngine.createAgent('affected');
     this.agentCausal = this.emotionEngine.createAgent('causal');
+    this.agentNone = this.emotionEngine.createAgent('none');
 
     if (affectedAgent === 'self') {
         this.goal = this.emotionEngine.createGoalForAgent(this.agentSelf, 'goal', utility, false)
     } else if (affectedAgent === 'other') {
-        this.goal = this.emotionEngine.createGoalForAgent(this.agentAffected, 'goal', utility, false)
+        this.goal = this.emotionEngine.createGoalForAgent(this.agentAffected, 'goal', utility, false);
         this.emotionEngine.createRelation(this.agentSelf, this.agentAffected, relationWithAffected);
     }
 
@@ -45,7 +46,7 @@ var Mapper = function(scenario) {
         goals.add(this.goal);
         congruences.add(congruence);
 
-        this.belief = new this.BeliefClass(eventLikelihood, this.agentCausal, goals, congruences, false);
+        this.belief = new this.BeliefClass(eventLikelihood, this.agentNone, goals, congruences, false);
     }
 
     if (causalAgent === 'self'){
