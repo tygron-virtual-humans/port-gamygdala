@@ -33,13 +33,13 @@ public class PADMap {
      * 
      * @return PADMap instance.
      */
-    public static synchronized PADMap getInstance() {
-
+    public static PADMap getInstance() {
         if (PADMap.padInstance == null) {
-            PADMap.padInstance = new PADMap();
-            PADMap.addInitialEmotions();
+            synchronized (PADMap.class) {
+                PADMap.padInstance = new PADMap();
+                PADMap.addInitialEmotions();
+            }
         }
-
         return padInstance;
     }
 
@@ -47,7 +47,6 @@ public class PADMap {
      * Adds the initial / default emotions to the PAD map.
      */
     private static synchronized void addInitialEmotions() {
-
         mapPad = new HashMap<String, double[]>(16, 1);
         mapPad.put("distress", new double[] { -0.61, 0.28, -0.36 });
         mapPad.put("fear", new double[] { -0.64, 0.6, -0.43 });
@@ -86,23 +85,15 @@ public class PADMap {
         if (emotions == null) {
             throw new IllegalArgumentException("Agent does not have emotional state.");
         }
+        double[] pad = new double[] {.0, .0, .0};
 
-        double[] pad = new double[3];
-        pad[0] = 0;
-        pad[1] = 0;
-        pad[2] = 0;
+        for (Emotion emotion : emotions) {
+            for (int i = 0, padLength = pad.length; i < padLength; i++) {
+                pad[i] += (emotion.getIntensity() * mapPad.get(emotion.getName())[i]);
 
-        Emotion emotion;
-        for (int i = 0; i < emotions.size(); i++) {
-            emotion = emotions.get(i);
-            pad[0] += (emotion.getIntensity() * mapPad.get(emotion.getName())[0]);
-            pad[1] += (emotion.getIntensity() * mapPad.get(emotion.getName())[1]);
-            pad[2] += (emotion.getIntensity() * mapPad.get(emotion.getName())[2]);
-        }
-
-        if (gain != null) {
-            for (int i = 0; i < 3; i++) {
-                pad[i] = (pad[i] >= 0 ? gain * pad[i] / (gain * pad[i] + 1) : -gain * pad[i] / (gain * pad[i] - 1));
+                if (gain != null) {
+                    pad[i] = (pad[i] >= 0 ? gain * pad[i] / (gain * pad[i] + 1) : -gain * pad[i] / (gain * pad[i] - 1));
+                }
             }
         }
 

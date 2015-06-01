@@ -53,8 +53,8 @@ public class Main {
         engine.setDecay(decayFactor, new ExponentialDecay(decayFactor));
         engine.setGain(gain);
 
-        ArrayList<Goal> affectedGoals = null;
-        ArrayList<Double> goalCongruences = null;
+        ArrayList<Goal> affectedGoals;
+        ArrayList<Double> goalCongruences;
 
         // Demo gameplay
 
