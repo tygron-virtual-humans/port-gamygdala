@@ -36,8 +36,10 @@ public class PADMap {
     public static PADMap getInstance() {
         if (PADMap.padInstance == null) {
             synchronized (PADMap.class) {
-                PADMap.padInstance = new PADMap();
-                PADMap.addInitialEmotions();
+                if (PADMap.padInstance == null) {
+                    PADMap.padInstance = new PADMap();
+                    PADMap.addInitialEmotions();
+                }
             }
         }
         return padInstance;
