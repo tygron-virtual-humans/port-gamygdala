@@ -1,6 +1,6 @@
 function intensityBenchmark(){
     //There are totla 13 intensity rules that need to be satisified.
-    var evaluatingChecker = false //This variable determines if the test is running on the occChecker or not.
+    var evaluatingChecker = false; //This variable determines if the test is running on the occChecker or not.
     //These are the 9 variables that need to be set before each test!
     var congruence;
     var utility;
@@ -47,7 +47,7 @@ function intensityBenchmark(){
     number++;
     intensityTest = [];
     for(var i = 0; i < numberOfRandoms; i++){
-        congruence = 0.5
+        congruence = 0.5;
         utility = Math.random()*2 - 1;
         affectedAgent = 'other';
         relationWithAffected = 0.5;
@@ -67,8 +67,8 @@ function intensityBenchmark(){
     number++;
     intensityTest = [];
     for(var i = 0; i < numberOfRandoms; i++){
-        congruence = 0.5
-        utility = 0.5
+        congruence = 0.5;
+        utility = 0.5;
         affectedAgent = 'other';
         relationWithAffected = Math.random()*2 - 1;
         newEvent = true;
@@ -87,8 +87,8 @@ function intensityBenchmark(){
     number++;
     intensityTest = [];
     for(var i = 0; i < numberOfRandoms; i++){
-        congruence = 0.5
-        utility = 0.5
+        congruence = 0.5;
+        utility = 0.5;
         affectedAgent = 'other';
         relationWithAffected = 0.5;
         newEvent = true;

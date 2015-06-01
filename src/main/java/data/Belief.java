@@ -111,9 +111,8 @@ public class Belief {
      * Return string representation of Belief.
      */
     public String toString() {
-        String str = "<Belief[CausalAgent = " + causalAgent + ", likelihood = " + likelihood + ", incremental = "
+        return "<Belief[CausalAgent = " + causalAgent + ", likelihood = " + likelihood + ", incremental = "
                 + isIncremental + "]>";
-        return str;
     }
 
 }

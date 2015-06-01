@@ -28,7 +28,7 @@ var Mapper = function(scenario) {
     if (affectedAgent === 'self') {
         this.goal = this.emotionEngine.createGoalForAgent(this.agentSelf, 'goal', utility, false)
     } else if (affectedAgent === 'other') {
-        this.goal = this.emotionEngine.createGoalForAgent(this.agentAffected, 'goal', utility, false)
+        this.goal = this.emotionEngine.createGoalForAgent(this.agentAffected, 'goal', utility, false);
         this.emotionEngine.createRelation(this.agentSelf, this.agentAffected, relationWithAffected);
     }
 
