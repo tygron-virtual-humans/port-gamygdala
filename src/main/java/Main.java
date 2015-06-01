@@ -56,7 +56,7 @@ public class Main {
         ArrayList<Goal> affectedGoals;
         ArrayList<Double> goalCongruences;
 
-        // Demo gameplay
+        // Demo game play
 
         // Event 1: Mario collects a coin
         print_event(1, "Mario collects a coin");
@@ -142,7 +142,7 @@ public class Main {
         Thread.sleep(2000L);
         engine.decayAll();
 
-        print_event(6, "Bowser has been killend and Peach has been rescued by Mario!");
+        print_event(6, "Bowser has been killed and Peach has been rescued by Mario!");
 
         affectedGoals = new ArrayList<Goal>();
         goalCongruences = new ArrayList<Double>();

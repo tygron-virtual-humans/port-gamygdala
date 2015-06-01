@@ -169,7 +169,7 @@ public class Engine {
      * particular agents can never appraise an event, then you can force
      * Gamygdala to only look at a subset of agents. Gamygdala assumes that the
      * affectedAgent is indeed the only goal owner affected and will not perform
-     * any checks, nor use Gamygdala's list of known goals to find other agents
+     * any checks, nor use Gamygdalas list of known goals to find other agents
      * that share this goal.
      *
      * @param belief The current event to be appraised.
@@ -182,7 +182,7 @@ public class Engine {
     /**
      * Set the gain for the whole set of agents known to Gamygdala. For more
      * realistic, complex games, you would typically set the gain for each agent
-     * type separately, to finetune the intensity of the response.
+     * type separately, to fine-tune the intensity of the response.
      *
      * @param gain The gain value [0 and 20].
      */

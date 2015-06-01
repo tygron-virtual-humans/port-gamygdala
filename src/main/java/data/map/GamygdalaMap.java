@@ -15,12 +15,12 @@ public class GamygdalaMap {
     /**
      * Collection of Agents.
      */
-    private AgentMap agentMap;
+    private final AgentMap agentMap;
 
     /**
      * Collection of Goals.
      */
-    private GoalMap goalMap;
+    private final GoalMap goalMap;
 
     /**
      * Construct a new GamygdalaMap.

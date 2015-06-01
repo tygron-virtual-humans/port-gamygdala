@@ -20,7 +20,7 @@ public class Gamygdala {
     /**
      * The collection of agents in this Gamygdala instance.
      */
-    private GamygdalaMap gamygdalaMap;
+    private final GamygdalaMap gamygdalaMap;
 
     /**
      * The decay function used to calculate emotion intensity.
@@ -131,7 +131,7 @@ public class Gamygdala {
      * @param belief
      * @param deltaLikelihood
      */
-    void evaluateAgentEmotions(Agent owner, Goal currentGoal, Belief belief, double deltaLikelihood) {
+    private void evaluateAgentEmotions(Agent owner, Goal currentGoal, Belief belief, double deltaLikelihood) {
 
         double utility = currentGoal.getUtility();
         double likelihood = currentGoal.getLikelihood();
@@ -204,7 +204,7 @@ public class Gamygdala {
      * @param isIncremental if the goal is incremental
      * @return the delta likelihood.
      */
-    double calculateDeltaLikelihood(Goal goal, double congruence, double likelihood, boolean isIncremental) {
+    private double calculateDeltaLikelihood(Goal goal, double congruence, double likelihood, boolean isIncremental) {
 
         Double oldLikelihood = goal.getLikelihood();
         double newLikelihood;

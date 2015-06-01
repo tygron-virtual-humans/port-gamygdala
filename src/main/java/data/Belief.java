@@ -15,22 +15,22 @@ public class Belief {
     /**
      * The likelihood of this belief to be true.
      */
-    private double likelihood;
+    private final double likelihood;
 
     /**
      * The Agent object of the causal agent of this belief.
      */
-    private Agent causalAgent;
+    private final Agent causalAgent;
 
     /**
      * A Map of Goals and their congruence.
      */
-    private HashMap<Goal, Double> goalCongruenceMap;
+    private final HashMap<Goal, Double> goalCongruenceMap;
 
     /**
      * Whether or not this Belief is incremental.
      */
-    private boolean isIncremental;
+    private final boolean isIncremental;
 
     /**
      * This class is a data structure to store one Belief for an agent. A belief
