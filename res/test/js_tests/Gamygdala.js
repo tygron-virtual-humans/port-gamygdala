@@ -342,7 +342,7 @@ TUDelft.Gamygdala.prototype.calculateDeltaLikelihood = function(goal, congruence
 	//And two types of goals: maintenance and achievement. If an achievement goal (the default) is -1 or 1, we can't change it any more (unless externally and explicitly by changing the goal.likelihood).
 	var oldLikelihood = goal.likelihood; 
 	var newLikelihood;
-	if (goal.isMaintenanceGoal==false && (oldLikelihood>=1 | oldLikelihood<=-1))
+	if (goal.isMaintenanceGoal==false && (oldLikelihood>=1 || oldLikelihood<=-1))
 		return 0;
 	if (isIncremental){
 		newLikelihood = oldLikelihood + likelihood*congruence;

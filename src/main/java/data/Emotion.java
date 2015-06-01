@@ -101,7 +101,7 @@ public class Emotion {
     public boolean equals(Object obj) {
         if (obj instanceof Emotion) {
             Emotion em = (Emotion) obj;
-            return (((em.name == null && this.name == null) || em.name.equals(this.name)) && Double.compare(em.intensity, this.intensity) == 0);
+            return (((em.name == null && this.name == null) || this.name.equals(em.name)) && Double.compare(em.intensity, this.intensity) == 0);
         }
         return false;
     }

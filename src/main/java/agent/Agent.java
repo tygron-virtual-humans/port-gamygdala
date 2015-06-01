@@ -216,45 +216,31 @@ public class Agent {
         Engine.debug("   agentActions: self=" + this + " affected=" + affectedAgent + "  causal=" + causalAgent);
 
         // Init emotion variable
-        Emotion emotion = new Emotion(null, 0);
         Relation relation;
-
-        // If we are the affectedAgent, and we are not causing the action
-        if (affectedAgent.equals(this)) {
-
-            if (!this.equals(causalAgent)) {
-
-                Engine.debug("      Entering CASE 1.");
-
-                emotion.setName(desirability >= 0 ? "gratitude" : "anger");
-                emotion.setIntensity(Math.abs(desirability));
-
-                Engine.debug("      Emotion: " + emotion);
-
-                // Update the relation with other agents based on this new
-                // emotion
-                if (!this.hasRelationWith(causalAgent)) {
-                    relation = this.updateRelation(causalAgent, 0.0);
-                } else {
-                    relation = this.getRelation(causalAgent);
-                }
-                relation.addEmotion(emotion);
-                updateEmotionalState(emotion);
-
-            } else {
-                Engine.debug("      Entering CASE 2. This case is not included in Gamygdala.");
-                return null;
-            }
-
-        } else if (causalAgent.equals(this) && causalAgent.hasRelationWith(affectedAgent)) {
+        Emotion emotion = null;
+        if (this.equals(affectedAgent)) {
+            Engine.debug("      Entering CASE 1.");
+            emotion = new Emotion(
+                    desirability >= 0 ? "gratitude" : "anger",
+                    Math.abs(desirability)
+            );
+            Engine.debug("      Emotion: " + emotion);
+            relation = this.hasRelationWith(causalAgent) ?
+                    this.getRelation(causalAgent) : this.updateRelation(causalAgent, .0);
+        } else {
+            //Check if the two Agent have a relation.
+            assert(this.hasRelationWith(affectedAgent));
 
             Engine.debug("      Entering CASE 3.");
 
             // Update the relations with other agents
             relation = causalAgent.getRelation(affectedAgent);
             if (relation.like >= 0) {
-                emotion.setName(desirability >= 0 ? "gratification" : "remorse");
-                emotion.setIntensity(Math.abs(desirability * relation.like));
+                emotion = new Emotion(
+                        desirability >= 0 ? "gratification" : "remorse",
+                        Math.abs(desirability * relation.like)
+                );
+
                 relation.addEmotion(emotion);
                 causalAgent.updateEmotionalState(emotion);
             }

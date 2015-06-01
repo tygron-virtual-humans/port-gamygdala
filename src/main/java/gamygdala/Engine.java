@@ -220,10 +220,10 @@ public class Engine {
      * @param decayFunction The decay function to be used.
      */
     public void setDecay(double decayFactor, DecayFunction decayFunction) {
-        gamygdala.setDecayFactor(decayFactor);
+        this.gamygdala.setDecayFactor(decayFactor);
 
         if (decayFunction != null) {
-            gamygdala.setDecayFunction(decayFunction);
+            this.gamygdala.setDecayFunction(decayFunction);
         } else {
             Engine.debug("[Engine.setDecay] DecayFunction is null.");
         }
@@ -236,7 +236,7 @@ public class Engine {
      * @return The Gamygdala instance.
      */
     public Gamygdala getGamygdala() {
-        return gamygdala;
+        return this.gamygdala;
     }
 
     /**
@@ -255,11 +255,9 @@ public class Engine {
      *            or non-gained (false).
      */
     public void printAllEmotions(boolean gain) {
-        Iterator<Entry<String, Agent>> it = gamygdala.getGamygdalaMap().getAgentIterator();
         Agent agent;
-        while (it.hasNext()) {
-            Map.Entry<String, Agent> pair = it.next();
-            agent = pair.getValue();
+        for (Entry<String, Agent> stringAgentEntry : this.gamygdala.getGamygdalaMap().getAgentMap().entrySet()) {
+            agent = stringAgentEntry.getValue();
 
             agent.printEmotionalState(gain);
             agent.printRelations(null);
