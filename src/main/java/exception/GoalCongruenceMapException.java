@@ -1,7 +1,7 @@
 package exception;
 
 /**
- * GoalCongruenceMapException
+ * GoalCongruenceMapException.
  */
 public class GoalCongruenceMapException extends Exception {
 
