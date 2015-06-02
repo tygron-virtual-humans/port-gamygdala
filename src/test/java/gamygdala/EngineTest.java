@@ -3,6 +3,7 @@ package gamygdala;
 import agent.Agent;
 import data.Belief;
 import data.Goal;
+import data.map.AgentMap;
 import data.map.GamygdalaMap;
 import decayfunction.DecayFunction;
 import org.junit.After;
@@ -115,10 +116,10 @@ public class EngineTest {
     @Test
     public void testSetGain() throws Exception {
         // Create GamygdalaMap with one Agent
-        GamygdalaMap map = new GamygdalaMap();
+        AgentMap map = new AgentMap();
         Agent agent = mock(Agent.class);
-        map.registerAgent(agent);
-        when(gamygdala.getGamygdalaMap()).thenReturn(map);
+        map.put(agent.name, agent);
+        when(gamygdala.getAgentMap()).thenReturn(map);
 
         // Edge cases
         assertFalse(engine.setGain(-1));

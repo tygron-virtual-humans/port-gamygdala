@@ -31,7 +31,8 @@ public class GamygdalaMap {
     }
 
     /**
-     * @return
+     * Get the AgentMap.
+     * @return AgentMap
      */
     public AgentMap getAgentMap() {
         return agentMap;
@@ -63,15 +64,7 @@ public class GamygdalaMap {
     public void registerGoal(Goal goal) {
         getGoalMap().put(goal.getName(), goal);
     }
-    
-    /**
-     * Get iterator for the AgentMap.
-     * @return
-     */
-    public Iterator<Map.Entry<String, Agent>> getAgentIterator() {
-        return getAgentMap().getIterator();
-    }
-    
+
     /**
      * Get entry set from AgentMap.
      * @return
