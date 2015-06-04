@@ -186,7 +186,7 @@ public class Agent {
 
         Relation relation = null;
         Emotion emotion = null;
-        if (this.equals(affectedAgent)) {
+        if (this.equals(affectedAgent) && !this.equals(causalAgent)) {
             Engine.debug("      Entering CASE 1.");
             emotion = new Emotion(
                     desirability >= 0 ? "gratitude" : "anger",
@@ -199,7 +199,7 @@ public class Agent {
             } else {
                 relation = this.updateRelation(causalAgent, .0);
             }
-        } else if (this.equals(causalAgent)) {
+        } else if (this.equals(causalAgent) && !this.equals(affectedAgent)) {
             //Check if the two Agent have a relation.
             assert(this.hasRelationWith(affectedAgent));
 
