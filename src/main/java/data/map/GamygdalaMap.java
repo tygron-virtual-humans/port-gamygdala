@@ -67,9 +67,10 @@ public class GamygdalaMap {
 
     /**
      * Get entry set from AgentMap.
-     * @return
+     * @return Set Set of AgentMap.
      */
     public Set<Map.Entry<String, Agent>> getAgentSet() {
         return getAgentMap().entrySet();
     }
+
 }
