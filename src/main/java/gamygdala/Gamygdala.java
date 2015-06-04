@@ -1,14 +1,16 @@
 package gamygdala;
 
+import java.util.Map;
+
 import agent.Agent;
 import agent.Relation;
 import data.Belief;
 import data.Goal;
+import data.map.AgentMap;
 import data.map.GamygdalaMap;
+import data.map.GoalMap;
 import decayfunction.DecayFunction;
 import decayfunction.LinearDecay;
-
-import java.util.Map;
 
 /**
  * This is the main appraisal engine class taking care of interpreting a
@@ -20,7 +22,7 @@ public class Gamygdala {
     /**
      * The collection of agents in this Gamygdala instance.
      */
-    private GamygdalaMap gamygdalaMap;
+    private final GamygdalaMap gamygdalaMap;
 
     /**
      * The decay function used to calculate emotion intensity.
@@ -58,7 +60,7 @@ public class Gamygdala {
      */
     public boolean appraise(Belief belief, Agent affectedAgent) {
 
-        Engine.debug("\n=====\nStarting appraisal for:\n" + belief + "\nwith affectedAgent: " + affectedAgent + "\n=====\n");
+        Engine.debug("\n===\nStarting appraisal for:\n" + belief + "\nwith affectedAgent: " + affectedAgent + "\n==\n");
 
         // Check belief
         if (belief == null) {
@@ -127,11 +129,11 @@ public class Gamygdala {
      * Re-evaluate an Agent's emotions by processing a Goal and a Belief.
      * 
      * @param owner The Goal owner.
-     * @param currentGoal
-     * @param belief
-     * @param deltaLikelihood
+     * @param currentGoal the currentGoal of the Agent.
+     * @param belief the Belief of the current Agent.
+     * @param deltaLikelihood the likelihood that the Goal will be achieved.
      */
-    void evaluateAgentEmotions(Agent owner, Goal currentGoal, Belief belief, double deltaLikelihood) {
+    private void evaluateAgentEmotions(Agent owner, Goal currentGoal, Belief belief, double deltaLikelihood) {
 
         double utility = currentGoal.getUtility();
         double likelihood = currentGoal.getLikelihood();
@@ -204,7 +206,7 @@ public class Gamygdala {
      * @param isIncremental if the goal is incremental
      * @return the delta likelihood.
      */
-    double calculateDeltaLikelihood(Goal goal, double congruence, double likelihood, boolean isIncremental) {
+    private double calculateDeltaLikelihood(Goal goal, double congruence, double likelihood, boolean isIncremental) {
 
         Double oldLikelihood = goal.getLikelihood();
         double newLikelihood;
@@ -232,6 +234,22 @@ public class Gamygdala {
      */
     public GamygdalaMap getGamygdalaMap() {
         return gamygdalaMap;
+    }
+
+    /**
+     * Get the AgentMap containing all Agents.
+     * @return AgentMap
+     */
+    public AgentMap getAgentMap() {
+        return this.gamygdalaMap.getAgentMap();
+    }
+
+    /**
+     * Get the GoalMap containing all Goals.
+     * @return GoalMap
+     */
+    public GoalMap getGoalMap() {
+        return this.gamygdalaMap.getGoalMap();
     }
 
     /**

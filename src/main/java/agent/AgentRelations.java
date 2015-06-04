@@ -73,7 +73,8 @@ public class AgentRelations extends ArrayList<Relation> {
             if (agent == null || this.get(i).agent.equals(agent)) {
                 emotionListSize = this.get(i).emotionList.size();
                 for (int j = 0; j < emotionListSize; j++) {
-                    output += get(i).emotionList.get(j).getName() + "(" + get(i).emotionList.get(j).getIntensity() + ")";
+                    output += get(i).emotionList.get(j).getName()
+                            + "(" + get(i).emotionList.get(j).getIntensity() + ")";
 
                     if (j < emotionListSize - 1) {
                         output += ", and ";

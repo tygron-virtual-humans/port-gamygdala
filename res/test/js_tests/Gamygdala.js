@@ -32,7 +32,7 @@ TUDelft.Gamygdala.prototype.createAgent = function(agentName){
 	temp=new TUDelft.Gamygdala.Agent(agentName);
 	this.registerAgent(temp);
 	return temp;
-}
+};
 
 
 /**
@@ -65,7 +65,7 @@ TUDelft.Gamygdala.prototype.createGoalForAgent = function(agentName, goalName, g
 		return null;
 	}
 	
-}
+};
 
 /**
 * A facilitator method to create a relation between two agents. Both source and target have to exist and be registered with this Gamygdala instance.
@@ -83,7 +83,7 @@ TUDelft.Gamygdala.prototype.createRelation = function(sourceName, targetName, re
 	} else
 		console.log('Error: cannot relate ' + source + '  to ' + target + ' with intensity '+relation);
 	
-}
+};
 
 /**
 * A facilitator method to appraise an event. It takes in the same as what the new Belief(...) takes in, creates a belief and appraises it for all agents that are registered.
@@ -98,7 +98,7 @@ TUDelft.Gamygdala.prototype.createRelation = function(sourceName, targetName, re
 TUDelft.Gamygdala.prototype.appraiseBelief = function(likelihood, causalAgentName, affectedGoalNames, goalCongruences, isIncremental){
 	tempBelief=new TUDelft.Gamygdala.Belief(likelihood, causalAgentName, affectedGoalNames, goalCongruences, isIncremental);
 	this.appraise(tempBelief);
-}
+};
 /**
 * Facilitator method to print all emotional states to the console.	
 * @method TUDelft.Gamygdala.printAllEmotions
@@ -109,7 +109,7 @@ TUDelft.Gamygdala.prototype.printAllEmotions = function(gain){
 		this.agents[i].printEmotionalState(gain);
 		this.agents[i].printRelations(null);
 	}
-}
+};
 
 /**
 * Facilitator to set the gain for the whole set of agents known to TUDelft.Gamygdala.
@@ -121,7 +121,7 @@ TUDelft.Gamygdala.prototype.setGain =function(gain){
 	for (var i=0;i<this.agents.length;i++){
 		this.agents[i].setGain(gain);
 	}
-}
+};
 
 /**
 * Sets the decay factor and function for emotional decay.
@@ -135,7 +135,7 @@ TUDelft.Gamygdala.prototype.setDecay = function(decayFactor, decayFunction){
 	
 	this.decayFunction=decayFunction;
 	this.decayFactor=decayFactor;
-}
+};
 /**
 * This starts the actual gamygdala decay process. It simply calls decayAll() at the specified interval.
 * The timeMS only defines the interval at which to decay, not the rate over time, that is defined by the decayFactor and function.
@@ -145,7 +145,7 @@ TUDelft.Gamygdala.prototype.setDecay = function(decayFactor, decayFunction){
 */
 TUDelft.Gamygdala.prototype.startDecay = function(timeMS){
 	setInterval(this.decayAll.bind(this), timeMS);
-}
+};
 
 ////////////////////////////////////////////////////////
 //Below this is more detailed gamygdala stuff to use it more flexibly.
@@ -314,7 +314,7 @@ TUDelft.Gamygdala.prototype.appraise = function(belief, affectedAgent){
 	//print the emotions to the console for debugging
 	if (this.debug)
 		this.printAllEmotions(true);
-}
+};
 
 /**
 * This method decays for all registered agents the emotional state and relations. It performs the decay according to the time passed, so longer intervals between consecutive calls result in bigger clunky steps.
@@ -330,7 +330,7 @@ TUDelft.Gamygdala.prototype.decayAll = function(){
 	for (var i=0;i<this.agents.length;i++){
 		this.agents[i].decay(this);
 	}
-}
+};
 
 ////////////////////////////////////////////////////////
 //Below this is internal gamygdala stuff not to be used publicly (i.e., never call these methods).
@@ -357,7 +357,7 @@ TUDelft.Gamygdala.prototype.calculateDeltaLikelihood = function(goal, congruence
     }else{
         return newLikelihood;
     }
-}
+};
 
 TUDelft.Gamygdala.prototype.evaluateInternalEmotion = function(utility, deltaLikelihood, likelihood, agent){
   //This method evaluates the event in terms of internal emotions that do not need relations to exist, such as hope, fear, etc..
@@ -416,7 +416,7 @@ TUDelft.Gamygdala.prototype.evaluateInternalEmotion = function(utility, deltaLik
 			agent.updateEmotionalState(new TUDelft.Gamygdala.Emotion(emotion[i], intensity));   
         }
     }
-}
+};
 
 TUDelft.Gamygdala.prototype.evaluateSocialEmotion = function(utility, desirability, deltaLikelihood, relation, agent){
     //This function is used to evaluate happy-for, pity, gloating or resentment.
@@ -447,7 +447,7 @@ TUDelft.Gamygdala.prototype.evaluateSocialEmotion = function(utility, desirabili
 		agent.updateEmotionalState(emotion);  //also add relation emotion the emotion to the emotional state
     }
     
-}
+};
 
 TUDelft.Gamygdala.prototype.agentActions = function(affectedName, causalName, selfName, desirability, utility, deltaLikelihood){
   if (causalName!=null && causalName!=''){
@@ -507,7 +507,7 @@ TUDelft.Gamygdala.prototype.agentActions = function(affectedName, causalName, se
 			}   
 		}
 	}
-}
+};
 	
 /** A linear decay function that will decrease the emotion intensity of an emotion every tick by a constant defined by the decayFactor in the gamygdala instance.
 * You can set Gamygdala to use this function for all emotion decay by calling setDecay() and passing this function as second parameter. This function is not to be called directly.
@@ -516,7 +516,7 @@ TUDelft.Gamygdala.prototype.agentActions = function(affectedName, causalName, se
 TUDelft.Gamygdala.prototype.linearDecay = function(value){
 	//assumes the decay of the emotional state intensity is linear with a factor equal to decayFactor per second.
 	return value-this.decayFactor*(this.millisPassed/1000);
-}
+};
 	
 /** An exponential decay function that will decrease the emotion intensity of an emotion every tick by a factor defined by the decayFactor in the gamygdala instance.
 * You can set Gamygdala to use this function for all emotion decay by calling setDecay() and passing this function as second parameter. This function is not to be called directly.
@@ -525,7 +525,7 @@ TUDelft.Gamygdala.prototype.linearDecay = function(value){
 TUDelft.Gamygdala.prototype.exponentialDecay = function(value){
 	//assumes the decay of the emotional state intensity is exponential with a factor equal to decayFactor per second.
 	return value*Math.pow(this.decayFactor, this.millisPassed/1000);
-}
+};
 
 
 
@@ -603,7 +603,7 @@ TUDelft.Gamygdala.Agent.prototype.removeGoal = function(goalName){
 */
 TUDelft.Gamygdala.Agent.prototype.hasGoal= function(goalName){
 	return (this.getGoalByName(goalName)!=null);
-}
+};
 /**
 * If this agent has a goal with name goalName, this method returns that goal.
 * @method TUDelft.Gamygdala.Agent.getGoalByName
@@ -617,7 +617,7 @@ TUDelft.Gamygdala.Agent.prototype.getGoalByName = function(goalName){
         }
     }
     return null;  
-}
+};
 /**
 * Sets the gain for this agent.
 
@@ -629,7 +629,7 @@ TUDelft.Gamygdala.Agent.prototype.setGain = function(gain){
 		console.log('Error: gain factor for appraisal integration must be between 0 and 20');
 	else
 		this.gain=gain;
-}
+};
 /**
 * A facilitating method to be able to appraise one event only from the perspective of the current agent (this).
 * Needs an instantiated gamygdala object (automatic when the agent is registered with Gamygdala.registerAgent(agent) to a Gamygdala instance).
@@ -638,7 +638,7 @@ TUDelft.Gamygdala.Agent.prototype.setGain = function(gain){
 */
 TUDelft.Gamygdala.Agent.prototype.appraise = function(belief){
 	this.gamygdalaInstance.appraise(belief, this);
-}
+};
 
 TUDelft.Gamygdala.Agent.prototype.updateEmotionalState = function(emotion){
 	for(var i = 0; i < this.internalState.length; i++){
@@ -720,7 +720,7 @@ TUDelft.Gamygdala.Agent.prototype.printEmotionalState = function(useGain){
 	}
 	if (i>0)
 		console.log(output);
-}
+};
 
 /**
 * Sets the relation this agent has with the agent defined by agentName. If the relation does not exist, it will be created, otherwise it will be updated.
@@ -955,5 +955,5 @@ TUDelft.Gamygdala.Goal = function(name, utility, isMaintenanceGoal){
 		this.maintenanceGoal=isMaintenanceGoal; //There are maintenance and achievement goals. When an achievement goal is reached (or not), this is definite (e.g., to a the promotion or not). A maintenance goal can become true/false indefinetly (e.g., to be well-fed)
 	else
 		this.isMaintenanceGoal=false;
-}
+};
 

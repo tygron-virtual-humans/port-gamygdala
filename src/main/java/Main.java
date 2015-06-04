@@ -1,11 +1,11 @@
+import java.util.ArrayList;
+
 import agent.Agent;
 import data.Belief;
 import data.Goal;
 import decayfunction.ExponentialDecay;
 import exception.GoalCongruenceMapException;
 import gamygdala.Engine;
-
-import java.util.ArrayList;
 
 /**
  * Function test case during development.
@@ -53,10 +53,10 @@ public class Main {
         engine.setDecay(decayFactor, new ExponentialDecay(decayFactor));
         engine.setGain(gain);
 
-        ArrayList<Goal> affectedGoals = null;
-        ArrayList<Double> goalCongruences = null;
+        ArrayList<Goal> affectedGoals;
+        ArrayList<Double> goalCongruences;
 
-        // Demo gameplay
+        // Demo game play
 
         // Event 1: Mario collects a coin
         print_event(1, "Mario collects a coin");
@@ -142,7 +142,7 @@ public class Main {
         Thread.sleep(2000L);
         engine.decayAll();
 
-        print_event(6, "Bowser has been killend and Peach has been rescued by Mario!");
+        print_event(6, "Bowser has been killed and Peach has been rescued by Mario!");
 
         affectedGoals = new ArrayList<Goal>();
         goalCongruences = new ArrayList<Double>();

@@ -1,13 +1,11 @@
 package gamygdala;
 
+import java.util.Map.Entry;
+
 import agent.Agent;
 import data.Belief;
 import data.Goal;
 import decayfunction.DecayFunction;
-
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * Gaming Engine adapter for Gamygdala.
@@ -22,7 +20,7 @@ public class Engine {
     /**
      * Debug flag.
      */
-    public static final boolean DEBUG = true;
+    private static final boolean DEBUG = true;
 
     /**
      * Gamygdala instance.
@@ -42,26 +40,29 @@ public class Engine {
 
     }
 
-    //TODO: These methods are really similar so their must be a better
     /**
      * Get the Engine object. If no Engine has been instantiated,
      * create a new Engine with a fresh Gamygdala instance.
+     *
      * @return Engine instance of Engine
      */
-    public static synchronized Engine getInstance() {
-
+    public static Engine getInstance() {
         if (engineInstance == null) {
-            engineInstance = new Engine();
+            synchronized (Engine.class) {
+                if (engineInstance == null) {
+                    engineInstance = new Engine();
+                }
+            }
         }
-
         return engineInstance;
     }
 
     /**
      * Reset Engine by creating an Engine.
+     *
      * @return Engine
      */
-    public static Engine reset() {
+    public static Engine resetEngine() {
         if (engineInstance != null) {
             synchronized (Engine.class) {
                 if (engineInstance != null) {
@@ -75,6 +76,7 @@ public class Engine {
 
     /**
      * Create and add an Agent to the Engine.
+     *
      * @param name The name of the Agent.
      * @return Agent created Agent
      */
@@ -87,15 +89,15 @@ public class Engine {
 
     /**
      * Add a Goal to an Agent and register with the Engine.
-     * 
-     * @param agent The Agent to register the Goal with.
-     * @param goalName The name of the new Goal.
-     * @param goalUtility The utility of the new Goal.
+     *
+     * @param agent             The Agent to register the Goal with.
+     * @param goalName          The name of the new Goal.
+     * @param goalUtility       The utility of the new Goal.
      * @param isMaintenanceGoal Whether or not this Goal is a maintenance goal.
      * @return The newly created Goal.
      */
     public Goal createGoalForAgent(Agent agent, String goalName, double goalUtility,
-                    boolean isMaintenanceGoal) {
+                                   boolean isMaintenanceGoal) {
         Goal goal = new Goal(goalName, goalUtility, isMaintenanceGoal);
 
         // Add Goal to Agent
@@ -110,9 +112,9 @@ public class Engine {
 
     /**
      * Create a relation with between two Agents.
-     * 
-     * @param source The source Agent.
-     * @param target The target Agent.
+     *
+     * @param source   The source Agent.
+     * @param target   The target Agent.
      * @param relation The intensity of the relation.
      */
     public void createRelation(Agent source, Agent target, double relation) {
@@ -168,11 +170,11 @@ public class Engine {
      * particular agents can never appraise an event, then you can force
      * Gamygdala to only look at a subset of agents. Gamygdala assumes that the
      * affectedAgent is indeed the only goal owner affected and will not perform
-     * any checks, nor use Gamygdala's list of known goals to find other agents
+     * any checks, nor use Gamygdalas list of known goals to find other agents
      * that share this goal.
      *
      * @param belief The current event to be appraised.
-     * @param agent The reference to the agent who appraises the event.
+     * @param agent  The reference to the agent who appraises the event.
      */
     public void appraise(Belief belief, Agent agent) {
         gamygdala.appraise(belief, agent);
@@ -181,30 +183,23 @@ public class Engine {
     /**
      * Set the gain for the whole set of agents known to Gamygdala. For more
      * realistic, complex games, you would typically set the gain for each agent
-     * type separately, to finetune the intensity of the response.
+     * type separately, to fine-tune the intensity of the response.
      *
      * @param gain The gain value [0 and 20].
      */
     public boolean setGain(double gain) {
-
         if (gain <= 0 || gain > 20) {
             Engine.debug("[Engine.setGain] Error: "
-                            + "gain factor for appraisal integration must be between 0 and 20.");
+                    + "gain factor for appraisal integration must be between 0 and 20.");
             return false;
         }
 
-        Iterator<Entry<String, Agent>> it = gamygdala.getGamygdalaMap().getAgentIterator();
-        Agent temp;
-        while (it.hasNext()) {
-            Map.Entry<String, Agent> pair = it.next();
-
-            temp = pair.getValue();
-            if (temp != null) {
-                temp.setGain(gain);
+        for (Entry<String, Agent> stringAgentEntry : this.gamygdala.getAgentMap().entrySet()) {
+            if (stringAgentEntry.getValue() != null) {
+                stringAgentEntry.getValue().setGain(gain);
             } else {
-                it.remove();
+                this.gamygdala.getAgentMap().remove(stringAgentEntry.getKey());
             }
-
         }
 
         return true;
@@ -216,7 +211,7 @@ public class Engine {
      * emotions for all agents are decayed according to the factor and function
      * set here.
      *
-     * @param decayFactor The decay factor. A factor of 1 means no decay.
+     * @param decayFactor   The decay factor. A factor of 1 means no decay.
      * @param decayFunction The decay function to be used.
      */
     public void setDecay(double decayFactor, DecayFunction decayFunction) {
@@ -232,7 +227,7 @@ public class Engine {
 
     /**
      * Get the Gamygdala instance for this Engine.
-     * 
+     *
      * @return The Gamygdala instance.
      */
     public Gamygdala getGamygdala() {
@@ -241,7 +236,7 @@ public class Engine {
 
     /**
      * Set a new Gamygdala instance for this Engine.
-     * 
+     *
      * @param gamygdala The Gamygdala instance.
      */
     public void setGamygdala(Gamygdala gamygdala) {
@@ -252,7 +247,7 @@ public class Engine {
      * Facilitator method to print all emotional states to the console.
      *
      * @param gain Whether you want to print the gained (true) emotional states
-     *            or non-gained (false).
+     *             or non-gained (false).
      */
     public void printAllEmotions(boolean gain) {
         Agent agent;

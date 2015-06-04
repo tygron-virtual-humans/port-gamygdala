@@ -1,11 +1,10 @@
 package data.map;
 
-import agent.Agent;
-import data.Goal;
-
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import agent.Agent;
+import data.Goal;
 
 /**
  * A collection of Agents and Goals for a Gamygdala instance.
@@ -15,12 +14,12 @@ public class GamygdalaMap {
     /**
      * Collection of Agents.
      */
-    private AgentMap agentMap;
+    private final AgentMap agentMap;
 
     /**
      * Collection of Goals.
      */
-    private GoalMap goalMap;
+    private final GoalMap goalMap;
 
     /**
      * Construct a new GamygdalaMap.
@@ -31,7 +30,8 @@ public class GamygdalaMap {
     }
 
     /**
-     * @return
+     * Get the AgentMap.
+     * @return AgentMap
      */
     public AgentMap getAgentMap() {
         return agentMap;
@@ -63,20 +63,13 @@ public class GamygdalaMap {
     public void registerGoal(Goal goal) {
         getGoalMap().put(goal.getName(), goal);
     }
-    
-    /**
-     * Get iterator for the AgentMap.
-     * @return
-     */
-    public Iterator<Map.Entry<String, Agent>> getAgentIterator() {
-        return getAgentMap().getIterator();
-    }
-    
+
     /**
      * Get entry set from AgentMap.
-     * @return
+     * @return Set Set of AgentMap.
      */
     public Set<Map.Entry<String, Agent>> getAgentSet() {
         return getAgentMap().entrySet();
     }
+
 }
