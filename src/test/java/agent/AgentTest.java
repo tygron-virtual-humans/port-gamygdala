@@ -268,7 +268,13 @@ public class AgentTest {
         // Verify added to relation
         assertEquals(expected, agent.currentRelations.get(0).emotionList.get(0));
     }
-    
+
+    @Test
+    public void testAgentActionsCaseTwo() {
+        assertEquals(null, agent.agentActions(agent, agent, .25));
+    }
+
+
     @Test(expected = AssertionError.class)
     public void testAgentActionsCaseThree_NoRelation() {
 
