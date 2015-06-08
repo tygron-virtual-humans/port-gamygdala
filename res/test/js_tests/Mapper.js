@@ -18,7 +18,7 @@ var Mapper = function(scenario) {
     this.mappable = true;
     var EngineClass = Java.type("gamygdala.Engine");
     EngineClass.getInstance();
-    this.emotionEngine = EngineClass.reset();
+    this.emotionEngine = EngineClass.resetEngine();
     this.BeliefClass = Java.type("data.Belief");
     this.ArrayListClass = Java.type('java.util.ArrayList');
     this.agentSelf = this.emotionEngine.createAgent('self');
