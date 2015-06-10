@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import data.Emotion;
 import gamygdala.Engine;
+import gamygdala.Gamygdala;
 
 /**
  * The internal state of an Agent. Contains all it's emotions.
@@ -23,7 +24,7 @@ public class AgentInternalState extends ArrayList<Emotion> {
     public void updateEmotionalState(Emotion emotion) {
         if (emotion == null) return;
 
-        Engine.debug("      updating emotion: " + emotion);
+        Gamygdala.debug("      updating emotion: " + emotion);
 
         for (Emotion temp : this) {
             if (temp.getName().equals(emotion.getName())) {
@@ -32,11 +33,11 @@ public class AgentInternalState extends ArrayList<Emotion> {
                 // the appraisals over time. To decay the emotional state, call
                 // Gamygdala.decay(decayFunction).
                 temp.setIntensity(temp.getIntensity() + emotion.getIntensity());
-                Engine.debug("         new emotion: " + temp);
+                Gamygdala.debug("         new emotion: " + temp);
                 return;
             }
         }
-        Engine.debug("         new emotion: " + emotion);
+        Gamygdala.debug("         new emotion: " + emotion);
 
         // copy on keep, we need to maintain a list of current emotions for the
         // state, not a list references to the appraisal engine

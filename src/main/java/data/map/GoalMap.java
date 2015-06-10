@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import data.Goal;
 import gamygdala.Engine;
+import gamygdala.Gamygdala;
 
 /**
  * HashMap to store Goals. Extended with add / remove / has goal methods for
@@ -26,13 +27,13 @@ public class GoalMap extends HashMap<String, Goal> {
 
         // Check for empty Goal
         if (goal == null) {
-            Engine.debug("[GoalMap.addGoal] Goal is null ");
+            Gamygdala.debug("[GoalMap.addGoal] Goal is null ");
             return false;
         }
 
         // Check for duplicate Goal
         if (containsKey(goal.getName())) {
-            Engine.debug("[GoalMap.addGoal] Goal already exists for Agent.");
+            Gamygdala.debug("[GoalMap.addGoal] Goal already exists for Agent.");
             return false;
         }
 
@@ -83,7 +84,7 @@ public class GoalMap extends HashMap<String, Goal> {
         if (containsKey(goalName)) {
             return get(goalName);
         }
-        Engine.debug("Warning: goal \"" + goalName + "\" not found.");
+        Gamygdala.debug("Warning: goal \"" + goalName + "\" not found.");
         return null;
     }
 
@@ -92,7 +93,7 @@ public class GoalMap extends HashMap<String, Goal> {
         if (!this.containsKey(goal.getName())) {
             return super.put(goal.getName(), goal);
         } else {
-            Engine.debug("Warning: failed adding a second goal with the same name: " + goal.getName());
+            Gamygdala.debug("Warning: failed adding a second goal with the same name: " + goal.getName());
         }
         return null;
     }
