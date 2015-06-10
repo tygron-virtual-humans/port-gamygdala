@@ -18,11 +18,6 @@ public class Engine {
     private static Engine engineInstance;
 
     /**
-     * Debug flag.
-     */
-    private static final boolean DEBUG = true;
-
-    /**
      * Gamygdala instance.
      */
     private Gamygdala gamygdala = new Gamygdala();
@@ -137,7 +132,7 @@ public class Engine {
      */
     public void decayAll() {
 
-        Engine.debug("\n=====\nDecaying all emotions\n=====\n");
+        Gamygdala.debug("\n=====\nDecaying all emotions\n=====\n");
 
         // Record current time
         long now = System.currentTimeMillis();
@@ -189,7 +184,7 @@ public class Engine {
      */
     public boolean setGain(double gain) {
         if (gain <= 0 || gain > 20) {
-            Engine.debug("[Engine.setGain] Error: "
+            Gamygdala.debug("[Engine.setGain] Error: "
                     + "gain factor for appraisal integration must be between 0 and 20.");
             return false;
         }
@@ -220,7 +215,7 @@ public class Engine {
         if (decayFunction != null) {
             this.gamygdala.setDecayFunction(decayFunction);
         } else {
-            Engine.debug("[Engine.setDecay] DecayFunction is null.");
+            Gamygdala.debug("[Engine.setDecay] DecayFunction is null.");
         }
 
     }
@@ -256,17 +251,6 @@ public class Engine {
 
             agent.printEmotionalState(gain);
             agent.printRelations(null);
-        }
-    }
-
-    /**
-     * Print debug information to console if the debug flag is set to true.
-     *
-     * @param what Object to print to console.
-     */
-    public static void debug(Object what) {
-        if (Engine.DEBUG) {
-            System.out.println(what);
         }
     }
 
