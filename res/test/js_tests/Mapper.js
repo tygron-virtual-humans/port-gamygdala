@@ -18,12 +18,13 @@ var Mapper = function(scenario) {
     this.mappable = true;
     var EngineClass = Java.type("gamygdala.Engine");
     EngineClass.getInstance();
-    this.emotionEngine = EngineClass.reset();
+    this.emotionEngine = EngineClass.resetEngine();
     this.BeliefClass = Java.type("data.Belief");
     this.ArrayListClass = Java.type('java.util.ArrayList');
     this.agentSelf = this.emotionEngine.createAgent('self');
     this.agentAffected = this.emotionEngine.createAgent('affected');
     this.agentCausal = this.emotionEngine.createAgent('causal');
+    this.agentNone = this.emotionEngine.createAgent('none');
 
     if (affectedAgent === 'self') {
         this.goal = this.emotionEngine.createGoalForAgent(this.agentSelf, 'goal', utility, false)
@@ -45,7 +46,7 @@ var Mapper = function(scenario) {
         goals.add(this.goal);
         congruences.add(congruence);
 
-        this.belief = new this.BeliefClass(eventLikelihood, this.agentCausal, goals, congruences, false);
+        this.belief = new this.BeliefClass(eventLikelihood, this.agentNone, goals, congruences, false);
     }
 
     if (causalAgent === 'self'){

@@ -62,6 +62,8 @@ public class Relation {
      * @param emotion The emotion to add.
      */
     public void addEmotion(Emotion emotion) {
+        if (emotion == null) return;
+
         boolean added = false;
         for (Emotion temp : this.emotionList) {
             if (temp.getName().equals(emotion.getName())) {

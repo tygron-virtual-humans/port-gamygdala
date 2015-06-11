@@ -21,6 +21,8 @@ public class AgentInternalState extends ArrayList<Emotion> {
      * @param emotion The emotion with which this Agent should be updated.
      */
     public void updateEmotionalState(Emotion emotion) {
+        if (emotion == null) return;
+
         Engine.debug("      updating emotion: " + emotion);
 
         for (Emotion temp : this) {
