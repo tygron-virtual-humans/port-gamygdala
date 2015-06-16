@@ -308,16 +308,16 @@ public class AgentTest {
         Relation relation = mock(Relation.class);
         
         // Test four emotions
-        when(relation.getLike()).thenReturn(1d);
+        when(relation.getLike()).thenReturn(0d);
         assertEquals("happy-for", agent.evaluateSocialEmotion(1, relation).getName());
         
-        when(relation.getLike()).thenReturn(-1d);
+        when(relation.getLike()).thenReturn(-.1d);
         assertEquals("resentment", agent.evaluateSocialEmotion(1, relation).getName());
         
-        when(relation.getLike()).thenReturn(1d);
+        when(relation.getLike()).thenReturn(0d);
         assertEquals("pity", agent.evaluateSocialEmotion(-1, relation).getName());
         
-        when(relation.getLike()).thenReturn(-1d);
+        when(relation.getLike()).thenReturn(-.1d);
         assertEquals("gloating", agent.evaluateSocialEmotion(-1, relation).getName());
         
     }
