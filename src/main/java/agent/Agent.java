@@ -7,6 +7,7 @@ import data.Goal;
 import data.map.GoalMap;
 import decayfunction.DecayFunction;
 import gamygdala.Engine;
+import gamygdala.Gamygdala;
 
 /**
  * The main interacting character in the Gamygdala engine.
@@ -111,7 +112,7 @@ public class Agent {
         if (gain > 0 && gain <= 20) {
             this.gain = gain;
         } else {
-            Engine.debug("Error: gain factor for appraisal integration must be between 0 and 20.");
+            Gamygdala.debug("Error: gain factor for appraisal integration must be between 0 and 20.");
         }
     }
 
@@ -146,7 +147,7 @@ public class Agent {
         if (relation >= -1 && relation <= 1) {
             return this.currentRelations.updateRelation(agent, relation);
         } else {
-            Engine.debug("Error: cannot relate " + this + " to " + agent + " with intensity " + relation);
+            Gamygdala.debug("Error: cannot relate " + this + " to " + agent + " with intensity " + relation);
         }
         return null;
     }
@@ -187,12 +188,12 @@ public class Agent {
         Relation relation = null;
         Emotion emotion = null;
         if (this.equals(affectedAgent) && !this.equals(causalAgent)) {
-            Engine.debug("      Entering CASE 1.");
+            Gamygdala.debug("      Entering CASE 1.");
             emotion = new Emotion(
                     desirability >= 0 ? "gratitude" : "anger",
                     Math.abs(desirability)
             );
-            Engine.debug("      Emotion: " + emotion);
+            Gamygdala.debug("      Emotion: " + emotion);
 
             if (this.hasRelationWith(causalAgent)) {
                 relation = this.getRelation(causalAgent);
@@ -203,7 +204,7 @@ public class Agent {
             //Check if the two Agent have a relation.
             assert(this.hasRelationWith(affectedAgent));
 
-            Engine.debug("      Entering CASE 3.");
+            Gamygdala.debug("      Entering CASE 3.");
             relation = this.getRelation(affectedAgent);
             if (relation.like >= 0) {
                 emotion = new Emotion(
@@ -256,7 +257,7 @@ public class Agent {
      */
     public void evaluateInternalEmotion(double utility, double deltaLikelihood, double likelihood) {
         ArrayList<String> emotion = Emotion.determineEmotions(utility, deltaLikelihood, likelihood);
-        Engine.debug("   evaluateInternalEmotion: " + emotion);
+        Gamygdala.debug("   evaluateInternalEmotion: " + emotion);
 
         double intensity = Math.abs(utility * deltaLikelihood);
         if (intensity != 0) {
