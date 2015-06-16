@@ -20,6 +20,11 @@ import decayfunction.LinearDecay;
 public class Gamygdala {
 
     /**
+     * Debug flag.
+     */
+    private static final boolean DEBUG = true;
+
+    /**
      * The collection of agents in this Gamygdala instance.
      */
     private final GamygdalaMap gamygdalaMap;
@@ -60,69 +65,70 @@ public class Gamygdala {
      */
     public boolean appraise(Belief belief, Agent affectedAgent) {
 
-        Engine.debug("\n===\nStarting appraisal for:\n" + belief + "\nwith affectedAgent: " + affectedAgent + "\n==\n");
+        Gamygdala.debug("\n===\nStarting appraisal for:\n" + belief + "\nwith affectedAgent: " + affectedAgent + "\n==\n");
 
         // Check belief
         if (belief == null) {
-            Engine.debug("Error: belief is null.");
+            Gamygdala.debug("Error: belief is null.");
             return false;
         }
 
         // Check goal list size
         if (this.gamygdalaMap.getGoalMap().size() == 0) {
-            Engine.debug("Warning: no goals registered to Gamygdala.");
+            Gamygdala.debug("Warning: no goals registered to Gamygdala.");
             return true;
         }
 
-        Goal currentGoal;
-        Double currentCongruence;
-
         // Loop over all goals.
         for (Map.Entry<Goal, Double> goalPair : belief.getGoalCongruenceMap().entrySet()) {
-            currentGoal = goalPair.getKey();
-            currentCongruence = goalPair.getValue();
 
             // If current goal is really a goal
-            if (currentGoal == null) {
+            if (goalPair.getKey() == null) {
                 continue;
             }
 
-            Engine.debug("Processing goal: " + currentGoal);
-
-            // Calculate goal values
-            double deltaLikelihood = this.calculateDeltaLikelihood(currentGoal, currentCongruence,
-                    belief.getLikelihood(), belief.isIncremental());
-
-            Engine.debug("   deltaLikelihood: " + deltaLikelihood);
-
-            // if affectedAgent is null, calculate emotions for all agents.
-            if (affectedAgent == null) {
-
-                Agent owner;
-
-                // Loop all agents
-                for (Map.Entry<String, Agent> pair : gamygdalaMap.getAgentSet()) {
-                    owner = pair.getValue();
-
-                    // Update emotional state if has goal
-                    if (owner != null && owner.hasGoal(currentGoal)) {
-                        this.evaluateAgentEmotions(owner, currentGoal, belief, deltaLikelihood);
-                    }
-                }
-
-            } else {
-
-                // Update emotional state for single agent
-                this.evaluateAgentEmotions(affectedAgent, currentGoal, belief, deltaLikelihood);
-            }
+            processGoal(goalPair, belief, affectedAgent);
 
             // Newline
-            Engine.debug("");
+            Gamygdala.debug("");
         }
 
-        Engine.debug("\n=====\nFinished appraisal round\n=====\n");
+        Gamygdala.debug("\n=====\nFinished appraisal round\n=====\n");
 
         return true;
+    }
+
+    private void processGoal(Map.Entry<Goal, Double> goalPair, Belief belief, Agent affectedAgent) {
+        Goal goal = goalPair.getKey();
+        Double congruence = goalPair.getValue();
+
+        Gamygdala.debug("Processing goal: " + goal);
+        // Calculate goal values
+        double deltaLikelihood = this.calculateDeltaLikelihood(goal, congruence,
+                belief.getLikelihood(), belief.isIncremental());
+
+        Gamygdala.debug("   deltaLikelihood: " + deltaLikelihood);
+
+        // if affectedAgent is null, calculate emotions for all agents.
+        if (affectedAgent == null) {
+
+            Agent owner;
+
+            // Loop all agents
+            for (Map.Entry<String, Agent> pair : gamygdalaMap.getAgentSet()) {
+                owner = pair.getValue();
+
+                // Update emotional state if has goal
+                if (owner != null && owner.hasGoal(goal)) {
+                    this.evaluateAgentEmotions(owner, goal, belief, deltaLikelihood);
+                }
+            }
+
+        } else {
+
+            // Update emotional state for single agent
+            this.evaluateAgentEmotions(affectedAgent, goal, belief, deltaLikelihood);
+        }
     }
 
     /**
@@ -139,7 +145,7 @@ public class Gamygdala {
         double likelihood = currentGoal.getLikelihood();
         double desirability = utility * deltaLikelihood;
 
-        Engine.debug("   utility: " + utility + "\n   likelihood: " + likelihood);
+        Gamygdala.debug("   utility: " + utility + "\n   likelihood: " + likelihood);
 
         // Determine new emotions for Agent
         owner.evaluateInternalEmotion(utility, deltaLikelihood, likelihood);
@@ -159,7 +165,7 @@ public class Gamygdala {
             relation = agent.getRelation(owner);
             if (relation != null) {
 
-                Engine.debug("   Processing relation: " + relation);
+                Gamygdala.debug("   Processing relation: " + relation);
 
                 // The agent has relationship with the goal owner which has
                 // nonzero utility, add relational effects to the relations for
@@ -278,6 +284,17 @@ public class Gamygdala {
      */
     public void setDecayFactor(double decayFactor) {
         this.decayFactor = decayFactor;
+    }
+
+    /**
+     * Print debug information to console if the debug flag is set to true.
+     *
+     * @param what Object to print to console.
+     */
+    public static void debug(Object what) {
+        if (Gamygdala.DEBUG) {
+            System.out.println(what);
+        }
     }
 
 }
