@@ -62,7 +62,7 @@ public class JavascriptTests {
         old.println("\"" + testResult + "\"");
 
         // Parse result and report to JUnit
-        if (testResult.equals("Total number of passed tests: 19 of 52")) {
+        if (!testResult.equals("Total number of passed tests: 19 of 52")) {
             fail("Number of Javascript tests which succeeded is incorrect.\n\nRaw JS result:\n" + testResult);
         }
 
