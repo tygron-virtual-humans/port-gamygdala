@@ -69,7 +69,7 @@ public class Main {
 
         engine.appraise(new Belief(1, mario, affectedGoals, goalCongruences, true));
 
-        engine.printAllEmotions(true);
+        engine.getGamygdala().printAllEmotions(true);
 
         // Event 2: Mario collects another coin after 1 second
         Thread.sleep(1000L);
@@ -85,7 +85,7 @@ public class Main {
 
         engine.appraise(new Belief(1, mario, affectedGoals, goalCongruences, true));
 
-        engine.printAllEmotions(true);
+        engine.getGamygdala().printAllEmotions(true);
 
         // Event 3: Mario collects a mushroom after another second
         Thread.sleep(1000L);
@@ -106,7 +106,7 @@ public class Main {
         goalCongruences.add(-0.3);
 
         engine.appraise(new Belief(1, mario, affectedGoals, goalCongruences, true));
-        engine.printAllEmotions(true);
+        engine.getGamygdala().printAllEmotions(true);
 
         // Event 4: Mario hits a turtle and losses the abilities of the mushroom
         Thread.sleep(1000L);
@@ -128,7 +128,7 @@ public class Main {
 
         engine.appraise(new Belief(1, mario, affectedGoals, goalCongruences, true));
 
-        engine.printAllEmotions(true);
+        engine.getGamygdala().printAllEmotions(true);
 
         // Event 5: Nothing happens while mario is walking through the world for 4 seconds
         Thread.sleep(4000L);
@@ -136,7 +136,7 @@ public class Main {
 
         print_event(5, "Nothing happens");
 
-        engine.printAllEmotions(true);
+        engine.getGamygdala().printAllEmotions(true);
 
         // Event 6: Mario kills bowser and saves peach
         Thread.sleep(2000L);
@@ -156,7 +156,7 @@ public class Main {
 
         engine.appraise(new Belief(1, mario, affectedGoals, goalCongruences, true));
 
-        engine.printAllEmotions(true);
+        engine.getGamygdala().printAllEmotions(true);
     }
 
     private void print_event(int number, String event) {

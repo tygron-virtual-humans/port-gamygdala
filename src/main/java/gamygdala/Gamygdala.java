@@ -297,4 +297,52 @@ public class Gamygdala {
         }
     }
 
+    /**
+     * Facilitator method to print all emotional states to the console.
+     *
+     * @param gain Whether you want to print the gained (true) emotional states
+     *             or non-gained (false).
+     */
+    public void printAllEmotions(boolean gain) {
+        Agent agent;
+        for (Map.Entry<String, Agent> stringAgentEntry : this.getGamygdalaMap().getAgentMap().entrySet()) {
+            agent = stringAgentEntry.getValue();
+
+            agent.printEmotionalState(gain);
+            agent.printRelations(null);
+        }
+    }
+
+    public void setAgentGain(double gain) {
+        for (Map.Entry<String, Agent> stringAgentEntry : this.getAgentMap().entrySet()) {
+            if (stringAgentEntry.getValue() != null) {
+                stringAgentEntry.getValue().setGain(gain);
+            } else {
+                this.getAgentMap().remove(stringAgentEntry.getKey());
+            }
+        }
+    }
+
+    public Agent createAgent(String name) {
+        Agent agent = new Agent(name);
+        this.getGamygdalaMap().registerAgent(agent);
+
+        return agent;
+    }
+
+    public Goal createGoalForAgent(Agent agent, String goalName, double goalUtility, boolean isMaintenanceGoal) {
+        Goal goal = new Goal(goalName, goalUtility, isMaintenanceGoal);
+
+        // Add Goal to Agent
+        agent.addGoal(goal);
+
+        // Register Goal with Engine
+        this.getGamygdalaMap().registerGoal(goal);
+
+        return goal;
+    }
+
+    public void createRelation(Agent source, Agent target, double relation) {
+        source.updateRelation(target, relation);
+    }
 }
