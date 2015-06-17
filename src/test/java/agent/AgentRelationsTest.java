@@ -44,7 +44,7 @@ public class AgentRelationsTest {
         
         // Update existing relation
         ar.updateRelation(testAgent, 59);
-        assertEquals(59, ar.get(0).like, 10E-15);
+        assertEquals(59, ar.get(0).getLike(), 10E-15);
 
         
     }
@@ -76,10 +76,10 @@ public class AgentRelationsTest {
     public void testPrintRelations() {
         
         // Empty Agent, empty Relations
-        assertEquals("", ar.printRelations(null));
+        assertEquals("", ar.getRelationsString(null));
         
         // Non-empty Agent, empty Relations
-        assertEquals("", ar.printRelations(testAgent));
+        assertEquals("", ar.getRelationsString(testAgent));
         
         // Non-empty Agent, non-empty Relations
         ar.updateRelation(testAgent, 1);
@@ -88,12 +88,12 @@ public class AgentRelationsTest {
         ar.getRelation(testAgent).addEmotion(testEmotion);
         
         String expected = "TestEmotion(10.0) for <Agent[TestAgent]>";
-        assertEquals(expected, ar.printRelations(testAgent));
+        assertEquals(expected, ar.getRelationsString(testAgent));
         
         // Multiple relations
         ar.getRelation(testAgent).addEmotion(new Emotion("TestEmotion2", 2));
         expected = "TestEmotion(10.0), and TestEmotion2(2.0) for <Agent[TestAgent]>";
-        assertEquals(expected, ar.printRelations(testAgent));
+        assertEquals(expected, ar.getRelationsString(testAgent));
     }
 
 }

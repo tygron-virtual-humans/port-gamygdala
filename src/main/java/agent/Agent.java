@@ -6,7 +6,6 @@ import data.Emotion;
 import data.Goal;
 import data.map.GoalMap;
 import decayfunction.DecayFunction;
-import gamygdala.Engine;
 import gamygdala.Gamygdala;
 
 /**
@@ -44,14 +43,11 @@ public class Agent {
     public Agent(final String name) {
         this.name = name;
 
-        // Init goal map.
         this.goals = new GoalMap();
 
-        // Init relation and emotion collections
         this.currentRelations = new AgentRelations();
         this.internalState = new AgentInternalState();
 
-        // Set gain
         this.gain = Agent.DEFAULT_GAIN;
     }
 
@@ -183,40 +179,69 @@ public class Agent {
      * @return The Emotion arising from the action.
      */
     public Emotion agentActions(Agent affectedAgent, Agent causalAgent, double desirability) {
-        assert(causalAgent != null && affectedAgent != null);
-
-        Relation relation = null;
-        Emotion emotion = null;
-        if (this.equals(affectedAgent) && !this.equals(causalAgent)) {
-            Gamygdala.debug("      Entering CASE 1.");
-            emotion = new Emotion(
-                    desirability >= 0 ? "gratitude" : "anger",
-                    Math.abs(desirability)
-            );
-            Gamygdala.debug("      Emotion: " + emotion);
-
-            if (this.hasRelationWith(causalAgent)) {
-                relation = this.getRelation(causalAgent);
-            } else {
-                relation = this.updateRelation(causalAgent, .0);
-            }
-        } else if (this.equals(causalAgent) && !this.equals(affectedAgent)) {
-            //Check if the two Agent have a relation.
-            assert(this.hasRelationWith(affectedAgent));
-
-            Gamygdala.debug("      Entering CASE 3.");
-            relation = this.getRelation(affectedAgent);
-            if (relation.like >= 0) {
-                emotion = new Emotion(
-                        desirability >= 0 ? "gratification" : "remorse",
-                        Math.abs(desirability * relation.like)
-                );
-            }
+        if (causalAgent == null || affectedAgent == null) {
+            return null;
         }
+
+        if (this.equals(affectedAgent) && !this.equals(causalAgent)) {
+            return updateEmotionAsCausalAgent(causalAgent, desirability);
+        } else if (this.equals(causalAgent) && !this.equals(affectedAgent)) {
+            return updateEmotionAsAffectedAgent(affectedAgent, desirability);
+        }
+        return null;
+    }
+
+    /**
+     * Update Agent's emotion based on actions by other Agents,
+     * when the agent is the affected agent.
+     * @param causalAgent The Agent causal to the action.
+     * @param desirability How much the current Agent desires the Goal subject
+     *                      to the action.
+     * @return The Emotion arising from the action
+     */
+    private Emotion updateEmotionAsCausalAgent(Agent causalAgent, double desirability) {
+        Gamygdala.debug("      Entering CASE 1.");
+        Emotion emotion = new Emotion(desirability >= 0 ? "gratitude" : "anger",
+                Math.abs(desirability));
+        Gamygdala.debug("      Emotion: " + emotion);
+
+        Relation relation = this.getRelation(causalAgent);
+        if (relation == null) {
+            relation = this.updateRelation(causalAgent, .0);
+        }
+
         if (relation != null) {
             relation.addEmotion(emotion);
             this.updateEmotionalState(emotion);
         }
+
+        return emotion;
+    }
+
+    /**
+     * Update Agent's emotion based on actions by other Agents,
+     * if the agent is the affected agent.
+     *
+     * @param affectedAgent The Agent affected by the action.
+     * @param desirability  How much the current Agent desires the Goal subject
+     *                      to the action.
+     * @return The Emotion arising from the action.
+     */
+    private Emotion updateEmotionAsAffectedAgent(Agent affectedAgent, double desirability) {
+        Gamygdala.debug("      Entering CASE 3.");
+        Relation relation = this.getRelation(affectedAgent);
+        if (relation == null) {
+            return null;
+        }
+        Emotion emotion = null;
+        if (relation.getLike() >= 0) {
+            emotion = new Emotion(desirability >= 0 ? "gratification" : "remorse",
+                    Math.abs(desirability * relation.getLike()));
+        }
+
+        relation.addEmotion(emotion);
+        this.updateEmotionalState(emotion);
+
         return emotion;
     }
 
@@ -280,29 +305,13 @@ public class Agent {
      * individual agents, you should tweak the decayFactor per agent not the
      * "frame rate" of the decay (as this doesn't change the rate).
      *
-     * @param dfunc        The Decay Function used to decay emotions and relations.
+     * @param function        The Decay Function used to decay emotions and relations.
      * @param millisPassed The time passed (in milliseconds) since the last
      *                     decay.
      */
-    public void decay(DecayFunction dfunc, long millisPassed) {
-        // Decay all internal emotions
-        for (int i = 0; i < this.internalState.size(); i++) {
-
-            // Decay emotion
-            double newIntensity = dfunc.decay(this.internalState.get(i).getIntensity(), millisPassed);
-
-            // If intensity is below zero, remove emotion
-            if (newIntensity < 0) {
-                this.internalState.remove(i);
-            } else {
-                this.internalState.get(i).setIntensity(newIntensity);
-            }
-        }
-
-        // Decay all relations
-        for (Relation currentRelation : this.currentRelations) {
-            currentRelation.decay(dfunc, millisPassed);
-        }
+    public void decay(DecayFunction function, long millisPassed) {
+        this.internalState.decay(function, millisPassed);
+        this.currentRelations.decay(function, millisPassed);
     }
 
     /**
@@ -313,7 +322,7 @@ public class Agent {
      */
     public void printRelations(Agent agent) {
         String output = this.name + " has the following sentiments:\n   ";
-        output += this.currentRelations.printRelations(agent);
+        output += this.currentRelations.getRelationsString(agent);
 
         System.out.println(output);
     }
@@ -331,9 +340,54 @@ public class Agent {
      */
     public void printEmotionalState(boolean gained) {
         String output = this.name + " feels ";
-        output += this.internalState.printEmotionalState(gained ? this.gain : null);
+        output += this.internalState.getEmotionalStateString(gained ? this.gain : null);
 
         System.out.println(output);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Agent)) {
+            return false;
+        }
+        Agent agent = (Agent) o;
+
+        if (Double.compare(agent.gain, gain) != 0) {
+            return false;
+        }
+        if (name != null ? !name.equals(agent.name) : agent.name != null) {
+            return false;
+        }
+        if (!goals.equals(agent.goals)) {
+            return false;
+        }
+        if (getCurrentRelations() != null) {
+            if (!getCurrentRelations().equals(agent.getCurrentRelations())) {
+                return false;
+            }
+        } else {
+            if (agent.getCurrentRelations() != null) {
+                return false;
+            }
+        }
+        return !(internalState != null ? !internalState.equals(agent.internalState) : agent.internalState != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = name != null ? name.hashCode() : 0;
+        temp = Double.doubleToLongBits(gain);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (goals != null ? goals.hashCode() : 0);
+        result = 31 * result + (getCurrentRelations() != null ? getCurrentRelations().hashCode() : 0);
+        result = 31 * result + (internalState != null ? internalState.hashCode() : 0);
+        return result;
     }
 
     /**
@@ -342,5 +396,25 @@ public class Agent {
     @Override
     public String toString() {
         return "<Agent[" + this.name + "]>";
+    }
+
+    /**
+     * evaluateSocialEmotion; The agent has relationship with the goal owner
+     * which has nonzero utility, add relational effects to the relations
+     * for agent[k]. agentActions; also add remorse and gratification if
+     * conditions are met (i.e., agent did something bad / good for owner).
+     * @param agent the agent for which to check the relation
+     * @param causalAgent the causalAgent of the belief
+     * @param desirability the desirability of the goal
+     */
+    public void evaluateRelationWithAgent(Agent agent, Agent causalAgent, double desirability) {
+        Relation relation = agent.getRelation(this);
+        if (relation != null) {
+            Gamygdala.debug("   Processing relation: " + relation);
+
+            agent.evaluateSocialEmotion(desirability, relation);
+            agent.agentActions(this, causalAgent, desirability);
+
+        }
     }
 }

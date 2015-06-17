@@ -33,8 +33,8 @@ public class RelationTest {
     public void testRelation() {
 
         assertEquals(agent, rel.getAgent());
-        assertEquals(0, rel.like, 10E-15);
-        assertNotNull(rel.emotionList);
+        assertEquals(0, rel.getLike(), 10E-15);
+        assertNotNull(rel.getEmotions());
     }
 
     @Test
@@ -43,7 +43,7 @@ public class RelationTest {
         Emotion emo = new Emotion("TestEmotion", 10);
 
         rel.addEmotion(emo);
-        assertTrue(rel.emotionList.contains(emo));
+        assertTrue(rel.getEmotions().contains(emo));
     }
 
     @Test
@@ -55,9 +55,9 @@ public class RelationTest {
         rel.addEmotion(e1);
         rel.addEmotion(e2);
 
-        assertEquals(1, rel.emotionList.size());
+        assertEquals(1, rel.getEmotions().size());
 
-        Emotion e3 = rel.emotionList.get(0);
+        Emotion e3 = rel.getEmotions().get(0);
         assertEquals("TestEmotion", e3.getName());
         assertEquals(30, e3.getIntensity(), 10E-15);
 
@@ -87,7 +87,7 @@ public class RelationTest {
         assertNotEquals(59d, e1.getIntensity(), 10E-15);
 
         // Check new emotion value
-        Emotion e2 = rel.emotionList.get(0);
+        Emotion e2 = rel.getEmotions().get(0);
         assertEquals(59d, e2.getIntensity(), 10E-15);
     }
 
@@ -106,7 +106,7 @@ public class RelationTest {
         rel.decay(df, 1000);
 
         // Verify the emotion has gone
-        assertEquals(0, rel.emotionList.size());
+        assertEquals(0, rel.getEmotions().size());
 
     }
 
@@ -115,21 +115,24 @@ public class RelationTest {
 
         // Same Agent object
         Relation equalRelation = new Relation(agent, 0);
-        assertTrue(rel.equals(equalRelation));
+        assertEquals(equalRelation, rel);
 
         // Similar Agent objects (but not equal)
         Agent similarAgent = new Agent("TestAgent");
         Relation similarRelation = new Relation(similarAgent, 0);
-        assertFalse(rel.equals(similarRelation));
+
+        assertEquals(true, rel.equals(similarRelation));
 
         // Null
-        assertFalse(rel.equals(null));
+        assertEquals(false, rel.equals(null));
+
+        assertEquals(false, rel.equals(new Object()));
     }
 
     @Test
     public void testToString() {
 
-        String expected = "<Relation[causalAgent=" + agent + ", like=" + rel.like + "]>";
+        String expected = "<Relation[causalAgent=" + agent + ", like=" + rel.getLike() + "]>";
         assertEquals(expected, rel.toString());
 
     }

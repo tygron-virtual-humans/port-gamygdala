@@ -10,9 +10,9 @@ import decayfunction.DecayFunction;
  */
 public class Relation {
 
-    public final Agent agent;
-    public double like;
-    public final ArrayList<Emotion> emotionList;
+    private final Agent agent;
+    private double like;
+    private final ArrayList<Emotion> emotions;
 
     /**
      * This is the class that represents a relation one agent has with other
@@ -26,7 +26,7 @@ public class Relation {
     public Relation(Agent target, double like) {
         this.agent = target;
         this.like = like;
-        this.emotionList = new ArrayList<Emotion>();
+        this.emotions = new ArrayList<Emotion>();
     }
 
     /**
@@ -56,6 +56,10 @@ public class Relation {
         this.like = like;
     }
 
+    public ArrayList<Emotion> getEmotions() {
+        return this.emotions;
+    }
+
     /**
      * Add an emotion to this relation.
      *
@@ -65,19 +69,14 @@ public class Relation {
         if (emotion == null) return;
 
         boolean added = false;
-        for (Emotion temp : this.emotionList) {
+        for (Emotion temp : this.emotions) {
             if (temp.getName().equals(emotion.getName())) {
                 temp.setIntensity(temp.getIntensity() + emotion.getIntensity());
-                // Check if this works just by ref, else:
-                // this.emotionList.set(i, e);
                 added = true;
             }
         }
         if (!added) {
-            // copy on keep, we need to maintain a list of current emotions for
-            // the relation, not a list
-            // refs to the appraisal engine
-            this.emotionList.add(new Emotion(emotion.getName(), emotion.getIntensity()));
+            this.emotions.add(new Emotion(emotion.getName(), emotion.getIntensity()));
         }
     }
 
@@ -88,18 +87,16 @@ public class Relation {
      *            decay.
      */
     public void decay(DecayFunction dfunc, long millisPassed) {
-        for (int i = 0; i < this.emotionList.size(); i++) {
+        for (int i = 0; i < this.emotions.size(); i++) {
 
-            Emotion emotion = this.emotionList.get(i);
+            Emotion emotion = this.emotions.get(i);
             double newIntensity = dfunc.decay(emotion.getIntensity(), millisPassed);
 
             if (newIntensity < 0) {
-                // This emotion has decayed below zero, we need to remove it.
-                this.emotionList.remove(i);
+                this.emotions.remove(i);
             } else {
-                // Update intensity
                 emotion.setIntensity(newIntensity);
-                this.emotionList.set(i, emotion);
+                this.emotions.set(i, emotion);
             }
         }
     }
@@ -114,7 +111,7 @@ public class Relation {
         }
         Relation rel = (Relation) obj;
         return rel.agent.equals(this.agent) && Double.compare(this.like, rel.like) == 0
-                && rel.emotionList.equals(this.emotionList);
+                && rel.emotions.equals(this.emotions);
     }
 
     /**
@@ -128,7 +125,7 @@ public class Relation {
         result = agent != null ? agent.hashCode() : 0;
         temp = Double.doubleToLongBits(like);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + (emotionList.hashCode());
+        result = 31 * result + (emotions.hashCode());
         return result;
     }
 
@@ -140,4 +137,17 @@ public class Relation {
         return "<Relation[causalAgent=" + this.agent + ", like=" + this.like + "]>";
     }
 
+    public String getRelationString() {
+        String output = "";
+
+        for (int j = 0; j < this.emotions.size(); j++) {
+            output += this.emotions.get(j).getName()
+                    + "(" + this.emotions.get(j).getIntensity() + ")";
+
+            if (j < this.emotions.size() - 1) {
+                output += ", and ";
+            }
+        }
+        return output;
+    }
 }
