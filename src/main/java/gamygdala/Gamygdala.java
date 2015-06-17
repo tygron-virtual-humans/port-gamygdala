@@ -64,37 +64,28 @@ public class Gamygdala {
      * @return True on success, false on error.
      */
     public boolean appraise(Belief belief, Agent affectedAgent) {
-
         Gamygdala.debug("\n===\nStarting appraisal for:\n" + belief + "\nwith affectedAgent: " + affectedAgent + "\n==\n");
 
-        // Check belief
         if (belief == null) {
             Gamygdala.debug("Error: belief is null.");
             return false;
         }
 
-        // Check goal list size
         if (this.gamygdalaMap.getGoalMap().size() == 0) {
             Gamygdala.debug("Warning: no goals registered to Gamygdala.");
             return true;
         }
 
-        // Loop over all goals.
         for (Map.Entry<Goal, Double> goalPair : belief.getGoalCongruenceMap().entrySet()) {
-
-            // If current goal is really a goal
             if (goalPair.getKey() == null) {
                 continue;
             }
 
-            processGoal(goalPair, belief, affectedAgent);
-
-            // Newline
+            this.processGoal(goalPair, belief, affectedAgent);
             Gamygdala.debug("");
         }
 
         Gamygdala.debug("\n=====\nFinished appraisal round\n=====\n");
-
         return true;
     }
 
@@ -109,24 +100,20 @@ public class Gamygdala {
 
         Gamygdala.debug("   deltaLikelihood: " + deltaLikelihood);
 
+        this.evaluateEmotions(affectedAgent, goal, belief, deltaLikelihood);
+    }
+
+    private void evaluateEmotions(Agent affectedAgent, Goal goal, Belief belief, double deltaLikelihood) {
         // if affectedAgent is null, calculate emotions for all agents.
         if (affectedAgent == null) {
-
-            Agent owner;
-
-            // Loop all agents
             for (Map.Entry<String, Agent> pair : gamygdalaMap.getAgentSet()) {
-                owner = pair.getValue();
+                Agent owner = pair.getValue();
 
-                // Update emotional state if has goal
                 if (owner != null && owner.hasGoal(goal)) {
                     this.evaluateAgentEmotions(owner, goal, belief, deltaLikelihood);
                 }
             }
-
         } else {
-
-            // Update emotional state for single agent
             this.evaluateAgentEmotions(affectedAgent, goal, belief, deltaLikelihood);
         }
     }
