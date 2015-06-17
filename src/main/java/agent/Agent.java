@@ -25,7 +25,7 @@ public class Agent {
     /**
      * Collection of goals for this Agent.
      */
-    final GoalMap goals;
+    GoalMap goals;
     /**
      * Collection of relations for this Agent.
      */
@@ -384,7 +384,7 @@ public class Agent {
         result = name != null ? name.hashCode() : 0;
         temp = Double.doubleToLongBits(gain);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + (goals != null ? goals.hashCode() : 0);
+        result = 31 * result + (goals.hashCode());
         result = 31 * result + (getCurrentRelations() != null ? getCurrentRelations().hashCode() : 0);
         result = 31 * result + (internalState != null ? internalState.hashCode() : 0);
         return result;

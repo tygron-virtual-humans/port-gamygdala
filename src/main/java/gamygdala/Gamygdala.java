@@ -187,7 +187,6 @@ public class Gamygdala {
      * Decay emotional state of all Agents.
      */
     public void decayAll(long lastMillis, long currentMillis) {
-
         long millisPassed = currentMillis - lastMillis;
 
         Agent agent;

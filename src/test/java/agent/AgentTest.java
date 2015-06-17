@@ -366,4 +366,28 @@ public class AgentTest {
         assertEquals("<Agent[TestAgent]>", agent.toString());
     }
 
+
+    @Test
+    public void testEquals() throws Exception {
+        // Equals with null
+        assertFalse(agent.equals(null));
+
+        // Equals with different Object
+        assertFalse(agent.equals(new Object()));
+
+        // Equals with Double
+        agent.setGain(0.5);
+        Agent expected = new Agent("TestAgent");
+        expected.setGain(0.51);
+        assertFalse(agent.equals(expected));
+
+        // Equals with different goals
+        agent.addGoal(new Goal("Save Peace", 0.5, true));
+        Agent goals = new Agent("TestAgent");
+        goals.addGoal(new Goal("Kill mario", 0.4, false));
+        assertFalse(agent.equals(goals));
+
+        //
+    }
+
 }
