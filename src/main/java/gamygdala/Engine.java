@@ -176,7 +176,7 @@ public class Engine {
             return false;
         }
 
-        this.gamygdala.setAgentGain(gain);
+        this.gamygdala.setAgentsGain(gain);
 
         return true;
     }

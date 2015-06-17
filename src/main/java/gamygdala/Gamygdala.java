@@ -281,7 +281,11 @@ public class Gamygdala {
         }
     }
 
-    public void setAgentGain(double gain) {
+    /**
+     *
+     * @param gain
+     */
+    public void setAgentsGain(double gain) {
         for (Map.Entry<String, Agent> stringAgentEntry : this.getAgentMap().entrySet()) {
             if (stringAgentEntry.getValue() != null) {
                 stringAgentEntry.getValue().setGain(gain);
