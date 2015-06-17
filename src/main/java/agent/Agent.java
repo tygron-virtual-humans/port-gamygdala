@@ -6,7 +6,6 @@ import data.Emotion;
 import data.Goal;
 import data.map.GoalMap;
 import decayfunction.DecayFunction;
-import gamygdala.Engine;
 import gamygdala.Gamygdala;
 
 /**
@@ -206,10 +205,10 @@ public class Agent {
 
             Gamygdala.debug("      Entering CASE 3.");
             relation = this.getRelation(affectedAgent);
-            if (relation.like >= 0) {
+            if (relation.getLike() >= 0) {
                 emotion = new Emotion(
                         desirability >= 0 ? "gratification" : "remorse",
-                        Math.abs(desirability * relation.like)
+                        Math.abs(desirability * relation.getLike())
                 );
             }
         }
@@ -280,29 +279,13 @@ public class Agent {
      * individual agents, you should tweak the decayFactor per agent not the
      * "frame rate" of the decay (as this doesn't change the rate).
      *
-     * @param dfunc        The Decay Function used to decay emotions and relations.
+     * @param function        The Decay Function used to decay emotions and relations.
      * @param millisPassed The time passed (in milliseconds) since the last
      *                     decay.
      */
-    public void decay(DecayFunction dfunc, long millisPassed) {
-        // Decay all internal emotions
-        for (int i = 0; i < this.internalState.size(); i++) {
-
-            // Decay emotion
-            double newIntensity = dfunc.decay(this.internalState.get(i).getIntensity(), millisPassed);
-
-            // If intensity is below zero, remove emotion
-            if (newIntensity < 0) {
-                this.internalState.remove(i);
-            } else {
-                this.internalState.get(i).setIntensity(newIntensity);
-            }
-        }
-
-        // Decay all relations
-        for (Relation currentRelation : this.currentRelations) {
-            currentRelation.decay(dfunc, millisPassed);
-        }
+    public void decay(DecayFunction function, long millisPassed) {
+        this.internalState.decay(function, millisPassed);
+        this.currentRelations.decay(function, millisPassed);
     }
 
     /**
@@ -313,7 +296,7 @@ public class Agent {
      */
     public void printRelations(Agent agent) {
         String output = this.name + " has the following sentiments:\n   ";
-        output += this.currentRelations.printRelations(agent);
+        output += this.currentRelations.getRelationsString(agent);
 
         System.out.println(output);
     }
@@ -331,7 +314,7 @@ public class Agent {
      */
     public void printEmotionalState(boolean gained) {
         String output = this.name + " feels ";
-        output += this.internalState.printEmotionalState(gained ? this.gain : null);
+        output += this.internalState.getEmotionalStateString(gained ? this.gain : null);
 
         System.out.println(output);
     }
@@ -342,5 +325,25 @@ public class Agent {
     @Override
     public String toString() {
         return "<Agent[" + this.name + "]>";
+    }
+
+    /**
+     * evaluateSocialEmotion; The agent has relationship with the goal owner
+     * which has nonzero utility, add relational effects to the relations
+     * for agent[k]. agentActions; also add remorse and gratification if
+     * conditions are met (i.e., agent did something bad / good for owner).
+     * @param agent the agent for which to check the relation
+     * @param causalAgent the causalAgent of the belief
+     * @param desirability the desirability of the goal
+     */
+    public void evaluateRelationWithAgent(Agent agent, Agent causalAgent, double desirability) {
+        Relation relation = agent.getRelation(this);
+        if (relation != null) {
+            Gamygdala.debug("   Processing relation: " + relation);
+
+            agent.evaluateSocialEmotion(desirability, relation);
+            agent.agentActions(this, causalAgent, desirability);
+
+        }
     }
 }

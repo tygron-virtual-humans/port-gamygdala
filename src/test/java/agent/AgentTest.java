@@ -163,7 +163,7 @@ public class AgentTest {
         agent.printEmotionalState(false);
 
         // Verify the right method is called on AgentInternalState.
-        verify(agent.internalState).printEmotionalState(null);
+        verify(agent.internalState).getEmotionalStateString(null);
 
         // GAIN = TRUE
 
@@ -171,7 +171,7 @@ public class AgentTest {
         agent.printEmotionalState(true);
 
         // Verify the right method is called on AgentInternalState.
-        verify(agent.internalState).printEmotionalState(agent.gain);
+        verify(agent.internalState).getEmotionalStateString(agent.gain);
 
     }
 
@@ -232,7 +232,7 @@ public class AgentTest {
         agent.printRelations(mock(Agent.class));
 
         // Verify iteraction with currentRelations
-        verify(agent.currentRelations).printRelations(any(Agent.class));
+        verify(agent.currentRelations).getRelationsString(any(Agent.class));
 
     }
 
@@ -266,7 +266,7 @@ public class AgentTest {
         assertEquals(expected, result);
         
         // Verify added to relation
-        assertEquals(expected, agent.currentRelations.get(0).emotionList.get(0));
+        assertEquals(expected, agent.currentRelations.get(0).getEmotions().get(0));
     }
 
     @Test
@@ -298,7 +298,7 @@ public class AgentTest {
         assertEquals(expected, result);
         
         // Verify added to relation
-        assertEquals(expected, agent.currentRelations.get(0).emotionList.get(0));
+        assertEquals(expected, agent.currentRelations.get(0).getEmotions().get(0));
     }
     
 

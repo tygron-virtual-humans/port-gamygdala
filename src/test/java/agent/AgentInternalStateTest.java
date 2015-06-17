@@ -81,13 +81,13 @@ public class AgentInternalStateTest {
     @Test
     public void testPrintEmotionalState() {
         
-        System.out.println(ais.printEmotionalState(null));
+        System.out.println(ais.getEmotionalStateString(null));
         
         String expectedNoGain = "TestEmotion: 1.0, ";
         String expectedGain = "TestEmotion: 0.5, ";
         
-        assertEquals(expectedNoGain, ais.printEmotionalState(null));
-        assertEquals(expectedGain, ais.printEmotionalState(1d));
+        assertEquals(expectedNoGain, ais.getEmotionalStateString(null));
+        assertEquals(expectedGain, ais.getEmotionalStateString(1d));
     }
 
 }

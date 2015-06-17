@@ -154,29 +154,10 @@ public class Gamygdala {
         // (i.e., agent did something bad/good for owner)
         owner.agentActions(owner, belief.getCausalAgent(), utility * deltaLikelihood);
 
-        Agent agent;
-        Relation relation;
-
         // Now check if anyone has a relation with this goal owner, and update
         // the social emotions accordingly.
         for (Map.Entry<String, Agent> pair : gamygdalaMap.getAgentSet()) {
-            agent = pair.getValue();
-
-            relation = agent.getRelation(owner);
-            if (relation != null) {
-
-                Gamygdala.debug("   Processing relation: " + relation);
-
-                // The agent has relationship with the goal owner which has
-                // nonzero utility, add relational effects to the relations for
-                // agent[k].
-                agent.evaluateSocialEmotion(desirability, relation);
-
-                // also add remorse and gratification if conditions are met
-                // (i.e., agent did something bad/good for owner)
-                agent.agentActions(owner, belief.getCausalAgent(), desirability);
-
-            }
+            owner.evaluateRelationWithAgent(pair.getValue(), belief.getCausalAgent(), desirability);
         }
     }
 
@@ -333,10 +314,8 @@ public class Gamygdala {
     public Goal createGoalForAgent(Agent agent, String goalName, double goalUtility, boolean isMaintenanceGoal) {
         Goal goal = new Goal(goalName, goalUtility, isMaintenanceGoal);
 
-        // Add Goal to Agent
         agent.addGoal(goal);
 
-        // Register Goal with Engine
         this.getGamygdalaMap().registerGoal(goal);
 
         return goal;
