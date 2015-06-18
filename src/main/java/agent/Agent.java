@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import data.Emotion;
 import data.Goal;
 import data.map.GoalMap;
+import debug.Debug;
 import decayfunction.DecayFunction;
 import gamygdala.Gamygdala;
 
@@ -108,7 +109,7 @@ public class Agent {
         if (gain > 0 && gain <= 20) {
             this.gain = gain;
         } else {
-            Gamygdala.debug("Error: gain factor for appraisal integration must be between 0 and 20.");
+            Debug.debug("Error: gain factor for appraisal integration must be between 0 and 20.");
         }
     }
 
@@ -143,7 +144,7 @@ public class Agent {
         if (relation >= -1 && relation <= 1) {
             return this.currentRelations.updateRelation(agent, relation);
         } else {
-            Gamygdala.debug("Error: cannot relate " + this + " to " + agent + " with intensity " + relation);
+            Debug.debug("Error: cannot relate " + this + " to " + agent + " with intensity " + relation);
         }
         return null;
     }
@@ -200,10 +201,10 @@ public class Agent {
      * @return The Emotion arising from the action
      */
     private Emotion updateEmotionAsCausalAgent(Agent causalAgent, double desirability) {
-        Gamygdala.debug("      Entering CASE 1.");
+        Debug.debug("      Entering CASE 1.");
         Emotion emotion = new Emotion(desirability >= 0 ? "gratitude" : "anger",
                 Math.abs(desirability));
-        Gamygdala.debug("      Emotion: " + emotion);
+        Debug.debug("      Emotion: " + emotion);
 
         Relation relation = this.getRelation(causalAgent);
         if (relation == null) {
@@ -226,7 +227,7 @@ public class Agent {
      * @return The Emotion arising from the action.
      */
     private Emotion updateEmotionAsAffectedAgent(Agent affectedAgent, double desirability) {
-        Gamygdala.debug("      Entering CASE 3.");
+        Debug.debug("      Entering CASE 3.");
         Relation relation = this.getRelation(affectedAgent);
         if (relation == null) {
             return null;
@@ -280,7 +281,7 @@ public class Agent {
      */
     public void evaluateInternalEmotion(double utility, double deltaLikelihood, double likelihood) {
         ArrayList<String> emotion = Emotion.determineEmotions(utility, deltaLikelihood, likelihood);
-        Gamygdala.debug("   evaluateInternalEmotion: " + emotion);
+        Debug.debug("   evaluateInternalEmotion: " + emotion);
 
         double intensity = Math.abs(utility * deltaLikelihood);
         if (intensity != 0) {
@@ -302,7 +303,7 @@ public class Agent {
     public void evaluateRelationWithAgent(Agent agent, Agent causalAgent, double desirability) {
         Relation relation = agent.getRelation(this);
         if (relation != null) {
-            Gamygdala.debug("   Processing relation: " + relation);
+            Debug.debug("   Processing relation: " + relation);
 
             agent.evaluateSocialEmotion(desirability, relation);
             agent.agentActions(this, causalAgent, desirability);
@@ -364,7 +365,7 @@ public class Agent {
     }
 
     /**
-     * Check is the Object is equal to this Agent Object
+     * Check is the Object is equal to this Agent Object.
      * @param o the Object to test against this Agent Object
      * @return whether the Object o is equal to this Agent Object
      */
@@ -401,7 +402,7 @@ public class Agent {
     }
 
     /**
-     * generate the hashcode of this Agent
+     * generate the hashcode of this Agent.
      * @return the hashcode of the Agent
      */
     @Override

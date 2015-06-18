@@ -3,6 +3,7 @@ package agent;
 import java.util.ArrayList;
 
 import data.Emotion;
+import debug.Debug;
 import decayfunction.DecayFunction;
 import gamygdala.Engine;
 import gamygdala.Gamygdala;
@@ -29,17 +30,17 @@ public class AgentInternalState extends ArrayList<Emotion> {
     public void updateEmotionalState(Emotion emotion) {
         if (emotion == null) return;
 
-        Gamygdala.debug("      updating emotion: " + emotion);
+        Debug.debug("      updating emotion: " + emotion);
 
         for (Emotion temp : this) {
             if (temp.getName().equals(emotion.getName())) {
 
                 temp.setIntensity(temp.getIntensity() + emotion.getIntensity());
-                Gamygdala.debug("         new emotion: " + temp);
+                Debug.debug("         new emotion: " + temp);
                 return;
             }
         }
-        Gamygdala.debug("         new emotion: " + emotion);
+        Debug.debug("         new emotion: " + emotion);
 
         // copy on keep, we need to maintain a list of current emotions for the
         // state, not a list references to the appraisal engine

@@ -8,6 +8,7 @@ import data.Goal;
 import data.map.AgentMap;
 import data.map.GamygdalaMap;
 import data.map.GoalMap;
+import debug.Debug;
 import decayfunction.DecayFunction;
 import decayfunction.LinearDecay;
 
@@ -17,11 +18,6 @@ import decayfunction.LinearDecay;
  * then register all agents (emotional entities) to it, as well as all goals.
  */
 public class Gamygdala {
-
-    /**
-     * Debug flag.
-     */
-    private static final boolean DEBUG = true;
 
     /**
      * The collection of agents in this Gamygdala instance.
@@ -100,15 +96,15 @@ public class Gamygdala {
      * @return True on success, false on error.
      */
     public boolean appraise(Belief belief, Agent affectedAgent) {
-        Gamygdala.debug("\n===\nStarting appraisal for:\n" + belief + "\nwith affectedAgent: " + affectedAgent + "\n==\n");
+        Debug.debug("\n===\nStarting appraisal for:\n" + belief + "\nwith affectedAgent: " + affectedAgent + "\n==\n");
 
         if (belief == null) {
-            Gamygdala.debug("Error: belief is null.");
+            Debug.debug("Error: belief is null.");
             return false;
         }
 
         if (this.gamygdalaMap.getGoalMap().size() == 0) {
-            Gamygdala.debug("Warning: no goals registered to Gamygdala.");
+            Debug.debug("Warning: no goals registered to Gamygdala.");
             return true;
         }
 
@@ -116,11 +112,11 @@ public class Gamygdala {
             // If current goal is really a goal
             if (goalPair.getKey() != null) {
                 this.processGoal(goalPair, belief, affectedAgent);
-                Gamygdala.debug("");
+                Debug.debug("");
             }
         }
 
-        Gamygdala.debug("\n=====\nFinished appraisal round\n=====\n");
+        Debug.debug("\n=====\nFinished appraisal round\n=====\n");
         return true;
     }
 
@@ -128,12 +124,12 @@ public class Gamygdala {
         Goal goal = goalPair.getKey();
         Double congruence = goalPair.getValue();
 
-        Gamygdala.debug("Processing goal: " + goal);
+        Debug.debug("Processing goal: " + goal);
         // Calculate goal values
         double deltaLikelihood = this.calculateDeltaLikelihood(goal, congruence,
                 belief.getLikelihood(), belief.isIncremental());
 
-        Gamygdala.debug("   deltaLikelihood: " + deltaLikelihood);
+        Debug.debug("   deltaLikelihood: " + deltaLikelihood);
 
         this.evaluateEmotions(affectedAgent, goal, belief, deltaLikelihood);
     }
@@ -167,7 +163,7 @@ public class Gamygdala {
         double likelihood = currentGoal.getLikelihood();
         double desirability = utility * deltaLikelihood;
 
-        Gamygdala.debug("   utility: " + utility + "\n   likelihood: " + likelihood);
+        Debug.debug("   utility: " + utility + "\n   likelihood: " + likelihood);
 
         // Determine new emotions for Agent
         owner.evaluateInternalEmotion(utility, deltaLikelihood, likelihood);
@@ -243,17 +239,6 @@ public class Gamygdala {
      */
     public GoalMap getGoalMap() {
         return this.gamygdalaMap.getGoalMap();
-    }
-
-    /**
-     * Print debug information to console if the debug flag is set to true.
-     *
-     * @param what Object to print to console.
-     */
-    public static void debug(Object what) {
-        if (Gamygdala.DEBUG) {
-            System.out.println(what);
-        }
     }
 
     /**

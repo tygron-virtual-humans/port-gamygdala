@@ -3,6 +3,7 @@ package gamygdala;
 import agent.Agent;
 import data.Belief;
 import data.Goal;
+import debug.Debug;
 import decayfunction.DecayFunction;
 
 /**
@@ -119,7 +120,7 @@ public class Engine {
      */
     public void decayAll() {
 
-        Gamygdala.debug("\n=====\nDecaying all emotions\n=====\n");
+        Debug.debug("\n=====\nDecaying all emotions\n=====\n");
 
         // Record current time
         long now = System.currentTimeMillis();
@@ -171,7 +172,7 @@ public class Engine {
      */
     public boolean setGain(double gain) {
         if (gain <= 0 || gain > 20) {
-            Gamygdala.debug("[Engine.setGain] Error: "
+            Debug.debug("[Engine.setGain] Error: "
                     + "gain factor for appraisal integration must be between 0 and 20.");
             return false;
         }
@@ -196,7 +197,7 @@ public class Engine {
         if (decayFunction != null) {
             this.gamygdala.setDecayFunction(decayFunction);
         } else {
-            Gamygdala.debug("[Engine.setDecay] DecayFunction is null.");
+            Debug.debug("[Engine.setDecay] DecayFunction is null.");
         }
 
     }
