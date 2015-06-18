@@ -1,7 +1,7 @@
 package debug;
 
 /**
- * Created by Nordin on 18-6-2015.
+ * Debug class.
  */
 public class Debug {
 
