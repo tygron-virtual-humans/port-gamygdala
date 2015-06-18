@@ -62,6 +62,17 @@ public class AgentRelations extends ArrayList<Relation> {
     }
 
     /**
+     * Decay the relations iin this ArrayList
+     * @param function the decay function
+     * @param millisPassed the milliseconds passed
+     */
+    public void decay(DecayFunction function, long millisPassed) {
+        for (Relation relation : this) {
+            relation.decay(function, millisPassed);
+        }
+    }
+
+    /**
      * Prints the relations this agent has with the agent defined by agentName.
      *
      * @param agent The agent who is the target of the relation. When omitted,
@@ -72,10 +83,10 @@ public class AgentRelations extends ArrayList<Relation> {
 
         for (int i = 0; i < this.size(); i++) {
             if (agent == null || this.get(i).getAgent().equals(agent)) {
-                output += get(i).getRelationString();
+                output += this.get(i).getRelationString();
             }
 
-            output += " for " + get(i).getAgent();
+            output += " for " + this.get(i).getAgent();
 
             if (i < this.size() - 1) {
                 output += ", and\n";
@@ -83,11 +94,5 @@ public class AgentRelations extends ArrayList<Relation> {
         }
 
         return output;
-    }
-
-    public void decay(DecayFunction function, long millisPassed) {
-        for (Relation relation : this) {
-            relation.decay(function, millisPassed);
-        }
     }
 }

@@ -74,6 +74,24 @@ public class AgentInternalState extends ArrayList<Emotion> {
     }
 
     /**
+     * Decay all the emotions in its internal state.
+     * @param function the decay function
+     * @param millisPassed the milliseconds passed
+     */
+    public void decay(DecayFunction function, long millisPassed) {
+        for (int i = 0; i < size(); i++) {
+
+            double newIntensity = function.decay(get(i).getIntensity(), millisPassed);
+
+            if (newIntensity < 0) {
+                remove(i);
+            } else {
+                get(i).setIntensity(newIntensity);
+            }
+        }
+    }
+
+    /**
      * This function prints to the console either the state as is (gain=false)
      * or a state based on gained limiter (limited between 0 and 1), of which
      * the gain can be set by using setGain(gain). A high gain factor works well
@@ -90,23 +108,5 @@ public class AgentInternalState extends ArrayList<Emotion> {
             output += emotion.getName() + ": " + emotion.getIntensity() + ", ";
         }
         return output;
-    }
-
-    /**
-     * Decay all the emotions in its internal state.
-     * @param function the decay function
-     * @param millisPassed the milliseconds passed
-     */
-    public void decay(DecayFunction function, long millisPassed) {
-        for (int i = 0; i < size(); i++) {
-
-            double newIntensity = function.decay(get(i).getIntensity(), millisPassed);
-
-            if (newIntensity < 0) {
-                remove(i);
-            } else {
-                get(i).setIntensity(newIntensity);
-            }
-        }
     }
 }

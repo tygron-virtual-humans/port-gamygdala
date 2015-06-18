@@ -184,9 +184,9 @@ public class Agent {
         }
 
         if (this.equals(affectedAgent) && !this.equals(causalAgent)) {
-            return updateEmotionAsCausalAgent(causalAgent, desirability);
+            return this.updateEmotionAsCausalAgent(causalAgent, desirability);
         } else if (this.equals(causalAgent) && !this.equals(affectedAgent)) {
-            return updateEmotionAsAffectedAgent(affectedAgent, desirability);
+            return this.updateEmotionAsAffectedAgent(affectedAgent, desirability);
         }
         return null;
     }
@@ -210,10 +210,8 @@ public class Agent {
             relation = this.updateRelation(causalAgent, .0);
         }
 
-        if (relation != null) {
-            relation.addEmotion(emotion);
-            this.updateEmotionalState(emotion);
-        }
+        relation.addEmotion(emotion);
+        this.updateEmotionalState(emotion);
 
         return emotion;
     }
@@ -293,6 +291,26 @@ public class Agent {
     }
 
     /**
+     * evaluateSocialEmotion; The agent has relationship with the goal owner
+     * which has nonzero utility, add relational effects to the relations
+     * for agent[k]. agentActions; also add remorse and gratification if
+     * conditions are met (i.e., agent did something bad / good for owner).
+     * @param agent the agent for which to check the relation
+     * @param causalAgent the causalAgent of the belief
+     * @param desirability the desirability of the goal
+     */
+    public void evaluateRelationWithAgent(Agent agent, Agent causalAgent, double desirability) {
+        Relation relation = agent.getRelation(this);
+        if (relation != null) {
+            Gamygdala.debug("   Processing relation: " + relation);
+
+            agent.evaluateSocialEmotion(desirability, relation);
+            agent.agentActions(this, causalAgent, desirability);
+
+        }
+    }
+
+    /**
      * This method decays the emotional state and relations according to the
      * decay factor and function defined in gamygdala. Typically this is called
      * automatically when you use startDecay() in Gamygdala, but you can use it
@@ -345,6 +363,11 @@ public class Agent {
         System.out.println(output);
     }
 
+    /**
+     * Check is the Object is equal to this Agent Object
+     * @param o the Object to test against this Agent Object
+     * @return whether the Object o is equal to this Agent Object
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -377,6 +400,10 @@ public class Agent {
 
     }
 
+    /**
+     * generate the hashcode of this Agent
+     * @return the hashcode of the Agent
+     */
     @Override
     public int hashCode() {
         int result;
@@ -398,23 +425,4 @@ public class Agent {
         return "<Agent[" + this.name + "]>";
     }
 
-    /**
-     * evaluateSocialEmotion; The agent has relationship with the goal owner
-     * which has nonzero utility, add relational effects to the relations
-     * for agent[k]. agentActions; also add remorse and gratification if
-     * conditions are met (i.e., agent did something bad / good for owner).
-     * @param agent the agent for which to check the relation
-     * @param causalAgent the causalAgent of the belief
-     * @param desirability the desirability of the goal
-     */
-    public void evaluateRelationWithAgent(Agent agent, Agent causalAgent, double desirability) {
-        Relation relation = agent.getRelation(this);
-        if (relation != null) {
-            Gamygdala.debug("   Processing relation: " + relation);
-
-            agent.evaluateSocialEmotion(desirability, relation);
-            agent.agentActions(this, causalAgent, desirability);
-
-        }
-    }
 }
