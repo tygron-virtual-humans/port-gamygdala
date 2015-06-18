@@ -1,10 +1,11 @@
 package data.map;
 
+import agent.Agent;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import agent.Agent;
 import debug.Debug;
 
 /**

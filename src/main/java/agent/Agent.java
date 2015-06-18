@@ -1,12 +1,12 @@
 package agent;
 
-import java.util.ArrayList;
-
 import data.Emotion;
 import data.Goal;
 import data.map.GoalMap;
 import debug.Debug;
 import decayfunction.DecayFunction;
+
+import java.util.ArrayList;
 
 /**
  * The main interacting character in the Gamygdala engine.
