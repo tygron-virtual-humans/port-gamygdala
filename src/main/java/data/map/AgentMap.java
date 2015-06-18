@@ -6,8 +6,6 @@ import java.util.Map;
 
 import agent.Agent;
 import debug.Debug;
-import gamygdala.Engine;
-import gamygdala.Gamygdala;
 
 /**
  * HashMap containing Agents.

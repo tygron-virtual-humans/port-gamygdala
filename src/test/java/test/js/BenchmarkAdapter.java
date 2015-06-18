@@ -1,8 +1,6 @@
 package test.js;
 
 import debug.Debug;
-import gamygdala.Engine;
-import gamygdala.Gamygdala;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;

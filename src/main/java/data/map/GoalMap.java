@@ -4,8 +4,6 @@ import java.util.HashMap;
 
 import data.Goal;
 import debug.Debug;
-import gamygdala.Engine;
-import gamygdala.Gamygdala;
 
 /**
  * HashMap to store Goals. Extended with add / remove / has goal methods for

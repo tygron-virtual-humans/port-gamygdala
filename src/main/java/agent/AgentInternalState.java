@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import data.Emotion;
 import debug.Debug;
 import decayfunction.DecayFunction;
-import gamygdala.Engine;
-import gamygdala.Gamygdala;
 
 /**
  * The internal state of an Agent. Contains all it's emotions.

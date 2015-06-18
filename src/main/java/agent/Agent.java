@@ -7,7 +7,6 @@ import data.Goal;
 import data.map.GoalMap;
 import debug.Debug;
 import decayfunction.DecayFunction;
-import gamygdala.Gamygdala;
 
 /**
  * The main interacting character in the Gamygdala engine.
