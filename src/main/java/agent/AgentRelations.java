@@ -1,8 +1,8 @@
 package agent;
 
-import decayfunction.DecayFunction;
-
 import java.util.ArrayList;
+
+import decayfunction.DecayFunction;
 
 /**
  * The collection of Agent Relations.
@@ -62,7 +62,7 @@ public class AgentRelations extends ArrayList<Relation> {
     }
 
     /**
-     * Decay the relations iin this ArrayList
+     * Decay the relations iin this ArrayList.
      * @param function the decay function
      * @param millisPassed the milliseconds passed
      */

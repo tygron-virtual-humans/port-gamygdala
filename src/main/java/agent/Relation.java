@@ -1,9 +1,9 @@
 package agent;
 
+import java.util.ArrayList;
+
 import data.Emotion;
 import decayfunction.DecayFunction;
-
-import java.util.ArrayList;
 
 /**
  * Describes a Relation between two Agents.
@@ -66,17 +66,17 @@ public class Relation {
      * @param emotion The emotion to add.
      */
     public void addEmotion(Emotion emotion) {
-        if (emotion == null) return;
-
-        boolean added = false;
-        for (Emotion temp : this.emotions) {
-            if (temp.getName().equals(emotion.getName())) {
-                temp.setIntensity(temp.getIntensity() + emotion.getIntensity());
-                added = true;
+        if (emotion != null) {
+            boolean added = false;
+            for (Emotion temp : this.emotions) {
+                if (temp.getName().equals(emotion.getName())) {
+                    temp.setIntensity(temp.getIntensity() + emotion.getIntensity());
+                    added = true;
+                }
             }
-        }
-        if (!added) {
-            this.emotions.add(new Emotion(emotion.getName(), emotion.getIntensity()));
+            if (!added) {
+                this.emotions.add(new Emotion(emotion.getName(), emotion.getIntensity()));
+            }
         }
     }
 

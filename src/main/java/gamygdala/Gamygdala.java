@@ -1,5 +1,7 @@
 package gamygdala;
 
+import java.util.Map;
+
 import agent.Agent;
 import data.Belief;
 import data.Goal;
@@ -9,8 +11,6 @@ import data.map.GoalMap;
 import debug.Debug;
 import decayfunction.DecayFunction;
 import decayfunction.LinearDecay;
-
-import java.util.Map;
 
 /**
  * This is the main appraisal engine class taking care of interpreting a
@@ -38,7 +38,6 @@ public class Gamygdala {
      * Constructor for Gamygdala Emotion Engine.
      */
     public Gamygdala() {
-
         // Init agent and goal maps
         this.gamygdalaMap = new GamygdalaMap();
 
@@ -229,7 +228,7 @@ public class Gamygdala {
      * Get the AgentMap containing all Agents.
      * @return AgentMap
      */
-    public AgentMap getAgentMap() {
+    private AgentMap getAgentMap() {
         return this.gamygdalaMap.getAgentMap();
     }
 
@@ -237,7 +236,7 @@ public class Gamygdala {
      * Get the GoalMap containing all Goals.
      * @return GoalMap
      */
-    public GoalMap getGoalMap() {
+    private GoalMap getGoalMap() {
         return this.gamygdalaMap.getGoalMap();
     }
 
@@ -258,8 +257,8 @@ public class Gamygdala {
     }
 
     /**
-     *
-     * @param gain
+     * Sets the gain for each Agent.
+     * @param gain Double the gain for an Agent
      */
     public void setAgentsGain(double gain) {
         for (Map.Entry<String, Agent> stringAgentEntry : this.getAgentMap().entrySet()) {
@@ -272,9 +271,9 @@ public class Gamygdala {
     }
 
     /**
-     *
-     * @param name
-     * @return
+     * Creates a new Agent.
+     * @param name String the name of the new Agent
+     * @return Agent the newly created Agent
      */
     public Agent createAgent(String name) {
         Agent agent = new Agent(name);
@@ -284,28 +283,26 @@ public class Gamygdala {
     }
 
     /**
-     *
-     * @param agent
-     * @param goalName
-     * @param goalUtility
-     * @param isMaintenanceGoal
-     * @return
+     * Create a Goal for an Agent.
+     * @param agent Agent the Agent which the Goal is for
+     * @param goalName String the name of the Goal
+     * @param goalUtility Double Goal utility
+     * @param isMaintenanceGoal Whether or not this goal is a maintenance goal.
+     * @return Goal The newly created Goal
      */
     public Goal createGoalForAgent(Agent agent, String goalName, double goalUtility, boolean isMaintenanceGoal) {
         Goal goal = new Goal(goalName, goalUtility, isMaintenanceGoal);
-
         agent.addGoal(goal);
-
         this.getGamygdalaMap().registerGoal(goal);
 
         return goal;
     }
 
     /**
-     *
-     * @param source
-     * @param target
-     * @param relation
+     * Create a Relation between two Agents.
+     * @param source Agent The source Agent
+     * @param target Agent The target Agent
+     * @param relation Relation the relation (between -1 and 1).
      */
     public void createRelation(Agent source, Agent target, double relation) {
         source.updateRelation(target, relation);

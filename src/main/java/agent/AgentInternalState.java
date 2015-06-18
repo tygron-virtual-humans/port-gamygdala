@@ -1,10 +1,10 @@
 package agent;
 
+import java.util.ArrayList;
+
 import data.Emotion;
 import debug.Debug;
 import decayfunction.DecayFunction;
-
-import java.util.ArrayList;
 
 /**
  * The internal state of an Agent. Contains all it's emotions.
@@ -26,23 +26,22 @@ public class AgentInternalState extends ArrayList<Emotion> {
      * @param emotion The emotion with which this Agent should be updated.
      */
     public void updateEmotionalState(Emotion emotion) {
-        if (emotion == null) return;
+        if (emotion != null) {
+            Debug.debug("      updating emotion: " + emotion);
 
-        Debug.debug("      updating emotion: " + emotion);
-
-        for (Emotion temp : this) {
-            if (temp.getName().equals(emotion.getName())) {
-
-                temp.setIntensity(temp.getIntensity() + emotion.getIntensity());
-                Debug.debug("         new emotion: " + temp);
-                return;
+            for (Emotion temp : this) {
+                if (temp.getName().equals(emotion.getName())) {
+                    temp.setIntensity(temp.getIntensity() + emotion.getIntensity());
+                    Debug.debug("         new emotion: " + temp);
+                    return;
+                }
             }
-        }
-        Debug.debug("         new emotion: " + emotion);
+            Debug.debug("         new emotion: " + emotion);
 
-        // copy on keep, we need to maintain a list of current emotions for the
-        // state, not a list references to the appraisal engine
-        this.add(new Emotion(emotion.getName(), emotion.getIntensity()));
+            // copy on keep, we need to maintain a list of current emotions for the
+            // state, not a list references to the appraisal engine
+            this.add(new Emotion(emotion.getName(), emotion.getIntensity()));
+        }
     }
 
     /**
