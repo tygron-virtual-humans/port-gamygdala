@@ -1,7 +1,6 @@
 package test.js;
 
-import gamygdala.Engine;
-import gamygdala.Gamygdala;
+import debug.Debug;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -54,9 +53,9 @@ public class BenchmarkAdapter {
             try {
                 scriptEngine.eval(new FileReader(sourceFileLocation + file));
             } catch (FileNotFoundException e) {
-                Gamygdala.debug("[JSTest] Source test file not found: " + e.getMessage());
+                Debug.debug("[JSTest] Source test file not found: " + e.getMessage());
             } catch (ScriptException e) {
-                Gamygdala.debug("[JSTest] Script exception in source test files: " + e.getMessage());
+                Debug.debug("[JSTest] Script exception in source test files: " + e.getMessage());
             }
         }
     }

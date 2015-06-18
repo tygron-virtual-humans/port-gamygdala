@@ -5,8 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import agent.Agent;
-import gamygdala.Engine;
-import gamygdala.Gamygdala;
+import debug.Debug;
 
 /**
  * HashMap containing Agents.
@@ -29,7 +28,7 @@ public class AgentMap extends HashMap<String, Agent> {
         if (this.containsKey(agentName)) {
             return this.get(agentName);
         }
-        Gamygdala.debug("Warning: agent \"" + agentName + "\" not found.");
+        Debug.debug("Warning: agent \"" + agentName + "\" not found.");
         return null;
     }
     
