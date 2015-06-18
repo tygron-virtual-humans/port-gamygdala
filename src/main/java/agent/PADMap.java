@@ -8,7 +8,7 @@ import data.Emotion;
 /**
  * Pleasure Arousal Dominance mapping of the emotional states.
  */
-public class PADMap {
+public final class PADMap {
 
     /**
      * Singleton Engine object.
@@ -18,7 +18,7 @@ public class PADMap {
     /**
      * Emotion map.
      */
-    static HashMap<String, double[]> mapPad;
+    private static HashMap<String, double[]> mapPad;
 
     /**
      * Empty constructor to prevent instantiating. Use PADMap.getInstance()
@@ -80,6 +80,8 @@ public class PADMap {
      * frequency and/or large appraisals, so that the effect of these is
      * dampened.
      *
+     * @param emotions ArrayList<Emotion> list of emotions
+     * @param gain the gain factor
      * @return An array of doubles with Pleasure at index [0], Arousal at index
      *         [1] and Dominance at index [2].
      */
@@ -98,7 +100,6 @@ public class PADMap {
                 }
             }
         }
-
         return pad;
     }
 
