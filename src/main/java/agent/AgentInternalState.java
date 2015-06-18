@@ -99,6 +99,7 @@ public class AgentInternalState extends ArrayList<Emotion> {
      * of these is dampened.
      *
      * @param gain The gain factor. Leave blank (null) to ignore gain.
+     * @return String List of emotions.
      */
     public String getEmotionalStateString(Double gain) {
         String output = "";
