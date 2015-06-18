@@ -3,6 +3,8 @@ package gamygdala;
 import agent.Agent;
 import data.Belief;
 import data.Goal;
+import decayfunction.DecayFunction;
+import decayfunction.ExponentialDecay;
 import exception.GoalCongruenceMapException;
 import org.junit.After;
 import org.junit.Before;
@@ -80,4 +82,64 @@ public class GamygdalaTest {
         
     }
 
+    @Test
+    public void testSetDecayFunction() throws Exception {
+        DecayFunction decayFunction = new ExponentialDecay(0.5);
+        engine.setDecayFunction(decayFunction);
+
+        assertEquals(decayFunction, engine.getDecayFunction());
+    }
+
+    @Test
+    public void testSetDecayFactor() throws Exception {
+        Double decayFactor = 0.3;
+        engine.setDecayFactor(decayFactor);
+
+        assertEquals(decayFactor, engine.getDecayFactor(), 0.0001);
+    }
+
+    @Test
+    public void testDecayAll() throws Exception {
+
+    }
+
+    @Test
+    public void testGetAgentMap() throws Exception {
+
+    }
+
+    @Test
+    public void testGetGoalMap() throws Exception {
+
+    }
+
+    @Test
+    public void testDebug() throws Exception {
+
+    }
+
+    @Test
+    public void testPrintAllEmotions() throws Exception {
+
+    }
+
+    @Test
+    public void testSetAgentsGain() throws Exception {
+
+    }
+
+    @Test
+    public void testCreateAgent() throws Exception {
+
+    }
+
+    @Test
+    public void testCreateGoalForAgent() throws Exception {
+
+    }
+
+    @Test
+    public void testCreateRelation() throws Exception {
+
+    }
 }

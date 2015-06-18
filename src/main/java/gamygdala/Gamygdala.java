@@ -3,7 +3,6 @@ package gamygdala;
 import java.util.Map;
 
 import agent.Agent;
-import agent.Relation;
 import data.Belief;
 import data.Goal;
 import data.map.AgentMap;
@@ -56,10 +55,47 @@ public class Gamygdala {
     }
 
     /**
+     * Get the GamygdalaMap containing all Agents and Goals.
+     *
+     * @return GamygdalaMap
+     */
+    public GamygdalaMap getGamygdalaMap() {
+        return gamygdalaMap;
+    }
+
+    /**
+     * @return the decayFunction
+     */
+    public DecayFunction getDecayFunction() {
+        return decayFunction;
+    }
+
+    /**
+     * @param decayFunction the decayFunction to set
+     */
+    public void setDecayFunction(DecayFunction decayFunction) {
+        this.decayFunction = decayFunction;
+    }
+
+    /**
+     * @return the decayFactor
+     */
+    public double getDecayFactor() {
+        return decayFactor;
+    }
+
+    /**
+     * @param decayFactor the decayFactor to set
+     */
+    public void setDecayFactor(double decayFactor) {
+        this.decayFactor = decayFactor;
+    }
+
+    /**
      * Performs the complete appraisal of a single event (belief) for all
      * agents.
-     * 
-     * @param belief The belief to appraise.
+     *
+     * @param belief        The belief to appraise.
      * @param affectedAgent The agent who appraises the event.
      * @return True on success, false on error.
      */
@@ -77,12 +113,11 @@ public class Gamygdala {
         }
 
         for (Map.Entry<Goal, Double> goalPair : belief.getGoalCongruenceMap().entrySet()) {
-            if (goalPair.getKey() == null) {
-                continue;
+            // If current goal is really a goal
+            if (goalPair.getKey() != null) {
+                this.processGoal(goalPair, belief, affectedAgent);
+                Gamygdala.debug("");
             }
-
-            this.processGoal(goalPair, belief, affectedAgent);
-            Gamygdala.debug("");
         }
 
         Gamygdala.debug("\n=====\nFinished appraisal round\n=====\n");
@@ -152,7 +187,6 @@ public class Gamygdala {
      * Decay emotional state of all Agents.
      */
     public void decayAll(long lastMillis, long currentMillis) {
-
         long millisPassed = currentMillis - lastMillis;
 
         Agent agent;
@@ -174,40 +208,25 @@ public class Gamygdala {
      * (the default) is -1 or 1, we can't change it any more (unless externally
      * and explicitly by changing the goal.likelihood).
      *
-     * @param goal the goal for which to calculate the likelihood.
-     * @param congruence how much is it affecting the agent.
-     * @param likelihood the likelihood.
+     * @param goal          the goal for which to calculate the likelihood.
+     * @param congruence    how much is it affecting the agent.
+     * @param likelihood    the likelihood.
      * @param isIncremental if the goal is incremental
      * @return the delta likelihood.
      */
     private double calculateDeltaLikelihood(Goal goal, double congruence, double likelihood, boolean isIncremental) {
-
         Double oldLikelihood = goal.getLikelihood();
-        double newLikelihood;
 
-        if (!goal.isMaintenanceGoal() && (oldLikelihood >= 1 || oldLikelihood <= -1)) {
+        if (goal.isMaintenanceGoal() || (oldLikelihood < 1 && oldLikelihood > -1)) {
+            if (isIncremental) {
+                goal.setLikelihood(Math.max(Math.min(oldLikelihood + likelihood * congruence, 1), -1));
+            } else {
+                goal.setLikelihood((congruence * likelihood + 1d) / 2d);
+            }
+            return goal.getLikelihood() - oldLikelihood;
+        } else {
             return 0;
         }
-
-        if (isIncremental) {
-            newLikelihood = oldLikelihood + likelihood * congruence;
-            newLikelihood = Math.max(Math.min(newLikelihood, 1), -1);
-        } else {
-            newLikelihood = (congruence * likelihood + 1d) / 2d;
-        }
-
-        goal.setLikelihood(newLikelihood);
-
-        return newLikelihood - oldLikelihood;
-    }
-
-    /**
-     * Get the GamygdalaMap containing all Agents and Goals.
-     * 
-     * @return GamygdalaMap
-     */
-    public GamygdalaMap getGamygdalaMap() {
-        return gamygdalaMap;
     }
 
     /**
@@ -224,34 +243,6 @@ public class Gamygdala {
      */
     public GoalMap getGoalMap() {
         return this.gamygdalaMap.getGoalMap();
-    }
-
-    /**
-     * @return the decayFunction
-     */
-    public DecayFunction getDecayFunction() {
-        return decayFunction;
-    }
-
-    /**
-     * @param decayFunction the decayFunction to set
-     */
-    public void setDecayFunction(DecayFunction decayFunction) {
-        this.decayFunction = decayFunction;
-    }
-
-    /**
-     * @return the decayFactor
-     */
-    public double getDecayFactor() {
-        return decayFactor;
-    }
-
-    /**
-     * @param decayFactor the decayFactor to set
-     */
-    public void setDecayFactor(double decayFactor) {
-        this.decayFactor = decayFactor;
     }
 
     /**
@@ -295,6 +286,11 @@ public class Gamygdala {
         }
     }
 
+    /**
+     *
+     * @param name
+     * @return
+     */
     public Agent createAgent(String name) {
         Agent agent = new Agent(name);
         this.getGamygdalaMap().registerAgent(agent);
@@ -302,6 +298,14 @@ public class Gamygdala {
         return agent;
     }
 
+    /**
+     *
+     * @param agent
+     * @param goalName
+     * @param goalUtility
+     * @param isMaintenanceGoal
+     * @return
+     */
     public Goal createGoalForAgent(Agent agent, String goalName, double goalUtility, boolean isMaintenanceGoal) {
         Goal goal = new Goal(goalName, goalUtility, isMaintenanceGoal);
 
@@ -312,7 +316,14 @@ public class Gamygdala {
         return goal;
     }
 
+    /**
+     *
+     * @param source
+     * @param target
+     * @param relation
+     */
     public void createRelation(Agent source, Agent target, double relation) {
         source.updateRelation(target, relation);
     }
+
 }

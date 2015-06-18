@@ -25,7 +25,7 @@ public class Agent {
     /**
      * Collection of goals for this Agent.
      */
-    final GoalMap goals;
+    GoalMap goals;
     /**
      * Collection of relations for this Agent.
      */
@@ -343,6 +343,51 @@ public class Agent {
         output += this.internalState.getEmotionalStateString(gained ? this.gain : null);
 
         System.out.println(output);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Agent)) {
+            return false;
+        }
+        Agent agent = (Agent) o;
+
+        if (Double.compare(agent.gain, gain) != 0) {
+            return false;
+        }
+        if (name != null ? !name.equals(agent.name) : agent.name != null) {
+            return false;
+        }
+        if (!goals.equals(agent.goals)) {
+            return false;
+        }
+        if (getCurrentRelations() != null) {
+            if (!getCurrentRelations().equals(agent.getCurrentRelations())) {
+                return false;
+            }
+        } else {
+            if (agent.getCurrentRelations() != null) {
+                return false;
+            }
+        }
+        return !(internalState != null ? !internalState.equals(agent.internalState) : agent.internalState != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = name != null ? name.hashCode() : 0;
+        temp = Double.doubleToLongBits(gain);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (goals.hashCode());
+        result = 31 * result + (getCurrentRelations() != null ? getCurrentRelations().hashCode() : 0);
+        result = 31 * result + (internalState != null ? internalState.hashCode() : 0);
+        return result;
     }
 
     /**

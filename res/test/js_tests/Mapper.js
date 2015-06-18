@@ -110,14 +110,14 @@ Mapper.prototype.evaluateEmotion = function(){
     if(agent.getCurrentRelations().size() > 0){
         if(agent.hasRelationWith(this.agentAffected)){
             relation = agent.getRelation(this.agentAffected);
-            for(var i = 0; i < relation.emotionList.size();i++){
-                emotions.push(relation.emotionList.get(i).name);
+            for(var i = 0; i < relation.getEmotions().size();i++){
+                emotions.push(relation.getEmotions().get(i).name);
             }
         }
         if(agent.hasRelationWith(this.agentCausal)){
             relation = agent.getRelation(this.agentCausal);
-            for(var i = 0; i < relation.emotionList.size();i++){
-                emotions.push(relation.emotionList.get(i).name);
+            for(var i = 0; i < relation.getEmotions().size();i++){
+                emotions.push(relation.getEmotions().get(i).name);
             }   
         }
     }  

@@ -115,15 +115,18 @@ public class RelationTest {
 
         // Same Agent object
         Relation equalRelation = new Relation(agent, 0);
-        assertTrue(rel.equals(equalRelation));
+        assertEquals(equalRelation, rel);
 
         // Similar Agent objects (but not equal)
         Agent similarAgent = new Agent("TestAgent");
         Relation similarRelation = new Relation(similarAgent, 0);
-        assertFalse(rel.equals(similarRelation));
+
+        assertEquals(true, rel.equals(similarRelation));
 
         // Null
-        assertFalse(rel.equals(null));
+        assertEquals(false, rel.equals(null));
+
+        assertEquals(false, rel.equals(new Object()));
     }
 
     @Test

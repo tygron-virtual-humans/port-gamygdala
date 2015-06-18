@@ -236,9 +236,9 @@ public class AgentTest {
 
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testAgentActionsEmptyCausalAgent() {
-        agent.agentActions(agent, null, 0);
+        assertNull(agent.agentActions(agent, null, 0));
     }
 
     @Test
@@ -275,13 +275,12 @@ public class AgentTest {
     }
 
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testAgentActionsCaseThree_NoRelation() {
-
         Agent causalAgent = new Agent("CausalAgent");
 
         // CASE 3
-        agent.agentActions(causalAgent, agent, .25);
+        assertNull(agent.agentActions(causalAgent, agent, .25));
     }
     
     @Test
@@ -308,16 +307,16 @@ public class AgentTest {
         Relation relation = mock(Relation.class);
         
         // Test four emotions
-        when(relation.getLike()).thenReturn(1d);
+        when(relation.getLike()).thenReturn(0d);
         assertEquals("happy-for", agent.evaluateSocialEmotion(1, relation).getName());
         
-        when(relation.getLike()).thenReturn(-1d);
+        when(relation.getLike()).thenReturn(-.1d);
         assertEquals("resentment", agent.evaluateSocialEmotion(1, relation).getName());
         
-        when(relation.getLike()).thenReturn(1d);
+        when(relation.getLike()).thenReturn(0d);
         assertEquals("pity", agent.evaluateSocialEmotion(-1, relation).getName());
         
-        when(relation.getLike()).thenReturn(-1d);
+        when(relation.getLike()).thenReturn(-.1d);
         assertEquals("gloating", agent.evaluateSocialEmotion(-1, relation).getName());
         
     }
@@ -365,6 +364,30 @@ public class AgentTest {
     @Test
     public void testToString() {
         assertEquals("<Agent[TestAgent]>", agent.toString());
+    }
+
+
+    @Test
+    public void testEquals() throws Exception {
+        // Equals with null
+        assertFalse(agent.equals(null));
+
+        // Equals with different Object
+        assertFalse(agent.equals(new Object()));
+
+        // Equals with Double
+        agent.setGain(0.5);
+        Agent expected = new Agent("TestAgent");
+        expected.setGain(0.51);
+        assertFalse(agent.equals(expected));
+
+        // Equals with different goals
+        agent.addGoal(new Goal("Save Peace", 0.5, true));
+        Agent goals = new Agent("TestAgent");
+        goals.addGoal(new Goal("Kill mario", 0.4, false));
+        assertFalse(agent.equals(goals));
+
+        //
     }
 
 }
