@@ -10,8 +10,19 @@ import decayfunction.DecayFunction;
  */
 public class Relation {
 
+    /**
+     *
+     */
     private final Agent agent;
+
+    /**
+     *
+     */
     private double like;
+
+    /**
+     *
+     */
     private final ArrayList<Emotion> emotions;
 
     /**
@@ -21,11 +32,11 @@ public class Relation {
      * relations, one relation for each target agent.
      *
      * @param target The agent who is the target of the relation.
-     * @param like The relation [-1 and 1].
+     * @param targetLike The relation [-1 and 1].
      */
-    public Relation(Agent target, double like) {
+    public Relation(Agent target, double targetLike) {
         this.agent = target;
-        this.like = like;
+        this.like = targetLike;
         this.emotions = new ArrayList<Emotion>();
     }
 
@@ -50,12 +61,17 @@ public class Relation {
     /**
      * Set the intensity of the relation.
      *
-     * @param like Intensity of the relation
+     * @param targetLike Intensity of the relation
      */
-    public void setLike(double like) {
-        this.like = like;
+    public void setLike(double targetLike) {
+        this.like = targetLike;
     }
 
+    /**
+     * Get the ArrayList<Emotion> of the Relation.
+     *
+     * @return ArrayList<Emotion> of this Relation
+     */
     public ArrayList<Emotion> getEmotions() {
         return this.emotions;
     }
@@ -82,15 +98,15 @@ public class Relation {
 
     /**
      * Decay all emotions in this relation.
-     * @param dfunc The Decay Function used to decay this relation.
+     * @param decayFunction The Decay Function used to decay this relation.
      * @param millisPassed The time passed (in milliseconds) since the last
      *            decay.
      */
-    public void decay(DecayFunction dfunc, long millisPassed) {
+    public void decay(DecayFunction decayFunction, long millisPassed) {
         for (int i = 0; i < this.emotions.size(); i++) {
 
             Emotion emotion = this.emotions.get(i);
-            double newIntensity = dfunc.decay(emotion.getIntensity(), millisPassed);
+            double newIntensity = decayFunction.decay(emotion.getIntensity(), millisPassed);
 
             if (newIntensity < 0) {
                 this.emotions.remove(i);
@@ -99,6 +115,24 @@ public class Relation {
                 this.emotions.set(i, emotion);
             }
         }
+    }
+
+    /**
+     * Creates a toString of the emotion ArrayList.
+     * @return String emotion ArrayList.
+     */
+    public String getRelationString() {
+        String output = "";
+
+        for (int j = 0; j < this.emotions.size(); j++) {
+            output += this.emotions.get(j).getName()
+                    + "(" + this.emotions.get(j).getIntensity() + ")";
+
+            if (j < this.emotions.size() - 1) {
+                output += ", and ";
+            }
+        }
+        return output;
     }
 
     /**
@@ -135,19 +169,5 @@ public class Relation {
     @Override
     public String toString() {
         return "<Relation[causalAgent=" + this.agent + ", like=" + this.like + "]>";
-    }
-
-    public String getRelationString() {
-        String output = "";
-
-        for (int j = 0; j < this.emotions.size(); j++) {
-            output += this.emotions.get(j).getName()
-                    + "(" + this.emotions.get(j).getIntensity() + ")";
-
-            if (j < this.emotions.size() - 1) {
-                output += ", and ";
-            }
-        }
-        return output;
     }
 }
