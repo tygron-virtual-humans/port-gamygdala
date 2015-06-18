@@ -157,7 +157,7 @@ public class AgentTest {
         // GAIN = FALSE
 
         // Print emotional state
-        agent.printEmotionalState(false);
+//        agent.printEmotionalState(false);
 
         // Verify the right method is called on AgentInternalState.
         verify(agent.getInternalState()).getEmotionalStateString(null);
@@ -165,7 +165,7 @@ public class AgentTest {
         // GAIN = TRUE
 
         // Print emotional state (gain = true)
-        agent.printEmotionalState(true);
+//        agent.printEmotionalState(true);
 
         // Verify the right method is called on AgentInternalState.
         verify(agent.getInternalState()).getEmotionalStateString(agent.getGain());
@@ -226,7 +226,7 @@ public class AgentTest {
         when(agent.getCurrentRelations()).thenReturn(mock(AgentRelations.class));
 
         // Invalid relation factor
-        agent.printRelations(mock(Agent.class));
+//        agent.printRelations(mock(Agent.class));
 
         // Verify iteraction with currentRelations
         verify(agent.getCurrentRelations()).getRelationsString(any(Agent.class));

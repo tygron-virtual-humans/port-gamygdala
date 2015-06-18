@@ -373,11 +373,11 @@ public class Agent {
      * @param agent The agent who is the target of the relation. When omitted,
      *              all relations are printed.
      */
-    public void printRelations(Agent agent) {
+    public String toStringRelations(Agent agent) {
         String output = this.name + " has the following sentiments:\n   ";
         output += this.currentRelations.getRelationsString(agent);
 
-        System.out.println(output);
+        return output;
     }
 
     /**
@@ -391,11 +391,11 @@ public class Agent {
      *
      * @param gained Print only gained emotions or not.
      */
-    public void printEmotionalState(boolean gained) {
+    public String toStringEmotionalState(boolean gained) {
         String output = this.name + " feels ";
         output += this.internalState.getEmotionalStateString(gained ? this.gain : null);
 
-        System.out.println(output);
+        return output;
     }
 
     /**

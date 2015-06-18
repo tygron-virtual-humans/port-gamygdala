@@ -23,7 +23,6 @@ public class GoalMap extends HashMap<String, Goal> {
      * @return True if goal was added successfully, false if not.
      */
     public boolean addGoal(Goal goal) {
-
         // Check for empty Goal
         if (goal == null) {
             Debug.debug("[GoalMap.addGoal] Goal is null ");
@@ -37,9 +36,8 @@ public class GoalMap extends HashMap<String, Goal> {
         }
 
         // Add goal to GoalMap.
-        put(goal.getName(), goal);
+        this.put(goal.getName(), goal);
         return true;
-
     }
 
     /**
@@ -49,7 +47,7 @@ public class GoalMap extends HashMap<String, Goal> {
      * @return True if goal was removed successfully, false if not.
      */
     public boolean removeGoal(Goal goal) {
-        return goal != null && remove(goal.getName()) != null;
+        return goal != null && this.remove(goal.getName()) != null;
     }
 
     /**
@@ -59,7 +57,7 @@ public class GoalMap extends HashMap<String, Goal> {
      * @return True if Agent has goal, false if not.
      */
     public boolean hasGoal(Goal goal) {
-        return goal != null && hasGoal(goal.getName());
+        return goal != null && this.hasGoal(goal.getName());
     }
 
     /**
@@ -69,7 +67,7 @@ public class GoalMap extends HashMap<String, Goal> {
      * @return True if Agent has goal, false if not.
      */
     private boolean hasGoal(String goalName) {
-        return containsKey(goalName) && get(goalName) != null;
+        return this.containsKey(goalName) && this.get(goalName) != null;
     }
 
     /**
@@ -87,6 +85,12 @@ public class GoalMap extends HashMap<String, Goal> {
         return null;
     }
 
+    /**
+     *
+     * @param name
+     * @param goal
+     * @return
+     */
     @Override
     public Goal put(String name, Goal goal) {
         if (!this.containsKey(goal.getName())) {

@@ -35,6 +35,24 @@ public class Engine {
     }
 
     /**
+     * Get the Gamygdala instance for this Engine.
+     *
+     * @return The Gamygdala instance.
+     */
+    public Gamygdala getGamygdala() {
+        return this.gamygdala;
+    }
+
+    /**
+     * Set a new Gamygdala instance for this Engine.
+     *
+     * @param gamygdala The Gamygdala instance.
+     */
+    public void setGamygdala(Gamygdala gamygdala) {
+        this.gamygdala = gamygdala;
+    }
+
+    /**
      * Get the Engine object. If no Engine has been instantiated,
      * create a new Engine with a fresh Gamygdala instance.
      *
@@ -188,36 +206,15 @@ public class Engine {
      * emotions for all agents are decayed according to the factor and function
      * set here.
      *
-     * @param decayFactor   The decay factor. A factor of 1 means no decay.
      * @param decayFunction The decay function to be used.
      */
-    public void setDecay(double decayFactor, DecayFunction decayFunction) {
-        this.gamygdala.setDecayFactor(decayFactor);
-
+    public void setDecay(DecayFunction decayFunction) {
         if (decayFunction != null) {
             this.gamygdala.setDecayFunction(decayFunction);
         } else {
             Debug.debug("[Engine.setDecay] DecayFunction is null.");
         }
 
-    }
-
-    /**
-     * Get the Gamygdala instance for this Engine.
-     *
-     * @return The Gamygdala instance.
-     */
-    public Gamygdala getGamygdala() {
-        return this.gamygdala;
-    }
-
-    /**
-     * Set a new Gamygdala instance for this Engine.
-     *
-     * @param gamygdala The Gamygdala instance.
-     */
-    public void setGamygdala(Gamygdala gamygdala) {
-        this.gamygdala = gamygdala;
     }
 
 }

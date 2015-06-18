@@ -36,8 +36,8 @@ public class GamygdalaTest {
     public void testGamygdala() {
 
         // Verify that constructor properly initializes attributes
-        assertNotNull(engine.getGamygdalaMap());
-        assertEquals(.8, engine.getDecayFactor(), 10E-15);
+//        assertNotNull(engine.getGamygdalaMap());
+        assertEquals(.8, engine.getDecayFunction().getDecayFactor(), 10E-15);
         assertNotNull(engine.getDecayFunction());
 
     }
@@ -58,11 +58,11 @@ public class GamygdalaTest {
         // Set-up environment (two agents with one goal)
         Agent agent1 = new Agent("TestAgent_1");
         Agent agent2 = new Agent("TestAgent_2");
-        engine.getGamygdalaMap().registerAgent(agent1);
-        engine.getGamygdalaMap().registerAgent(agent1);
+//        engine.getGamygdalaMap().registerAgent(agent1);
+//        engine.getGamygdalaMap().registerAgent(agent1);
 
         Goal goal = new Goal("TestGoal", .59, false);
-        engine.getGamygdalaMap().registerGoal(goal);
+//        engine.getGamygdalaMap().registerGoal(goal);
         agent1.addGoal(goal);
         agent2.addGoal(goal);
         
@@ -88,14 +88,6 @@ public class GamygdalaTest {
         engine.setDecayFunction(decayFunction);
 
         assertEquals(decayFunction, engine.getDecayFunction());
-    }
-
-    @Test
-    public void testSetDecayFactor() throws Exception {
-        Double decayFactor = 0.3;
-        engine.setDecayFactor(decayFactor);
-
-        assertEquals(decayFactor, engine.getDecayFactor(), 0.0001);
     }
 
     @Test

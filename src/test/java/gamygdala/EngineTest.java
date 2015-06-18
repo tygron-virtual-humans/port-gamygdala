@@ -2,9 +2,7 @@ package gamygdala;
 
 import agent.Agent;
 import data.Belief;
-import data.Goal;
 import data.map.AgentMap;
-import data.map.GamygdalaMap;
 import decayfunction.DecayFunction;
 import org.junit.After;
 import org.junit.Before;
@@ -103,7 +101,7 @@ public class EngineTest {
 
     @Test
     public void testSetGain() throws Exception {
-        // Create GamygdalaMap with one Agent
+        // Create GamygdalaMapInterface with one Agent
         AgentMap map = new AgentMap();
         Agent agent = mock(Agent.class);
         map.put(agent.getName(), agent);
@@ -116,21 +114,6 @@ public class EngineTest {
         // Test set gain
         assertTrue(engine.setGain(20));
         assertTrue(engine.setGain(1));
-    }
-
-    @Test
-    public void testSetDecay() throws Exception {
-        DecayFunction df = mock(DecayFunction.class);
-
-        // Check DecayFunction null
-        engine.setDecay(59d, null);
-        verify(gamygdala, times(1)).setDecayFactor(59d);
-        verify(gamygdala, times(0)).setDecayFunction(df);
-
-        // Check DecayFunction not null
-        engine.setDecay(10d, df);
-        verify(gamygdala).setDecayFactor(10d);
-        verify(gamygdala).setDecayFunction(df);
     }
 
     @Test
