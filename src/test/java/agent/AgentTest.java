@@ -34,15 +34,15 @@ public class AgentTest {
     public void testAgent() {
 
         // Verify name
-        assertEquals("TestAgent", agent.name);
+        assertEquals("TestAgent", agent.getName());
 
         // Verify maps / collections instantiated
-        assertNotNull(agent.goals);
-        assertNotNull(agent.currentRelations);
-        assertNotNull(agent.internalState);
+        assertNotNull(agent.getGoals());
+        assertNotNull(agent.getCurrentRelations());
+        assertNotNull(agent.getInternalState());
 
         // Check initial gain
-        assertEquals(1, agent.gain, 10E-15);
+        assertEquals(1, agent.getGain(), 10E-15);
     }
 
     @Test
@@ -99,8 +99,8 @@ public class AgentTest {
         Goal goal = new Goal("TestGoal", 1, true);
         agent.addGoal(goal);
 
-        assertNotNull(agent.goals.get(goal.getName()));
-        assertEquals(goal, agent.goals.get(goal.getName()));
+        assertNotNull(agent.getGoals().get(goal.getName()));
+        assertEquals(goal, agent.getGoals().get(goal.getName()));
 
         assertEquals(goal, agent.getGoalByName("TestGoal"));
 
@@ -110,44 +110,41 @@ public class AgentTest {
     public void testSetGain() {
 
         // Verify default gain is set
-        assertEquals(Agent.DEFAULT_GAIN, agent.gain, 10E-15);
+        assertEquals(Agent.DEFAULT_GAIN, agent.getGain(), 10E-15);
 
         // Set gain to allowed value and verify
         agent.setGain(2);
-        assertEquals(2, agent.gain, 10E-15);
+        assertEquals(2, agent.getGain(), 10E-15);
 
         // Set gain to disallowed value and verify the gain has not been changed
         agent.setGain(0);
         agent.setGain(20.01);
-        assertEquals(2, agent.gain, 10E-15);
+        assertEquals(2, agent.getGain(), 10E-15);
 
     }
 
     @Test
     public void testUpdateEmotionalState() {
-
-        // Mock internalstate
-        agent.internalState = mock(AgentInternalState.class);
+        when(agent.getInternalState()).thenReturn(mock(AgentInternalState.class));
 
         // Update emotional state
         agent.updateEmotionalState(mock(Emotion.class));
 
         // Verify the right method is called on AgentInternalState.
-        verify(agent.internalState).updateEmotionalState(any(Emotion.class));
-
+        verify(agent.getInternalState()).updateEmotionalState(any(Emotion.class));
     }
 
     @Test
     public void testGetEmotionalState() {
 
         // Mock internalstate
-        agent.internalState = mock(AgentInternalState.class);
+        when(agent.getInternalState()).thenReturn(mock(AgentInternalState.class));
 
         // Get emotional state
         agent.getEmotionalState(null);
 
         // Verify the right method is called on AgentInternalState.
-        verify(agent.internalState).getEmotionalState(null);
+        verify(agent.getInternalState()).getEmotionalState(null);
 
     }
 
@@ -155,7 +152,7 @@ public class AgentTest {
     public void testPrintEmotionalState() {
 
         // Mock internalstate
-        agent.internalState = mock(AgentInternalState.class);
+        when(agent.getInternalState()).thenReturn(mock(AgentInternalState.class));
 
         // GAIN = FALSE
 
@@ -163,7 +160,7 @@ public class AgentTest {
         agent.printEmotionalState(false);
 
         // Verify the right method is called on AgentInternalState.
-        verify(agent.internalState).getEmotionalStateString(null);
+        verify(agent.getInternalState()).getEmotionalStateString(null);
 
         // GAIN = TRUE
 
@@ -171,7 +168,7 @@ public class AgentTest {
         agent.printEmotionalState(true);
 
         // Verify the right method is called on AgentInternalState.
-        verify(agent.internalState).getEmotionalStateString(agent.gain);
+        verify(agent.getInternalState()).getEmotionalStateString(agent.getGain());
 
     }
 
@@ -179,18 +176,18 @@ public class AgentTest {
     public void testUpdateRelation() {
 
         // Mock currentRelations
-        agent.currentRelations = mock(AgentRelations.class);
+        when(agent.getCurrentRelations()).thenReturn(mock(AgentRelations.class));
 
         // Invalid relation factor
         agent.updateRelation(mock(Agent.class), 100);
 
-        verifyZeroInteractions(agent.currentRelations);
+        verifyZeroInteractions(agent.getCurrentRelations());
 
         // Correct relation factor
         agent.updateRelation(mock(Agent.class), -1);
 
         // Verify iteraction with currentRelations
-        verify(agent.currentRelations).updateRelation(any(Agent.class), any(Double.class));
+        verify(agent.getCurrentRelations()).updateRelation(any(Agent.class), any(Double.class));
 
     }
 
@@ -198,13 +195,13 @@ public class AgentTest {
     public void testHasRelationWith() {
 
         // Mock currentRelations
-        agent.currentRelations = mock(AgentRelations.class);
+        when(agent.getCurrentRelations()).thenReturn(mock(AgentRelations.class));
 
         // Invalid relation factor
         agent.hasRelationWith(mock(Agent.class));
 
         // Verify iteraction with currentRelations
-        verify(agent.currentRelations).hasRelationWith(any(Agent.class));
+        verify(agent.getCurrentRelations()).hasRelationWith(any(Agent.class));
 
     }
 
@@ -212,13 +209,13 @@ public class AgentTest {
     public void testGetRelation() {
 
         // Mock currentRelations
-        agent.currentRelations = mock(AgentRelations.class);
+        when(agent.getCurrentRelations()).thenReturn(mock(AgentRelations.class));
 
         // Invalid relation factor
         agent.getRelation(mock(Agent.class));
 
         // Verify iteraction with currentRelations
-        verify(agent.currentRelations).getRelation(any(Agent.class));
+        verify(agent.getCurrentRelations()).getRelation(any(Agent.class));
 
     }
 
@@ -226,13 +223,13 @@ public class AgentTest {
     public void testPrintRelations() {
 
         // Mock currentRelations
-        agent.currentRelations = mock(AgentRelations.class);
+        when(agent.getCurrentRelations()).thenReturn(mock(AgentRelations.class));
 
         // Invalid relation factor
         agent.printRelations(mock(Agent.class));
 
         // Verify iteraction with currentRelations
-        verify(agent.currentRelations).getRelationsString(any(Agent.class));
+        verify(agent.getCurrentRelations()).getRelationsString(any(Agent.class));
 
     }
 
@@ -266,7 +263,7 @@ public class AgentTest {
         assertEquals(expected, result);
         
         // Verify added to relation
-        assertEquals(expected, agent.currentRelations.get(0).getEmotions().get(0));
+        assertEquals(expected, agent.getCurrentRelations().get(0).getEmotions().get(0));
     }
 
     @Test
@@ -297,7 +294,7 @@ public class AgentTest {
         assertEquals(expected, result);
         
         // Verify added to relation
-        assertEquals(expected, agent.currentRelations.get(0).getEmotions().get(0));
+        assertEquals(expected, agent.getCurrentRelations().get(0).getEmotions().get(0));
     }
     
 

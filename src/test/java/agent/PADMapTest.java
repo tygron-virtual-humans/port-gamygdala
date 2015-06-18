@@ -41,10 +41,10 @@ public class PADMapTest {
 
         // Since there's no constructor, verify that the initial emotions are
         // added to the PADMap at the appropriate time.
-        assertNotNull(PADMap.mapPad);
+        assertNotNull(PADMap.getMapPad());
 
         // 16 initial emotions
-        assertEquals(16, PADMap.mapPad.size());
+        assertEquals(16, PADMap.getMapPad().size());
 
     }
 

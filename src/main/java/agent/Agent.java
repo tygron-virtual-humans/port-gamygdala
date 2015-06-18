@@ -32,11 +32,11 @@ public class Agent {
     /**
      * Collection of relations for this Agent.
      */
-    private AgentRelations currentRelations;
+    private final AgentRelations currentRelations;
     /**
      * Collection of emotions for this Agent.
      */
-    private AgentInternalState internalState;
+    private final AgentInternalState internalState;
 
     /**
      * Create new Agent.
@@ -54,10 +54,34 @@ public class Agent {
     }
 
     /**
+     * Get name of Agent.
+     * @return String The name of the Agent
+     */
+    public String getName() {
+        return name;
+    }
+
+    public static double getDefaultGain() {
+        return DEFAULT_GAIN;
+    }
+
+    public double getGain() {
+        return gain;
+    }
+
+    public GoalMap getGoals() {
+        return goals;
+    }
+
+    public AgentInternalState getInternalState() {
+        return internalState;
+    }
+
+    /**
      * Get current relations from this Agent.
      * @return AgentRelations List of Relations
      */
-    private AgentRelations getCurrentRelations() {
+    public AgentRelations getCurrentRelations() {
         return this.currentRelations;
     }
 

@@ -52,7 +52,7 @@ public class GamygdalaMap {
      * @param agent The agent to add.
      */
     public void registerAgent(Agent agent) {
-        getAgentMap().put(agent.name, agent);
+        this.getAgentMap().put(agent.getName(), agent);
     }
     
     /**

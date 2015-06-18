@@ -106,7 +106,7 @@ public class EngineTest {
         // Create GamygdalaMap with one Agent
         AgentMap map = new AgentMap();
         Agent agent = mock(Agent.class);
-        map.put(agent.name, agent);
+        map.put(agent.getName(), agent);
 
         // Edge cases
         assertFalse(engine.setGain(-1));

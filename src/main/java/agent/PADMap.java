@@ -46,6 +46,14 @@ public final class PADMap {
     }
 
     /**
+     *
+     * @return
+     */
+    public static HashMap<String, double[]> getMapPad() {
+        return mapPad;
+    }
+
+    /**
      * Adds the initial / default emotions to the PAD map.
      */
     private static synchronized void addInitialEmotions() {

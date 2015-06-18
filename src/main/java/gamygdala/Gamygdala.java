@@ -5,9 +5,7 @@ import java.util.Map;
 import agent.Agent;
 import data.Belief;
 import data.Goal;
-import data.map.AgentMap;
 import data.map.GamygdalaMap;
-import data.map.GoalMap;
 import debug.Debug;
 import decayfunction.DecayFunction;
 import decayfunction.LinearDecay;
@@ -225,22 +223,6 @@ public class Gamygdala {
     }
 
     /**
-     * Get the AgentMap containing all Agents.
-     * @return AgentMap
-     */
-    private AgentMap getAgentMap() {
-        return this.gamygdalaMap.getAgentMap();
-    }
-
-    /**
-     * Get the GoalMap containing all Goals.
-     * @return GoalMap
-     */
-    private GoalMap getGoalMap() {
-        return this.gamygdalaMap.getGoalMap();
-    }
-
-    /**
      * Facilitator method to print all emotional states to the console.
      *
      * @param gain Whether you want to print the gained (true) emotional states
@@ -261,11 +243,11 @@ public class Gamygdala {
      * @param gain Double the gain for an Agent
      */
     public void setAgentsGain(double gain) {
-        for (Map.Entry<String, Agent> stringAgentEntry : this.getAgentMap().entrySet()) {
+        for (Map.Entry<String, Agent> stringAgentEntry : this.gamygdalaMap.getAgentMap().entrySet()) {
             if (stringAgentEntry.getValue() != null) {
                 stringAgentEntry.getValue().setGain(gain);
             } else {
-                this.getAgentMap().remove(stringAgentEntry.getKey());
+                this.gamygdalaMap.getAgentMap().remove(stringAgentEntry.getKey());
             }
         }
     }
