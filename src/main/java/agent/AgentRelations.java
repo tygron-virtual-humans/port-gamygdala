@@ -77,6 +77,7 @@ public class AgentRelations extends ArrayList<Relation> {
      *
      * @param agent The agent who is the target of the relation. When omitted,
      *            all relations are printed.
+     * @return String List of Relations with an Agent.
      */
     public String getRelationsString(Agent agent) {
         String output = "";
