@@ -1,7 +1,5 @@
 package gamygdala;
 
-import java.util.Map.Entry;
-
 import agent.Agent;
 import data.Belief;
 import data.Goal;
@@ -76,10 +74,7 @@ public class Engine {
      * @return Agent created Agent
      */
     public Agent createAgent(String name) {
-        Agent agent = new Agent(name);
-        gamygdala.getGamygdalaMap().registerAgent(agent);
-
-        return agent;
+        return this.gamygdala.createAgent(name);
     }
 
     /**
@@ -93,15 +88,7 @@ public class Engine {
      */
     public Goal createGoalForAgent(Agent agent, String goalName, double goalUtility,
                                    boolean isMaintenanceGoal) {
-        Goal goal = new Goal(goalName, goalUtility, isMaintenanceGoal);
-
-        // Add Goal to Agent
-        agent.addGoal(goal);
-
-        // Register Goal with Engine
-        gamygdala.getGamygdalaMap().registerGoal(goal);
-
-        return goal;
+        return this.gamygdala.createGoalForAgent(agent, goalName, goalUtility, isMaintenanceGoal);
 
     }
 
@@ -113,7 +100,7 @@ public class Engine {
      * @param relation The intensity of the relation.
      */
     public void createRelation(Agent source, Agent target, double relation) {
-        source.updateRelation(target, relation);
+        this.gamygdala.createRelation(source, target, relation);
     }
 
     /**
@@ -138,7 +125,7 @@ public class Engine {
         long now = System.currentTimeMillis();
 
         // Decay all emotions.
-        gamygdala.decayAll(this.lastMillis, now);
+        this.gamygdala.decayAll(this.lastMillis, now);
 
         // Store time of last decay.
         this.lastMillis = now;
@@ -152,7 +139,7 @@ public class Engine {
      * @param belief The current event to be appraised.
      */
     public void appraise(Belief belief) {
-        gamygdala.appraise(belief, null);
+        this.gamygdala.appraise(belief, null);
     }
 
     /**
@@ -172,7 +159,7 @@ public class Engine {
      * @param agent  The reference to the agent who appraises the event.
      */
     public void appraise(Belief belief, Agent agent) {
-        gamygdala.appraise(belief, agent);
+        this.gamygdala.appraise(belief, agent);
     }
 
     /**
@@ -189,13 +176,7 @@ public class Engine {
             return false;
         }
 
-        for (Entry<String, Agent> stringAgentEntry : this.gamygdala.getAgentMap().entrySet()) {
-            if (stringAgentEntry.getValue() != null) {
-                stringAgentEntry.getValue().setGain(gain);
-            } else {
-                this.gamygdala.getAgentMap().remove(stringAgentEntry.getKey());
-            }
-        }
+        this.gamygdala.setAgentsGain(gain);
 
         return true;
     }
@@ -236,22 +217,6 @@ public class Engine {
      */
     public void setGamygdala(Gamygdala gamygdala) {
         this.gamygdala = gamygdala;
-    }
-
-    /**
-     * Facilitator method to print all emotional states to the console.
-     *
-     * @param gain Whether you want to print the gained (true) emotional states
-     *             or non-gained (false).
-     */
-    public void printAllEmotions(boolean gain) {
-        Agent agent;
-        for (Entry<String, Agent> stringAgentEntry : this.gamygdala.getGamygdalaMap().getAgentMap().entrySet()) {
-            agent = stringAgentEntry.getValue();
-
-            agent.printEmotionalState(gain);
-            agent.printRelations(null);
-        }
     }
 
 }

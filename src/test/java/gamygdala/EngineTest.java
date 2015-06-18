@@ -43,48 +43,36 @@ public class EngineTest {
 
     @Test
     public void testCreateAgent() throws Exception {
-        // Mock GamygdalaMap
-        GamygdalaMap map = mock(GamygdalaMap.class);
-        when(gamygdala.getGamygdalaMap()).thenReturn(map);
-
         // Create Agent
+        when(gamygdala.createAgent("TestAgent")).thenReturn(new Agent("TestAgent"));
         Agent newAgent = engine.createAgent("TestAgent");
-        verify(map).registerAgent(any(Agent.class));
 
         // Check name of Agent
-        assertEquals("TestAgent", newAgent.name);
+        assertEquals(new Agent("TestAgent"), newAgent);
     }
 
 
 
     @Test
     public void testCreateGoalForAgent() throws Exception {
-        // Mock GamygdalaMap
-        GamygdalaMap map = mock(GamygdalaMap.class);
-        when(gamygdala.getGamygdalaMap()).thenReturn(map);
+        // Mock Gamygdala
+        Gamygdala mock = mock(Gamygdala.class);
+        engine.setGamygdala(mock);
 
-        // Create Goal
-        Agent newAgent = mock(Agent.class);
-        Goal newGoal = engine.createGoalForAgent(newAgent, "TestGoal", .59, false);
-
-        // Check Agent and GamygdalaMap interactions
-        verify(newAgent).addGoal(any(Goal.class));
-        verify(map).registerGoal(any(Goal.class));
-
-        // Check properties of Goal
-        assertEquals("TestGoal", newGoal.getName());
-        assertEquals(.59, newGoal.getUtility(), 10E-15);
-        assertEquals(false, newGoal.isMaintenanceGoal());
+        engine.createGoalForAgent(new Agent("Mario"), "Save Peace", .51, true);
+        verify(mock).createGoalForAgent(new Agent("Mario"), "Save Peace", .51, true);
     }
 
     @Test
     public void testCreateRelation() throws Exception {
+        Gamygdala mock = mock(Gamygdala.class);
+        engine.setGamygdala(mock);
+
         Agent source = mock(Agent.class);
         Agent target = new Agent("Target");
 
         engine.createRelation(source, target, .59);
-
-        verify(source).updateRelation(target, .59);
+        verify(mock).createRelation(source, target, .59);
     }
 
     @Test
@@ -119,7 +107,6 @@ public class EngineTest {
         AgentMap map = new AgentMap();
         Agent agent = mock(Agent.class);
         map.put(agent.name, agent);
-        when(gamygdala.getAgentMap()).thenReturn(map);
 
         // Edge cases
         assertFalse(engine.setGain(-1));
@@ -128,7 +115,7 @@ public class EngineTest {
 
         // Test set gain
         assertTrue(engine.setGain(20));
-        verify(agent).setGain(20);
+        assertTrue(engine.setGain(1));
     }
 
     @Test

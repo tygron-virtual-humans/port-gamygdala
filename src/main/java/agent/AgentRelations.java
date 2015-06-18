@@ -1,5 +1,7 @@
 package agent;
 
+import decayfunction.DecayFunction;
+
 import java.util.ArrayList;
 
 /**
@@ -60,29 +62,31 @@ public class AgentRelations extends ArrayList<Relation> {
     }
 
     /**
+     * Decay the relations iin this ArrayList
+     * @param function the decay function
+     * @param millisPassed the milliseconds passed
+     */
+    public void decay(DecayFunction function, long millisPassed) {
+        for (Relation relation : this) {
+            relation.decay(function, millisPassed);
+        }
+    }
+
+    /**
      * Prints the relations this agent has with the agent defined by agentName.
      *
      * @param agent The agent who is the target of the relation. When omitted,
      *            all relations are printed.
      */
-    public String printRelations(Agent agent) {
+    public String getRelationsString(Agent agent) {
         String output = "";
-        int emotionListSize;
 
         for (int i = 0; i < this.size(); i++) {
-            if (agent == null || this.get(i).agent.equals(agent)) {
-                emotionListSize = this.get(i).emotionList.size();
-                for (int j = 0; j < emotionListSize; j++) {
-                    output += get(i).emotionList.get(j).getName()
-                            + "(" + get(i).emotionList.get(j).getIntensity() + ")";
-
-                    if (j < emotionListSize - 1) {
-                        output += ", and ";
-                    }
-                }
+            if (agent == null || this.get(i).getAgent().equals(agent)) {
+                output += this.get(i).getRelationString();
             }
 
-            output += " for " + get(i).agent;
+            output += " for " + this.get(i).getAgent();
 
             if (i < this.size() - 1) {
                 output += ", and\n";
@@ -91,5 +95,4 @@ public class AgentRelations extends ArrayList<Relation> {
 
         return output;
     }
-
 }

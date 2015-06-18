@@ -50,11 +50,8 @@ public class JavascriptTests {
         try {
             // Run tests
             ba.runTests();
-
         } catch (Exception e) {
-            
-            
-            
+
         }
 
         // Load test results
