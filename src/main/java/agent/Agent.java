@@ -31,11 +31,11 @@ public class Agent {
     /**
      * Collection of relations for this Agent.
      */
-    private final AgentRelations currentRelations;
+    private AgentRelations currentRelations;
     /**
      * Collection of emotions for this Agent.
      */
-    private final AgentInternalState internalState;
+    private AgentInternalState internalState;
 
     /**
      * Create new Agent.
@@ -90,6 +90,22 @@ public class Agent {
      */
     public AgentRelations getCurrentRelations() {
         return this.currentRelations;
+    }
+
+    /**
+     * Sets AgentRelation.
+     * @param currentRelations AgentRelation
+     */
+    public void setCurrentRelations(AgentRelations currentRelations) {
+        this.currentRelations = currentRelations;
+    }
+
+    /**
+     * Sets AgentInternalState.
+     * @param internalState AgentInternalState.
+     */
+    public void setInternalState(AgentInternalState internalState) {
+        this.internalState = internalState;
     }
 
     /**
