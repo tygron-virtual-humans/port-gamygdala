@@ -1,7 +1,7 @@
 package agent;
 
-import data.Emotion;
-import data.Goal;
+import agent.data.Emotion;
+import agent.data.Goal;
 import decayfunction.DecayFunction;
 import org.junit.After;
 import org.junit.Before;
@@ -58,7 +58,6 @@ public class AgentTest {
         assertTrue(agent.hasGoal(goal));
         agent.removeGoal(goal);
         assertFalse(agent.hasGoal(goal));
-
     }
 
     @Test
@@ -108,7 +107,6 @@ public class AgentTest {
 
     @Test
     public void testSetGain() {
-
         // Verify default gain is set
         assertEquals(Agent.DEFAULT_GAIN, agent.getGain(), 10E-15);
 
@@ -120,18 +118,18 @@ public class AgentTest {
         agent.setGain(0);
         agent.setGain(20.01);
         assertEquals(2, agent.getGain(), 10E-15);
-
     }
 
     @Test
     public void testUpdateEmotionalState() {
-        when(agent.getInternalState()).thenReturn(mock(AgentInternalState.class));
+        AgentInternalState internalState = mock(AgentInternalState.class);
+        when(agent.getInternalState()).thenReturn(internalState);
 
         // Update emotional state
         agent.updateEmotionalState(mock(Emotion.class));
 
         // Verify the right method is called on AgentInternalState.
-        verify(agent.getInternalState()).updateEmotionalState(any(Emotion.class));
+        verify(internalState).updateEmotionalState(any(Emotion.class));
     }
 
     @Test
@@ -319,46 +317,6 @@ public class AgentTest {
     }
 
     @Test
-    public void testDecayInternalEmotion() {
-        DecayFunction decayFunction = mock(DecayFunction.class);
-        agent.updateEmotionalState(mock(Emotion.class));
-
-        agent.decay(decayFunction, 1);
-
-        verify(decayFunction, times(1)).decay(0.0, 1);
-    }
-
-    @Test
-    public void testDecayInternalEmotionTwo() {
-        DecayFunction decayFunction = mock(DecayFunction.class);
-        when(decayFunction.decay(0.6, 1000)).thenReturn(0.2);
-
-        agent.updateEmotionalState(new Emotion("name", 0.6));
-        agent.decay(decayFunction, 1000);
-        verify(decayFunction, times(1)).decay(0.6, 1000);
-
-        agent.decay(decayFunction, 2000);
-        verify(decayFunction, times(1)).decay(0.2, 2000);
-
-        ArrayList<Emotion> expected = new ArrayList<Emotion>(){{ add(new Emotion("name", 0.0)); }};
-        assertEquals(expected, agent.getEmotionalState(0.2));
-    }
-
-//    @Test
-//    public void testDecayRelationState() {
-//        DecayFunction decayFunction = mock(DecayFunction.class);
-//        Relation relation = mock(Relation.class);
-//
-//        when(decayFunction.decay(0.6, 1000)).thenReturn(0.4);
-//        agent.decay(decayFunction, 1000);
-//
-//        agent.updateRelation(mock(Agent.class), 0.5);
-//
-//        when(agent.updateRelation(mock(Agent.class), 0.5)).thenReturn(relation);
-//        verify(agent.currentRelations.get(0), times(1)).decay(decayFunction, 1000);
-//    }
-
-    @Test
     public void testToString() {
         assertEquals("<Agent[TestAgent]>", agent.toString());
     }
@@ -383,8 +341,6 @@ public class AgentTest {
         Agent goals = new Agent("TestAgent");
         goals.addGoal(new Goal("Kill mario", 0.4, false));
         assertFalse(agent.equals(goals));
-
-        //
     }
 
 }

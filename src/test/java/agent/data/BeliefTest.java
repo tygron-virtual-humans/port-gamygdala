@@ -1,4 +1,4 @@
-package data;
+package agent.data;
 
 import agent.Agent;
 import exception.GoalCongruenceMapException;

@@ -1,4 +1,4 @@
-package data;
+package agent.data;
 
 /**
  * Goal for an Agent.
@@ -57,21 +57,6 @@ public class Goal {
         this.utility = goal.utility;
         this.likelihood = goal.likelihood;
         this.isMaintenanceGoal = goal.isMaintenanceGoal;
-    }
-
-    /**
-     * Compare two goals based on their individual properties.
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Goal) {
-            Goal other = (Goal) obj;
-            return this.name.equals(other.name) && Double.compare(this.utility, other.utility) == 0
-                    && Double.compare(this.likelihood, other.likelihood) == 0
-                    && this.isMaintenanceGoal == other.isMaintenanceGoal;
-
-        }
-        return false;
     }
 
     /**
@@ -152,6 +137,38 @@ public class Goal {
     @Override
     public String toString() {
         return "<Goal[" + getName() + ", " + getLikelihood() + ", " + Boolean.toString(isMaintenanceGoal()) + "]>";
+    }
+
+    /**
+     * Compare two goals based on their individual properties.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Goal)) return false;
+
+        Goal goal = (Goal) o;
+
+        if (Double.compare(goal.getUtility(), getUtility()) != 0) return false;
+        if (Double.compare(goal.getLikelihood(), getLikelihood()) != 0) return false;
+        if (isMaintenanceGoal() != goal.isMaintenanceGoal()) return false;
+        return !(getName() != null ? !getName().equals(goal.getName()) : goal.getName() != null);
+    }
+
+    /**
+     * Generate hashCode for an Object.
+     */
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = getName() != null ? getName().hashCode() : 0;
+        temp = Double.doubleToLongBits(getUtility());
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(getLikelihood());
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (isMaintenanceGoal() ? 1 : 0);
+        return result;
     }
 
 }

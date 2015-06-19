@@ -1,9 +1,9 @@
 package agent;
 
+import agent.data.Emotion;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import data.Emotion;
 
 /**
  * Pleasure Arousal Dominance mapping of the emotional states.
@@ -124,7 +124,6 @@ public final class PADMap {
         if (agent == null) {
             throw new IllegalArgumentException("Agent is null.");
         }
-
         return getPadState(agent.getEmotionalState(gain), gain);
     }
 

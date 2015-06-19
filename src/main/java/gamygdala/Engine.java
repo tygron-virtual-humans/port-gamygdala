@@ -1,15 +1,14 @@
 package gamygdala;
 
 import agent.Agent;
-import data.Belief;
-import data.Goal;
+import agent.data.Belief;
+import agent.data.Goal;
 import debug.Debug;
-import decayfunction.DecayFunction;
 
 /**
  * Gaming Engine adapter for Gamygdala.
  */
-public class Engine {
+public final class Engine {
 
     /**
      * Singleton Engine object.
@@ -74,15 +73,10 @@ public class Engine {
      *
      * @return Engine
      */
-    public static Engine resetEngine() {
+    public static synchronized Engine resetEngine() {
         if (engineInstance != null) {
-            synchronized (Engine.class) {
-                if (engineInstance != null) {
-                    engineInstance = new Engine();
-                }
-            }
+            engineInstance = new Engine();
         }
-
         return engineInstance;
     }
 
@@ -108,7 +102,6 @@ public class Engine {
     public Goal createGoalForAgent(Agent agent, String goalName, double goalUtility,
                                    boolean isMaintenanceGoal) {
         return this.gamygdala.createGoalForAgent(agent, goalName, goalUtility, isMaintenanceGoal);
-
     }
 
     /**
@@ -137,7 +130,6 @@ public class Engine {
      * "frame rate" of the decay (as this doesn't change the rate).
      */
     public void decayAll() {
-
         Debug.debug("\n=====\nDecaying all emotions\n=====\n");
 
         // Record current time
@@ -148,7 +140,6 @@ public class Engine {
 
         // Store time of last decay.
         this.lastMillis = now;
-
     }
 
     /**
@@ -194,27 +185,8 @@ public class Engine {
                     + "gain factor for appraisal integration must be between 0 and 20.");
             return false;
         }
-
         this.gamygdala.setAgentsGain(gain);
-
         return true;
-    }
-
-    /**
-     * Sets the decay factor and type for emotional decay, so that an emotion
-     * will slowly get lower in intensity. Whenever decayAll is called, all
-     * emotions for all agents are decayed according to the factor and function
-     * set here.
-     *
-     * @param decayFunction The decay function to be used.
-     */
-    public void setDecay(DecayFunction decayFunction) {
-        if (decayFunction != null) {
-            this.gamygdala.setDecayFunction(decayFunction);
-        } else {
-            Debug.debug("[Engine.setDecay] DecayFunction is null.");
-        }
-
     }
 
 }

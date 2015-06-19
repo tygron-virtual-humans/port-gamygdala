@@ -1,4 +1,4 @@
-package data;
+package agent.data;
 
 import java.util.ArrayList;
 
@@ -94,15 +94,32 @@ public class Emotion {
     }
 
     /**
-     * Compare two Emotion objects.
+     * Get Object hashCode.
+     * @return hashCode of Object
      */
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Emotion) {
-            Emotion em = (Emotion) obj;
-            return (((em.name == null && this.name == null) || this.name.equals(em.name))
-                    && Double.compare(em.intensity, this.intensity) == 0);
-        }
-        return false;
+    public int hashCode() {
+        int result;
+        long temp;
+        result = getName() != null ? getName().hashCode() : 0;
+        temp = Double.doubleToLongBits(getIntensity());
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
+
+    /**
+     * Equals method.
+     * @param o object to check
+     * @return Boolean iff object are the same
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Emotion)) return false;
+
+        Emotion emotion = (Emotion) o;
+
+        if (Double.compare(emotion.getIntensity(), getIntensity()) != 0) return false;
+        return !(getName() != null ? !getName().equals(emotion.getName()) : emotion.getName() != null);
     }
 }

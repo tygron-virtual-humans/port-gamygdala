@@ -1,8 +1,8 @@
 package gamygdala;
 
 import agent.Agent;
-import data.Belief;
-import data.Goal;
+import agent.data.Belief;
+import agent.data.Goal;
 import decayfunction.DecayFunction;
 import decayfunction.ExponentialDecay;
 import exception.GoalCongruenceMapException;

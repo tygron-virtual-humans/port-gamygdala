@@ -1,12 +1,11 @@
 package agent;
 
-import java.util.ArrayList;
-
-import data.Emotion;
-import data.Goal;
-import data.map.GoalMap;
+import agent.data.Emotion;
+import agent.data.Goal;
+import agent.data.map.GoalMap;
 import debug.Debug;
-import decayfunction.DecayFunction;
+
+import java.util.ArrayList;
 
 /**
  * The main interacting character in the Gamygdala engine.
@@ -61,18 +60,26 @@ public class Agent {
         return name;
     }
 
-    public static double getDefaultGain() {
-        return DEFAULT_GAIN;
-    }
-
+    /**
+     *
+     * @return
+     */
     public double getGain() {
         return gain;
     }
 
+    /**
+     *
+     * @return
+     */
     public GoalMap getGoals() {
         return goals;
     }
 
+    /**
+     *
+     * @return
+     */
     public AgentInternalState getInternalState() {
         return internalState;
     }
@@ -131,7 +138,7 @@ public class Agent {
      * @param newGain The gain value [0 and 20].
      */
     public void setGain(double newGain) {
-        if (gain > 0 && gain <= 20) {
+        if (newGain > 0 && newGain <= 20) {
             this.gain = newGain;
         } else {
             Debug.debug("Error: gain factor for appraisal integration must be between 0 and 20.");
@@ -144,7 +151,7 @@ public class Agent {
      * @param emotion The emotion with which this Agent should be updated.
      */
     public void updateEmotionalState(Emotion emotion) {
-        this.internalState.updateEmotionalState(emotion);
+        this.getInternalState().updateEmotionalState(emotion);
     }
 
     /**
@@ -154,7 +161,7 @@ public class Agent {
      * @return An array of emotions.
      */
     public AgentInternalState getEmotionalState(Double getGain) {
-        return this.internalState.getEmotionalState(getGain);
+        return this.getInternalState().getEmotionalState(getGain);
     }
 
     /**
@@ -182,7 +189,7 @@ public class Agent {
      * @return Boolean if the relation exists, otherwise false.
      */
     public boolean hasRelationWith(Agent other) {
-        return this.currentRelations.hasRelationWith(other);
+        return this.getCurrentRelations().hasRelationWith(other);
     }
 
     /**
@@ -193,7 +200,7 @@ public class Agent {
      * @return Relation The relation object or null if non existing.
      */
     public Relation getRelation(Agent agent) {
-        return this.currentRelations.getRelation(agent);
+        return this.getCurrentRelations().getRelation(agent);
     }
 
     /**
@@ -320,7 +327,7 @@ public class Agent {
         double intensity = Math.abs(utility * deltaLikelihood);
         if (intensity != 0) {
             for (String emo : emotion) {
-                updateEmotionalState(new Emotion(emo, intensity));
+                this.updateEmotionalState(new Emotion(emo, intensity));
             }
         }
     }
@@ -341,30 +348,7 @@ public class Agent {
 
             agent.evaluateSocialEmotion(desirability, relation);
             agent.agentActions(this, causalAgent, desirability);
-
         }
-    }
-
-    /**
-     * This method decays the emotional state and relations according to the
-     * decay factor and function defined in gamygdala. Typically this is called
-     * automatically when you use startDecay() in Gamygdala, but you can use it
-     * yourself if you want to manage the timing. This function is keeping track
-     * of the millis passed since the last call, and will (try to) keep the
-     * decay close to the desired decay factor, regardless the time passed So
-     * you can call this any time you want (or, e.g., have the game loop call
-     * it, or have e.g., Phaser call it in the plugin update, which is default
-     * now). Further, if you want to tweak the emotional intensity decay of
-     * individual agents, you should tweak the decayFactor per agent not the
-     * "frame rate" of the decay (as this doesn't change the rate).
-     *
-     * @param function        The Decay Function used to decay emotions and relations.
-     * @param millisPassed The time passed (in milliseconds) since the last
-     *                     decay.
-     */
-    public void decay(DecayFunction function, long millisPassed) {
-        this.internalState.decay(function, millisPassed);
-        this.currentRelations.decay(function, millisPassed);
     }
 
     /**
@@ -375,7 +359,7 @@ public class Agent {
      */
     public String toStringRelations(Agent agent) {
         String output = this.name + " has the following sentiments:\n   ";
-        output += this.currentRelations.getRelationsString(agent);
+        output += this.getCurrentRelations().getRelationsString(agent);
 
         return output;
     }
@@ -393,7 +377,7 @@ public class Agent {
      */
     public String toStringEmotionalState(boolean gained) {
         String output = this.name + " feels ";
-        output += this.internalState.getEmotionalStateString(gained ? this.gain : null);
+        output += this.getInternalState().getEmotionalStateString(gained ? this.gain : null);
 
         return output;
     }

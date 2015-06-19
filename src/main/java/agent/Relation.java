@@ -1,9 +1,9 @@
 package agent;
 
-import java.util.ArrayList;
-
-import data.Emotion;
+import agent.data.Emotion;
 import decayfunction.DecayFunction;
+
+import java.util.ArrayList;
 
 /**
  * Describes a Relation between two Agents.
@@ -122,17 +122,19 @@ public class Relation {
      * @return String emotion ArrayList.
      */
     public String getRelationString() {
-        String output = "";
+        StringBuilder output = new StringBuilder();
 
         for (int j = 0; j < this.emotions.size(); j++) {
-            output += this.emotions.get(j).getName()
-                    + "(" + this.emotions.get(j).getIntensity() + ")";
+            output.append(this.emotions.get(j).getName())
+                    .append("(")
+                    .append(this.emotions.get(j).getIntensity())
+                    .append(")");
 
             if (j < this.emotions.size() - 1) {
-                output += ", and ";
+                output.append(", and ");
             }
         }
-        return output;
+        return output.toString();
     }
 
     /**

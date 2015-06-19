@@ -1,10 +1,10 @@
 package agent;
 
-import java.util.ArrayList;
-
-import data.Emotion;
+import agent.data.Emotion;
 import debug.Debug;
 import decayfunction.DecayFunction;
+
+import java.util.ArrayList;
 
 /**
  * The internal state of an Agent. Contains all it's emotions.
@@ -102,10 +102,10 @@ public class AgentInternalState extends ArrayList<Emotion> {
      * @return String List of emotions.
      */
     public String getEmotionalStateString(Double gain) {
-        String output = "";
+        StringBuilder output = new StringBuilder();
         for (Emotion emotion : this.getEmotionalState(gain)) {
-            output += emotion.getName() + ": " + emotion.getIntensity() + ", ";
+            output.append(emotion.getName()).append(": ").append(emotion.getIntensity()).append(", ");
         }
-        return output;
+        return output.toString();
     }
 }

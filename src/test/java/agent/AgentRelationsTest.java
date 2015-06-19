@@ -1,6 +1,6 @@
 package agent;
 
-import data.Emotion;
+import agent.data.Emotion;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

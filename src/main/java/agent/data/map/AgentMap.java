@@ -1,11 +1,10 @@
-package data.map;
+package agent.data.map;
+
+import agent.Agent;
+import debug.Debug;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import agent.Agent;
-import data.Goal;
-import debug.Debug;
 
 /**
  * HashMap containing Agents.
@@ -39,14 +38,14 @@ public class AgentMap extends HashMap<String, Agent> {
      *             non-gained (false).
      */
     public String toStringAllEmotions(boolean gain) {
-        String output = "";
+        StringBuilder output = new StringBuilder();
         for (Map.Entry<String, Agent> pair : this.entrySet()) {
             Agent agent = pair.getValue();
 
-            output += agent.toStringEmotionalState(gain);
-            output += agent.toStringRelations(null);
+            output.append(agent.toStringEmotionalState(gain));
+            output.append(agent.toStringRelations(null));
         }
-        return output;
+        return output.toString();
     }
 
     /**

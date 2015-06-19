@@ -1,9 +1,9 @@
-package data.map;
+package agent.data.map;
+
+import agent.data.Goal;
+import debug.Debug;
 
 import java.util.HashMap;
-
-import data.Goal;
-import debug.Debug;
 
 /**
  * HashMap to store Goals. Extended with add / remove / has goal methods for

@@ -1,6 +1,6 @@
-package data.map;
+package agent.data.map;
 
-import data.Goal;
+import agent.data.Goal;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

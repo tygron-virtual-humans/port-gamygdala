@@ -1,6 +1,7 @@
 package agent;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import decayfunction.DecayFunction;
 
@@ -80,20 +81,18 @@ public class AgentRelations extends ArrayList<Relation> {
      * @return String List of Relations with an Agent.
      */
     public String getRelationsString(Agent agent) {
-        String output = "";
+        StringBuilder output = new StringBuilder();
 
         for (int i = 0; i < this.size(); i++) {
             if (agent == null || this.get(i).getAgent().equals(agent)) {
-                output += this.get(i).getRelationString();
+                output.append(this.get(i).getRelationString());
             }
-
-            output += " for " + this.get(i).getAgent();
+            output.append(" for ").append(this.get(i).getAgent());
 
             if (i < this.size() - 1) {
-                output += ", and\n";
+                output.append(", and\n");
             }
         }
-
-        return output;
+        return output.toString();
     }
 }

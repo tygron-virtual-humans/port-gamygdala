@@ -1,6 +1,6 @@
 package agent;
 
-import data.Emotion;
+import agent.data.Emotion;
 import decayfunction.DecayFunction;
 import org.junit.After;
 import org.junit.Before;

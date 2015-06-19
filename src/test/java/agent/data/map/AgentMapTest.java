@@ -1,13 +1,13 @@
-package data.map;
+package agent.data.map;
 
 import agent.Agent;
-import data.Emotion;
+import agent.data.Emotion;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 
@@ -34,19 +34,18 @@ public class AgentMapTest {
 
     @Test
     public void testGetAgentByName() throws Exception {
-        assertEquals(agent, map.getAgentByName("Agent1"));
+        assertEquals(agent, map.getAgentByName("TestAgent"));
 
         assertEquals(null, map.getAgentByName("Agent2"));
     }
 
-//    @Test
-//    public void testGetIterator() throws Exception {
-//        Iterator<Map.Entry<String, Agent>> iterator = map.getIterator();
-//
-//        Map.Entry<String, Agent> firstEntry = iterator.next();
-//
-//        assertEquals(agent, firstEntry.getValue());
-//    }
+    @Test
+    public void testGetIterator() throws Exception {
+        Set<Map.Entry<String, Agent>> entries = map.entrySet();
+
+        Agent firstEntry = entries.iterator().next().getValue();
+        assertEquals(agent, firstEntry);
+    }
 
     @Test
     public void testPrintAllEmotions() throws Exception {

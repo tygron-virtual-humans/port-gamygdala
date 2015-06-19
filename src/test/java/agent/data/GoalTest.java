@@ -1,4 +1,4 @@
-package data;
+package agent.data;
 
 import org.junit.After;
 import org.junit.Before;

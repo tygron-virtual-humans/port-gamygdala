@@ -1,9 +1,8 @@
 package gamygdala;
 
 import agent.Agent;
-import data.Belief;
-import data.map.AgentMap;
-import decayfunction.DecayFunction;
+import agent.data.Belief;
+import agent.data.map.AgentMap;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -23,7 +23,7 @@ public class LinearDecay extends DecayFunction {
      */
     @Override
     public double decay(double initial, long millisPassed) {
-        return initial - getDecayFactor() * (millisPassed / 1000);
+        return initial - getDecayFactor() * (millisPassed / 1000.d);
     }
 
 }

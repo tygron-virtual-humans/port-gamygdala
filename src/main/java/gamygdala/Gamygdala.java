@@ -1,15 +1,15 @@
 package gamygdala;
 
-import java.util.Map;
-
 import agent.Agent;
-import data.Belief;
-import data.Goal;
-import data.map.AgentMap;
-import data.map.GoalMap;
+import agent.data.Belief;
+import agent.data.Goal;
+import agent.data.map.AgentMap;
+import agent.data.map.GoalMap;
 import debug.Debug;
 import decayfunction.DecayFunction;
 import decayfunction.LinearDecay;
+
+import java.util.Map;
 
 /**
  * This is the main appraisal engine class taking care of interpreting a
@@ -178,9 +178,31 @@ public class Gamygdala {
             agent = pair.getValue();
 
             if (agent != null) {
-                agent.decay(decayFunction, millisPassed);
+                this.decay(agent, this.decayFunction, millisPassed);
             }
         }
+    }
+
+    /**
+     * This method decays the emotional state and relations according to the
+     * decay factor and function defined in gamygdala. Typically this is called
+     * automatically when you use startDecay() in Gamygdala, but you can use it
+     * yourself if you want to manage the timing. This function is keeping track
+     * of the millis passed since the last call, and will (try to) keep the
+     * decay close to the desired decay factor, regardless the time passed So
+     * you can call this any time you want (or, e.g., have the game loop call
+     * it, or have e.g., Phaser call it in the plugin update, which is default
+     * now). Further, if you want to tweak the emotional intensity decay of
+     * individual agents, you should tweak the decayFactor per agent not the
+     * "frame rate" of the decay (as this doesn't change the rate).
+     *
+     * @param function        The Decay Function used to decay emotions and relations.
+     * @param millisPassed The time passed (in milliseconds) since the last
+     *                     decay.
+     */
+    private void decay(Agent agent, DecayFunction function, long millisPassed) {
+        agent.getInternalState().decay(function, millisPassed);
+        agent.getCurrentRelations().decay(function, millisPassed);
     }
 
     /**

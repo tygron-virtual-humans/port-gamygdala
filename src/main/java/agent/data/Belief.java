@@ -1,10 +1,10 @@
-package data;
-
-import java.util.ArrayList;
-import java.util.HashMap;
+package agent.data;
 
 import agent.Agent;
 import exception.GoalCongruenceMapException;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * A Belief contains information about events (Goals) and the amount of positive
@@ -33,7 +33,7 @@ public class Belief {
     private final boolean isIncremental;
 
     /**
-     * This class is a data structure to store one Belief for an agent. A belief
+     * This class is a agent.data structure to store one Belief for an agent. A belief
      * is created and fed into a Gamygdala instance (method
      * Gamygdala.appraise()) for evaluation
      *
