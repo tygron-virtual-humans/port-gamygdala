@@ -1,14 +1,17 @@
 package agent.data.map;
 
 import agent.Agent;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static junit.framework.TestCase.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
  * Created by svenpopping on 19/06/15.
  */
-public class AgentMapTest extends TestCase {
+public class AgentMapTest {
 
     AgentMap agentMap;
     Agent agent;
@@ -17,8 +20,8 @@ public class AgentMapTest extends TestCase {
      * Setup: Create a AgentMap and a Mock of Agent.
      * @throws Exception
      */
+    @Before
     public void setUp() throws Exception {
-        super.setUp();
         agentMap = new AgentMap();
         agent = mock(Agent.class);
 
@@ -30,6 +33,7 @@ public class AgentMapTest extends TestCase {
      * Teardown.
      * @throws Exception
      */
+    @After
     public void tearDown() throws Exception {
         agent = null;
         agentMap = null;
@@ -39,6 +43,7 @@ public class AgentMapTest extends TestCase {
      * GetAgentByName when name exist.
      * @throws Exception
      */
+    @Test
     public void testGetAgentByName() throws Exception {
         assertEquals(agent, agentMap.getAgentByName("TestAgent"));
     }
@@ -47,6 +52,7 @@ public class AgentMapTest extends TestCase {
      * GetAgentByName when name doesn't exist.
      * @throws Exception
      */
+    @Test
     public void testGetAgentByNameFalse() throws Exception {
         assertEquals(null, agentMap.getAgentByName("TestAgent1"));
     }
@@ -55,6 +61,7 @@ public class AgentMapTest extends TestCase {
      * ToStringAllEmotions with mock of Agent
      * @throws Exception
      */
+    @Test
     public void testToStringAllEmotions() throws Exception {
         assertEquals("null null", agentMap.toStringAllEmotions(true));
     }
@@ -63,6 +70,7 @@ public class AgentMapTest extends TestCase {
      * Add Agent to the Map twice
      * @throws Exception
      */
+    @Test
     public void testPut() throws Exception {
         assertEquals(null, agentMap.put(agent.getName(), agent));
     }
