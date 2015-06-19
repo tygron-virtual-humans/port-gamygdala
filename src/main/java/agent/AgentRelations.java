@@ -2,6 +2,8 @@ package agent;
 
 import java.util.ArrayList;
 
+import agent.data.Emotion;
+import debug.Debug;
 import decayfunction.DecayFunction;
 
 /**
@@ -93,5 +95,99 @@ public class AgentRelations extends ArrayList<Relation> {
             }
         }
         return output.toString();
+    }
+
+    /**
+     * This function is used to evaluate happy-for, pity, gloating or
+     * resentment. Emotions that arise when we evaluate events that affect goals
+     * of others.
+     *
+     * @param desirability The desirability is the desirability from the goal
+     *                     owner's perspective.
+     * @param relation     A relation object between the agent being evaluated and
+     *                     the goal owner of the affected goal.
+     * @return Emotion the evaluated social emotion
+     */
+    public Emotion evaluateSocialEmotion(Relation relation, double desirability) {
+        Emotion emotion = new Emotion(null, 0);
+
+        if (desirability >= 0) {
+            if (relation.getLike() >= 0) {
+                emotion.setName("happy-for");
+            } else {
+                emotion.setName("resentment");
+            }
+        } else {
+            if (relation.getLike() >= 0) {
+                emotion.setName("pity");
+            } else {
+                emotion.setName("gloating");
+            }
+        }
+
+        emotion.setIntensity(Math.abs(desirability * relation.getLike()));
+
+        if (emotion.getIntensity() != 0) {
+            relation.addEmotion(emotion);
+        }
+        return emotion;
+    }
+
+    /**
+     * Update Agent's emotion based on actions by other Agents,
+     * when the agent is the affected agent.
+     * @param desirability How much the current Agent desires the Goal subject
+     *                      to the action.
+     * @return The Emotion arising from the action
+     */
+    public Emotion updateEmotionAsCausalAgent(Agent causalAgent, double desirability) {
+        Debug.debug("      Entering CASE 1.");
+        Emotion emotion = desirability >= 0
+                ? new Emotion("gratitude", Math.abs(desirability))
+                : new Emotion("anger", Math.abs(desirability));
+
+        Debug.debug("      Emotion: " + emotion);
+        Relation relation = this.getRelation(causalAgent);
+        if (relation == null) {
+            relation = this.updateRelation(causalAgent, .0);
+        }
+
+        if (relation != null) {
+            relation.addEmotion(emotion);
+        }
+
+        return emotion;
+    }
+
+    /**
+     * Update Agent's emotion based on actions by other Agents,
+     * if the agent is the affected agent.
+     *
+     * @param affectedAgent The Agent affected by the action.
+     * @param desirability  How much the current Agent desires the Goal subject
+     *                      to the action.
+     * @return The Emotion arising from the action.
+     */
+    public Emotion updateEmotionAsAffectedAgent(Agent affectedAgent, double desirability) {
+        Debug.debug("      Entering CASE 3.");
+        Relation relation = this.getRelation(affectedAgent);
+        if (relation == null) {
+            return null;
+        }
+        Emotion emotion = null;
+
+        if (relation.getLike() >= 0) {
+            if (desirability >= 0) {
+                emotion = new Emotion("gratification",
+                        Math.abs(desirability * relation.getLike()));
+            } else {
+                emotion = new Emotion("remorse",
+                        Math.abs(desirability * relation.getLike()));
+            }
+        }
+
+        relation.addEmotion(emotion);
+
+        return emotion;
     }
 }

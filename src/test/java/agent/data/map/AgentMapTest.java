@@ -1,56 +1,69 @@
 package agent.data.map;
 
 import agent.Agent;
-import agent.data.Emotion;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Map;
-import java.util.Set;
-
-import static org.junit.Assert.assertEquals;
+import junit.framework.TestCase;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
- * Tests for AgentMap.
+ * Created by svenpopping on 19/06/15.
  */
-public class AgentMapTest {
+public class AgentMapTest extends TestCase {
 
-    AgentMap map;
+    AgentMap agentMap;
     Agent agent;
 
-    @Before
+    /**
+     * Setup: Create a AgentMap and a Mock of Agent.
+     * @throws Exception
+     */
     public void setUp() throws Exception {
-        agent = new Agent("TestAgent");
-        map = new AgentMap();
-        map.put("Agent1", agent);
+        super.setUp();
+        agentMap = new AgentMap();
+        agent = mock(Agent.class);
+
+        when(agent.getName()).thenReturn("TestAgent");
+        agentMap.put(agent.getName(), agent);
     }
 
-    @After
+    /**
+     * Teardown.
+     * @throws Exception
+     */
     public void tearDown() throws Exception {
         agent = null;
-        map = null;
+        agentMap = null;
     }
 
-    @Test
+    /**
+     * GetAgentByName when name exist.
+     * @throws Exception
+     */
     public void testGetAgentByName() throws Exception {
-        assertEquals(agent, map.getAgentByName("TestAgent"));
-
-        assertEquals(null, map.getAgentByName("Agent2"));
+        assertEquals(agent, agentMap.getAgentByName("TestAgent"));
     }
 
-    @Test
-    public void testGetIterator() throws Exception {
-        Set<Map.Entry<String, Agent>> entries = map.entrySet();
-
-        Agent firstEntry = entries.iterator().next().getValue();
-        assertEquals(agent, firstEntry);
+    /**
+     * GetAgentByName when name doesn't exist.
+     * @throws Exception
+     */
+    public void testGetAgentByNameFalse() throws Exception {
+        assertEquals(null, agentMap.getAgentByName("TestAgent1"));
     }
 
-    @Test
-    public void testPrintAllEmotions() throws Exception {
-        agent.updateEmotionalState(new Emotion("Pity", 1.0));
+    /**
+     * ToStringAllEmotions with mock of Agent
+     * @throws Exception
+     */
+    public void testToStringAllEmotions() throws Exception {
+        assertEquals("null null", agentMap.toStringAllEmotions(true));
+    }
 
-        map.toStringAllEmotions(false);
+    /**
+     * Add Agent to the Map twice
+     * @throws Exception
+     */
+    public void testPut() throws Exception {
+        assertEquals(null, agentMap.put(agent.getName(), agent));
     }
 }

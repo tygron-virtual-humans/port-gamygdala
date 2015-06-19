@@ -17,30 +17,6 @@ public class GoalMap extends HashMap<String, Goal> {
     private static final long serialVersionUID = 8089487457530836847L;
 
     /**
-     * Add Goal.
-     *
-     * @param goal Goal to add.
-     * @return True if goal was added successfully, false if not.
-     */
-    public boolean addGoal(Goal goal) {
-        // Check for empty Goal
-        if (goal == null) {
-            Debug.debug("[GoalMap.addGoal] Goal is null ");
-            return false;
-        }
-
-        // Check for duplicate Goal
-        if (containsKey(goal.getName())) {
-            Debug.debug("[GoalMap.addGoal] Goal already exists for Agent.");
-            return false;
-        }
-
-        // Add goal to GoalMap.
-        this.put(goal.getName(), goal);
-        return true;
-    }
-
-    /**
      * Remove Goal.
      *
      * @param goal Goal to remove.
@@ -93,6 +69,12 @@ public class GoalMap extends HashMap<String, Goal> {
      */
     @Override
     public Goal put(String name, Goal goal) {
+        // Check for empty Goal
+        if (goal == null) {
+            Debug.debug("[GoalMap.out] Goal is null ");
+            return null;
+        }
+
         if (!this.containsKey(name)) {
             return super.put(name, goal);
         } else {

@@ -160,7 +160,7 @@ public class Gamygdala {
         // (i.e., agent did something bad/good for owner)
         owner.agentActions(owner, belief.getCausalAgent(), utility * deltaLikelihood);
 
-        // Now check if anyone has a relation with this goal owner, and update
+        // Now check if anyone has a relation with this goal owner, and updateState
         // the social emotions accordingly.
         for (Map.Entry<String, Agent> pair : this.agentMap.entrySet()) {
             owner.evaluateRelationWithAgent(pair.getValue(), belief.getCausalAgent(), desirability);
@@ -191,7 +191,7 @@ public class Gamygdala {
      * of the millis passed since the last call, and will (try to) keep the
      * decay close to the desired decay factor, regardless the time passed So
      * you can call this any time you want (or, e.g., have the game loop call
-     * it, or have e.g., Phaser call it in the plugin update, which is default
+     * it, or have e.g., Phaser call it in the plugin updateState, which is default
      * now). Further, if you want to tweak the emotional intensity decay of
      * individual agents, you should tweak the decayFactor per agent not the
      * "frame rate" of the decay (as this doesn't change the rate).
@@ -268,7 +268,7 @@ public class Gamygdala {
      */
     public Goal createGoalForAgent(Agent agent, String goalName, double goalUtility, boolean isMaintenanceGoal) {
         Goal goal = new Goal(goalName, goalUtility, isMaintenanceGoal);
-        agent.addGoal(goal);
+        agent.getGoals().put(goal.getName(), goal);
         this.goalMap.put(goal.getName(), goal);
 
         return goal;

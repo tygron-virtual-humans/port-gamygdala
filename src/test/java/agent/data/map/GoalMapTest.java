@@ -1,83 +1,102 @@
 package agent.data.map;
 
 import agent.data.Goal;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import junit.framework.TestCase;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
- * Tests for GoalMap.
+ * Created by svenpopping on 19/06/15.
  */
-public class GoalMapTest {
+public class GoalMapTest extends TestCase {
 
     GoalMap goalMap;
-    Goal testGoal;
+    Goal goal;
 
-    @Before
+    /**
+     * Setup: Create a AgentMap and a Mock of Agent.
+     * @throws Exception
+     */
     public void setUp() throws Exception {
-        testGoal = new Goal("TestGoal", 0.5, true);
+        super.setUp();
         goalMap = new GoalMap();
+        goal = mock(Goal.class);
+
+        when(goal.getName()).thenReturn("TestGoal");
+        goalMap.put(goal.getName(), goal);
     }
 
-    @After
+    /**
+     * Teardown.
+     * @throws Exception
+     */
     public void tearDown() throws Exception {
+        goal = null;
         goalMap = null;
     }
 
-    @Test
-    public void testAddGoal() throws Exception {
-        assertTrue(goalMap.addGoal(testGoal));
-        assertTrue(goalMap.hasGoal(testGoal));
-
-        assertFalse(goalMap.addGoal(testGoal));
-    }
-
-    @Test
+    /**
+     * Remove Goal when it is in the GoalMap
+     * @throws Exception
+     */
     public void testRemoveGoal() throws Exception {
-        goalMap.addGoal(testGoal);
-
-        assertTrue(goalMap.removeGoal(testGoal));
-
-        assertFalse(goalMap.removeGoal(testGoal));
+        assertEquals(true, goalMap.removeGoal(goal));
     }
 
-    @Test
+    /**
+     * Remove Goal when it isn't in the GoalMap
+     * @throws Exception
+     */
+    public void testRemoveGoalFalse() throws Exception {
+        goalMap.removeGoal(goal);
+        assertEquals(false, goalMap.removeGoal(goal));
+    }
+
+    /**
+     * HasGoal when GoalMap has the Goal
+     * @throws Exception
+     */
     public void testHasGoal() throws Exception {
-        goalMap.addGoal(testGoal);
-
-        assertTrue(goalMap.hasGoal(testGoal));
-
-        assertFalse(goalMap.hasGoal(null));
+        assertEquals(true, goalMap.hasGoal(goal));
     }
 
-    @Test
+    /**
+     * HasGoal when GoalMap hasn't the Goal
+     * @throws Exception
+     */
+    public void testHasGoalFalse() throws Exception {
+        assertEquals(false, goalMap.hasGoal(mock(Goal.class)));
+    }
+
+    /**
+     * Get Goal when Name exists
+     * @throws Exception
+     */
     public void testGetGoalByName() throws Exception {
-        goalMap.addGoal(testGoal);
-
-        assertEquals(testGoal, goalMap.getGoalByName("TestGoal"));
+        assertEquals(goal, goalMap.getGoalByName("TestGoal"));
     }
 
-    @Test
-    public void testGetGoalByNameGoalNotInMap() throws Exception{
-        goalMap.addGoal(testGoal);
-
-        assertEquals(null, goalMap.getGoalByName("TestGoalNameNotInMap"));
+    /**
+     * Get Goal when Name doens't exists.
+     * @throws Exception
+     */
+    public void testGetGoalByNameFalse() throws Exception {
+        assertEquals(null, goalMap.getGoalByName("TestAgent"));
     }
 
-    @Test
+    /**
+     * Add null to Map
+     * @throws Exception
+     */
+    public void testPutNull() throws Exception {
+        assertEquals(null, goalMap.put(goal.getName(), null));
+    }
+
+    /**
+     * Add Goal to the Map twice
+     * @throws Exception
+     */
     public void testPut() throws Exception {
-        assertEquals(null, goalMap.put(testGoal.getName(), testGoal));
-
-        assertTrue(goalMap.hasGoal(testGoal));
-    }
-
-    @Test
-    public void testPutAddingGoalASecondTime() throws Exception {
-        goalMap.put(testGoal.getName(), testGoal);
-        assertEquals(null, goalMap.put(testGoal.getName(), testGoal));
-
-        assertTrue(goalMap.hasGoal(testGoal));
+        assertEquals(null, goalMap.put(goal.getName(), goal));
     }
 }

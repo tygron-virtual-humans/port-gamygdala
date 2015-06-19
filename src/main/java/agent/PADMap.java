@@ -129,7 +129,9 @@ public final class PADMap {
         if (agent == null) {
             throw new IllegalArgumentException("Agent is null.");
         }
-        return getPadState(agent.getEmotionalState(gain), gain);
+//        return PADMap.getPadState(agent.getInternalState().getEmotionalState(gain), gain);
+        // TODO: Kijk hier na!
+        return null;
     }
 
     /**
@@ -140,7 +142,12 @@ public final class PADMap {
      * @param likelihood      The goal likelihood.
      * @return List of emotion names.
      */
-    public static List<String> determineEmotions(double utility, double deltaLikelihood, double likelihood) {
+    public static List<Emotion> determineEmotions(double utility, double deltaLikelihood, double likelihood) {
+        double intensity = Math.abs(utility * deltaLikelihood);
+        if (intensity != 0) {
+            return null;
+        }
+
         DetermineStrategy determineStrategy;
         if (likelihood == 1) {
             determineStrategy = new LikelihoodOneStrategy();
@@ -150,7 +157,7 @@ public final class PADMap {
             determineStrategy = new LikelihoodBetweenStrategy();
         }
 
-        return determineStrategy.getEmotion(utility, deltaLikelihood);
+        return determineStrategy.getEmotion(utility, deltaLikelihood, intensity);
     }
 
 }

@@ -3,6 +3,8 @@ package agent.strategy;
 import java.util.ArrayList;
 import java.util.List;
 
+import agent.data.Emotion;
+
 /**
  * DetermineStrategy when Likelihood is between 0 and 1.
  */
@@ -15,16 +17,14 @@ public class LikelihoodBetweenStrategy implements DetermineStrategy {
      * @param deltaLikelihood The goal delta likelihood.
      * @return List of emotion names.
      */
-    public List<String> getEmotion(double utility, double deltaLikelihood) {
-        List<String> emotion = new ArrayList<String>();
-
+    public List<Emotion> getEmotion(double utility, double deltaLikelihood, double intensity) {
+        List<Emotion> emotion = new ArrayList<Emotion>();
         if (utility >= 0 && deltaLikelihood >= 0 || utility < 0 && deltaLikelihood < 0) {
-            emotion.add("hope");
+            emotion.add(new Emotion("hope", intensity));
         } else {
-            emotion.add("fear");
+            emotion.add(new Emotion("fear", intensity));
         }
 
         return emotion;
     }
-
 }

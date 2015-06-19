@@ -43,6 +43,7 @@ public class AgentMap extends HashMap<String, Agent> {
             Agent agent = pair.getValue();
 
             output.append(agent.toStringEmotionalState(gain));
+            output.append(" ");
             output.append(agent.toStringRelations(null));
         }
         return output.toString();

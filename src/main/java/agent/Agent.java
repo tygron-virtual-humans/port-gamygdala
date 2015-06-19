@@ -93,16 +93,6 @@ public class Agent {
     }
 
     /**
-     * Add Goal.
-     *
-     * @param goal Goal to add.
-     * @return True if goal was added successfully, false if not.
-     */
-    public boolean addGoal(Goal goal) {
-        return this.goals.addGoal(goal);
-    }
-
-    /**
      * Remove Goal.
      *
      * @param goal Goal to remove.
@@ -146,25 +136,6 @@ public class Agent {
     }
 
     /**
-     * Pass through function to AgentInternalState.
-     *
-     * @param emotion The emotion with which this Agent should be updated.
-     */
-    public void updateEmotionalState(Emotion emotion) {
-        this.getInternalState().updateEmotionalState(emotion);
-    }
-
-    /**
-     * Pass through function to AgentInternalState.
-     *
-     * @param getGain The gain factor. Leave blank (null) to ignore gain.
-     * @return An array of emotions.
-     */
-    public AgentInternalState getEmotionalState(Double getGain) {
-        return this.getInternalState().getEmotionalState(getGain);
-    }
-
-    /**
      * Sets the relation this agent has with the agent defined by agentName. If
      * the relation does not exist, it will be created, otherwise it will be
      * updated.
@@ -190,17 +161,6 @@ public class Agent {
      */
     public boolean hasRelationWith(Agent other) {
         return this.getCurrentRelations().hasRelationWith(other);
-    }
-
-    /**
-     * Returns the relation object this agent has with the agent defined by
-     * agentName.
-     *
-     * @param agent The agent who is the target of the relation.
-     * @return Relation The relation object or null if non existing.
-     */
-    public Relation getRelation(Agent agent) {
-        return this.getCurrentRelations().getRelation(agent);
     }
 
     /**
@@ -234,22 +194,9 @@ public class Agent {
      * @return The Emotion arising from the action
      */
     private Emotion updateEmotionAsCausalAgent(Agent causalAgent, double desirability) {
-        Debug.debug("      Entering CASE 1.");
-        Emotion emotion = desirability >= 0
-                ? new Emotion("gratitude", Math.abs(desirability))
-                : new Emotion("anger", Math.abs(desirability));
+        Emotion emotion = this.getCurrentRelations().updateEmotionAsCausalAgent(causalAgent, desirability);
 
-        Debug.debug("      Emotion: " + emotion);
-        Relation relation = this.getRelation(causalAgent);
-        if (relation == null) {
-            relation = this.updateRelation(causalAgent, .0);
-        }
-
-        if (relation != null) {
-            relation.addEmotion(emotion);
-        }
-
-        this.updateEmotionalState(emotion);
+        this.getInternalState().updateState(emotion);
         return emotion;
     }
 
@@ -263,52 +210,9 @@ public class Agent {
      * @return The Emotion arising from the action.
      */
     private Emotion updateEmotionAsAffectedAgent(Agent affectedAgent, double desirability) {
-        Debug.debug("      Entering CASE 3.");
-        Relation relation = this.getRelation(affectedAgent);
-        if (relation == null) {
-            return null;
-        }
-        Emotion emotion = null;
-        if (relation.getLike() >= 0) {
-            if (desirability >= 0) {
-                emotion = new Emotion("gratification",
-                        Math.abs(desirability * relation.getLike()));
-            } else {
-                emotion = new Emotion("remorse",
-                        Math.abs(desirability * relation.getLike()));
-            }
-        }
+        Emotion emotion = this.getCurrentRelations().updateEmotionAsAffectedAgent(affectedAgent, desirability);
 
-        relation.addEmotion(emotion);
-        this.updateEmotionalState(emotion);
-
-        return emotion;
-    }
-
-    /**
-     * This function is used to evaluate happy-for, pity, gloating or
-     * resentment. Emotions that arise when we evaluate events that affect goals
-     * of others.
-     *
-     * @param desirability The desirability is the desirability from the goal
-     *                     owner's perspective.
-     * @param relation     A relation object between the agent being evaluated and
-     *                     the goal owner of the affected goal.
-     * @return Emotion the evaluated social emotion
-     */
-    public Emotion evaluateSocialEmotion(double desirability, Relation relation) {
-        Emotion emotion = new Emotion(null, 0);
-        emotion.setName(desirability >= 0
-                ? relation.getLike() >= 0
-                    ? "happy-for" : "resentment"
-                : relation.getLike() >= 0
-                    ? "pity" : "gloating");
-        emotion.setIntensity(Math.abs(desirability * relation.getLike()));
-
-        if (emotion.getIntensity() != 0) {
-            relation.addEmotion(emotion);
-            this.updateEmotionalState(emotion);
-        }
+        this.getInternalState().updateState(emotion);
         return emotion;
     }
 
@@ -321,14 +225,11 @@ public class Agent {
      * @param likelihood      the likelihood.
      */
     public void evaluateInternalEmotion(double utility, double deltaLikelihood, double likelihood) {
-        List<String> emotion = PADMap.determineEmotions(utility, deltaLikelihood, likelihood);
-        Debug.debug("   evaluateInternalEmotion: " + emotion);
+        List<Emotion> emotions = PADMap.determineEmotions(utility, deltaLikelihood, likelihood);
+        Debug.debug("   evaluateInternalEmotion: " + emotions);
 
-        double intensity = Math.abs(utility * deltaLikelihood);
-        if (intensity != 0) {
-            for (String emo : emotion) {
-                this.updateEmotionalState(new Emotion(emo, intensity));
-            }
+        for (Emotion emotion : emotions) {
+            this.getInternalState().updateState(emotion);
         }
     }
 
@@ -342,11 +243,12 @@ public class Agent {
      * @param desirability the desirability of the goal
      */
     public void evaluateRelationWithAgent(Agent agent, Agent causalAgent, double desirability) {
-        Relation relation = agent.getRelation(this);
+        Relation relation = agent.currentRelations.getRelation(this);
         if (relation != null) {
             Debug.debug("   Processing relation: " + relation);
 
-            agent.evaluateSocialEmotion(desirability, relation);
+            Emotion emotion = agent.getCurrentRelations().evaluateSocialEmotion(relation, desirability);
+            this.getInternalState().updateState(emotion);
             agent.agentActions(this, causalAgent, desirability);
         }
     }
@@ -377,7 +279,7 @@ public class Agent {
      */
     public String toStringEmotionalState(boolean gained) {
         String output = this.name + " feels ";
-        output += this.getInternalState().getEmotionalStateString(gained ? this.gain : null);
+        output += this.getInternalState().toString(gained ? this.gain : null);
 
         return output;
     }

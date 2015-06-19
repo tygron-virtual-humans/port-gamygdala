@@ -25,7 +25,7 @@ public class AgentInternalState extends ArrayList<Emotion> {
      *
      * @param emotion The emotion with which this Agent should be updated.
      */
-    public void updateEmotionalState(Emotion emotion) {
+    public void updateState(Emotion emotion) {
         if (emotion != null) {
             Debug.debug("      updating emotion: " + emotion);
 
@@ -56,7 +56,7 @@ public class AgentInternalState extends ArrayList<Emotion> {
      * @param gain The gain factor. Leave blank (null) to ignore gain.
      * @return An array of emotions.
      */
-    public AgentInternalState getEmotionalState(Double gain) {
+    public AgentInternalState getState(Double gain) {
         if (gain == null) {
             return this;
         }
@@ -101,9 +101,9 @@ public class AgentInternalState extends ArrayList<Emotion> {
      * @param gain The gain factor. Leave blank (null) to ignore gain.
      * @return String List of emotions.
      */
-    public String getEmotionalStateString(Double gain) {
+    public String toString(Double gain) {
         StringBuilder output = new StringBuilder();
-        for (Emotion emotion : this.getEmotionalState(gain)) {
+        for (Emotion emotion : this.getState(gain)) {
             output.append(emotion.getName()).append(": ").append(emotion.getIntensity()).append(", ");
         }
         return output.toString();

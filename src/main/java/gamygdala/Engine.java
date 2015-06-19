@@ -124,7 +124,7 @@ public final class Engine {
      * keeping track of the millis passed since the last call, and will (try to)
      * keep the decay close to the desired decay factor, regardless the time
      * passed So you can call this any time you want (or, e.g., have the game
-     * loop call it, or have e.g., Phaser call it in the plugin update, which is
+     * loop call it, or have e.g., Phaser call it in the plugin updateState, which is
      * default now). Further, if you want to tweak the emotional intensity decay
      * of individual agents, you should tweak the decayFactor per agent not the
      * "frame rate" of the decay (as this doesn't change the rate).
