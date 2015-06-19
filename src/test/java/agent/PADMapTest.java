@@ -66,5 +66,4 @@ public class PADMapTest {
     public void testDetermineEmotionBetween() {
         List<Emotion> emotionList = PADMap.determineEmotions(1, 1, 0.5);
     }
-
 }

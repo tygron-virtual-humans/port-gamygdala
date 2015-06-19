@@ -55,7 +55,8 @@ public class AgentMap extends HashMap<String, Agent> {
     @Override
     public Agent put(String name, Agent agent) {
         if (!this.containsKey(agent.getName())) {
-            return super.put(agent.getName(), agent);
+            super.put(agent.getName(), agent);
+            return agent;
         } else {
             Debug.debug("Warning: failed adding a second goal with the same name: " + agent.getName());
         }
