@@ -59,8 +59,7 @@ public class Belief {
         this.causalAgent = agent;
 
         if (affectedGoals.size() != goalCongruences.size()) {
-            throw new GoalCongruenceMapException(
-                    "Error: the congruence list does not have the same size as the affected goal list.");
+            throw new GoalCongruenceMapException();
         }
 
         this.goalCongruenceMap = new HashMap<Goal, Double>();
