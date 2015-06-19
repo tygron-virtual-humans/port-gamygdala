@@ -268,9 +268,9 @@ public class Gamygdala {
      */
     public Goal createGoalForAgent(Agent agent, String goalName, double goalUtility, boolean isMaintenanceGoal) {
         Goal goal = new Goal(goalName, goalUtility, isMaintenanceGoal);
+
         agent.getGoals().put(goal.getName(), goal);
         this.goalMap.put(goal.getName(), goal);
-
         return goal;
     }
 
