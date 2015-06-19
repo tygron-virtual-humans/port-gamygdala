@@ -4,6 +4,8 @@ import agent.data.Emotion;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Pleasure Arousal Dominance mapping of the emotional states.
@@ -18,7 +20,7 @@ public final class PADMap {
     /**
      * Emotion map.
      */
-    private static HashMap<String, double[]> mapPad;
+    private static Map<String, double[]> mapPad;
 
     /**
      * Empty constructor to prevent instantiating. Use PADMap.getInstance()
@@ -49,7 +51,7 @@ public final class PADMap {
      *
      * @return
      */
-    public static HashMap<String, double[]> getMapPad() {
+    public static Map<String, double[]> getMapPad() {
         return mapPad;
     }
 
@@ -93,7 +95,7 @@ public final class PADMap {
      * @return An array of doubles with Pleasure at index [0], Arousal at index
      *         [1] and Dominance at index [2].
      */
-    public static double[] getPadState(ArrayList<Emotion> emotions, Double gain) {
+    public static double[] getPadState(List<Emotion> emotions, Double gain) {
         if (emotions == null) {
             throw new IllegalArgumentException("Agent does not have emotional state.");
         }

@@ -1,6 +1,7 @@
 package agent.data;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Data structure to store an Emotion. Emotions have a name and intensity.
@@ -66,7 +67,7 @@ public class Emotion {
      * @param likelihood      The goal likelihood.
      * @return List of emotion names.
      */
-    public static ArrayList<String> determineEmotions(double utility, double deltaLikelihood, double likelihood) {
+    public static List<String> determineEmotions(double utility, double deltaLikelihood, double likelihood) {
         ArrayList<String> emotion = new ArrayList<String>();
 
         if (likelihood > 0 && likelihood < 1) {

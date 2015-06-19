@@ -6,6 +6,7 @@ import agent.data.map.GoalMap;
 import debug.Debug;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The main interacting character in the Gamygdala engine.
@@ -321,7 +322,7 @@ public class Agent {
      * @param likelihood      the likelihood.
      */
     public void evaluateInternalEmotion(double utility, double deltaLikelihood, double likelihood) {
-        ArrayList<String> emotion = Emotion.determineEmotions(utility, deltaLikelihood, likelihood);
+        List<String> emotion = Emotion.determineEmotions(utility, deltaLikelihood, likelihood);
         Debug.debug("   evaluateInternalEmotion: " + emotion);
 
         double intensity = Math.abs(utility * deltaLikelihood);

@@ -4,6 +4,7 @@ import agent.data.Emotion;
 import decayfunction.DecayFunction;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Describes a Relation between two Agents.
@@ -23,7 +24,7 @@ public class Relation {
     /**
      *
      */
-    private final ArrayList<Emotion> emotions;
+    private final List<Emotion> emotions;
 
     /**
      * This is the class that represents a relation one agent has with other
@@ -72,7 +73,7 @@ public class Relation {
      *
      * @return ArrayList<Emotion> of this Relation
      */
-    public ArrayList<Emotion> getEmotions() {
+    public List<Emotion> getEmotions() {
         return this.emotions;
     }
 

@@ -5,6 +5,8 @@ import exception.GoalCongruenceMapException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A Belief contains information about events (Goals) and the amount of positive
@@ -25,7 +27,7 @@ public class Belief {
     /**
      * A Map of Goals and their congruence.
      */
-    private final HashMap<Goal, Double> goalCongruenceMap;
+    private final Map<Goal, Double> goalCongruenceMap;
 
     /**
      * Whether or not this Belief is incremental.
@@ -50,7 +52,7 @@ public class Belief {
      *            using the belief as "state" defining the absolute likelihood
      * @throws GoalCongruenceMapException
      */
-    public Belief(double likelihood, Agent agent, ArrayList<Goal> affectedGoals, ArrayList<Double> goalCongruences,
+    public Belief(double likelihood, Agent agent, List<Goal> affectedGoals, List<Double> goalCongruences,
             boolean isIncremental) throws GoalCongruenceMapException {
         this.isIncremental = isIncremental;
 
@@ -85,7 +87,7 @@ public class Belief {
      *
      * @return The names of the goals affected and their congruences.
      */
-    public HashMap<Goal, Double> getGoalCongruenceMap() {
+    public Map<Goal, Double> getGoalCongruenceMap() {
         return goalCongruenceMap;
     }
 
