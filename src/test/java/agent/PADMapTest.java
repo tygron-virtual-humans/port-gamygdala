@@ -3,19 +3,38 @@ package agent;
 import java.util.List;
 
 import agent.data.Emotion;
+import agent.strategy.DetermineStrategy;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static org.mockito.Mockito.mock;
 
 /**
  * Created by svenpopping on 19/06/15.
  */
 public class PADMapTest {
 
-    List<Emotion> stringArray;
+    DetermineStrategy determineStrategy;
+    PADMap padMap;
+
+    @Before
+    public void setUp() throws Exception {
+        determineStrategy = mock(DetermineStrategy.class);
+        padMap = PADMap.getInstance();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        determineStrategy = null;
+    }
 
     @Test
     public void testGetInstance() throws Exception {
+        assertNotNull(PADMap.getInstance());
 
+        assertEquals(padMap, PADMap.getInstance());
     }
 
     @Test
@@ -28,72 +47,24 @@ public class PADMapTest {
 
     }
 
-    @Test
+    @Test (expected = IllegalArgumentException.class)
     public void testGetPadState1() throws Exception {
-
+//        PADMap.getPadState(null, 0.1);
     }
 
     @Test
-    public void testDetermineEmotion() {
-        assertNull(PADMap.determineEmotions(0, 0, 0));
+    public void testDetermineEmotionOne() {
+        List<Emotion> emotionList = PADMap.determineEmotions(1, 1, 0);
     }
 
-//    @Test
-//    public void testDetermineEmotionsHope() {
-//        List<Emotion> expected = new ArrayList<Emotion>() {{
-//            add(new Emotion("hope", .010000000000000002));
-//        }};
-//        stringArray = PADMap.determineEmotions(-.1, -.1, 0.1);
-//        assertEquals(expected, stringArray);
-//    }
-//
-//    @Test
-//    public void testDetermineEmotionsFear() {
-//        List<Emotion> expected = new ArrayList<Emotion>() {{
-//            add(new Emotion("fear", .001));
-//        }};
-//        stringArray = PADMap.determineEmotions(-.1, .01, 0.1);
-//        assertEquals(expected, stringArray);
-//    }
-//
-//    @Test
-//    public void testDetermineEmotionsSatisfactionJoy() {
-//        List<Emotion> expected = new ArrayList<Emotion>() {{
-//            add(new Emotion("satisfaction", .294));
-//            add(new Emotion("joy", .294));
-//        }};
-//        stringArray = PADMap.determineEmotions(.6, 0.49, 1.d);
-//        assertEquals(expected, stringArray);
-//    }
-//
-//    @Test
-//    public void testDetermineEmotionsFearConfirmedDistress() {
-//        List<Emotion> expected = new ArrayList<Emotion>() {{
-//            add(new Emotion("fear-confirmed", .049));
-//            add(new Emotion("distress", .049));
-//        }};
-//        stringArray = PADMap.determineEmotions(-.1, 0.49, 1.d);
-//        assertEquals(expected, stringArray);
-//    }
-//
-//    @Test
-//    public void testDetermineEmotionsDisappointmentDistress() {
-//        List<Emotion> expected = new ArrayList<Emotion>() {{
-//            add(new Emotion("disappointment", 1));
-//            add(new Emotion("distress", 1));
-//        }};
-//        stringArray = PADMap.determineEmotions(0.1, 0.51, -.1);
-//        assertEquals(expected, stringArray);
-//    }
-//
-//    @Test
-//    public void testDetermineEmotionsReliefJoy() {
-//        List<Emotion> expected = new ArrayList<Emotion>() {{
-//            add(new Emotion("relief", 1));
-//            add(new Emotion("joy", 1));
-//        }};
-//        stringArray = PADMap.determineEmotions(-.1, 0.51, -.1);
-//        assertEquals(expected, stringArray);
-//    }
+    @Test
+    public void testDetermineEmotionZero() {
+        List<Emotion> emotionList = PADMap.determineEmotions(1, 1, 0);
+    }
+
+    @Test
+    public void testDetermineEmotionBetween() {
+        List<Emotion> emotionList = PADMap.determineEmotions(1, 1, 0.5);
+    }
 
 }

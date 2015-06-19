@@ -142,7 +142,7 @@ public final class PADMap {
      */
     public static List<Emotion> determineEmotions(double utility, double deltaLikelihood, double likelihood) {
         double intensity = Math.abs(utility * deltaLikelihood);
-        if (intensity == 0) {
+        if (intensity == 0 && (likelihood < 0 && likelihood > 1)) {
             return null;
         }
 
