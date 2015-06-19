@@ -66,7 +66,7 @@ public class Belief {
 
         // Add goals and congruences to Map.
         for (int i = 0; i < affectedGoals.size(); i++) {
-            double congruence = Math.min(1, Math.max(-1, goalCongruences.get(i)));
+            double congruence = Math.min(1.d, Math.max(-1.d, goalCongruences.get(i)));
             this.goalCongruenceMap.put(affectedGoals.get(i), congruence);
         }
     }

@@ -1,12 +1,12 @@
 package test.js;
 
-import debug.Debug;
-
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+
+import debug.Debug;
 
 /**
  * Adapter for the Gamygdala Test Suite in Javascript.
@@ -65,7 +65,7 @@ public class BenchmarkAdapter {
             // Benchmark
             scriptEngine.eval("benchmark()");
         } catch (ScriptException e) {
-            e.printStackTrace();
+
         }
     }
 }

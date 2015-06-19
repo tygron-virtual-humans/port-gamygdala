@@ -228,8 +228,10 @@ public class Agent {
         List<Emotion> emotions = PADMap.determineEmotions(utility, deltaLikelihood, likelihood);
         Debug.debug("   evaluateInternalEmotion: " + emotions);
 
-        for (Emotion emotion : emotions) {
-            this.getInternalState().updateState(emotion);
+        if (emotions != null) {
+            for (Emotion emotion : emotions) {
+                this.getInternalState().updateState(emotion);
+            }
         }
     }
 
@@ -328,7 +330,7 @@ public class Agent {
      */
     @Override
     public String toString() {
-        return "<Agent[" + this.name + "]>";
+        return "<Agent[" + this.name + ", " + this.gain + "]>";
     }
 
 }

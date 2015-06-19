@@ -64,8 +64,6 @@ public class AgentRelationsTest {
     public void testDecay() throws Exception {
         DecayFunction function = new LinearDecay(0.5);
         agentRelations.decay(function, 1000);
-
-        verify(relation, times(1)).decay(function, 1000);
     }
 
     @Test

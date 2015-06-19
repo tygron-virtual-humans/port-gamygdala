@@ -68,11 +68,10 @@ public class GamygdalaTest {
     @Test
     public void testAppraise() throws Exception {
         Agent agent = mock(Agent.class);
-        when(gamygdala.createAgent("henk")).thenReturn(agent);
+        when(agent.getGoals()).thenReturn(mock(GoalMap.class));
 
         gamygdala.createGoalForAgent(agent, "happy", .5, false);
         assertFalse(gamygdala.appraise(null, null));
-
         assertTrue(gamygdala.appraise(mock(Belief.class), null));
     }
 
@@ -83,15 +82,15 @@ public class GamygdalaTest {
 
     @Test
     public void testSetAgentsGain() throws Exception {
-        when(gamygdala.getGoalMap()).thenReturn(mock(GoalMap.class));
+        gamygdala.getAgentMap().put("henk", new Agent("henk"));
+
+        gamygdala.setAgentsGain(0.5);
+        assertEquals(0.5, gamygdala.getAgentMap().get("henk").getGain(), 1E-15);
     }
 
     @Test
     public void testCreateAgent() throws Exception {
-        Agent agent = mock(Agent.class);
-        when(gamygdala.createAgent("henk")).thenReturn(agent);
-
-        assertEquals(agent, gamygdala.createAgent("henk"));
+        assertEquals(new Agent("henk"), gamygdala.createAgent("henk"));
     }
 
     @Test
