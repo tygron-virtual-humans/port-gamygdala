@@ -85,14 +85,12 @@ public class Emotion {
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Emotion)) {
-            return false;
-        }
+        if (this == o) return true;
+        if (!(o instanceof Emotion)) return false;
+
         Emotion emotion = (Emotion) o;
-        return Double.compare(emotion.getIntensity(), getIntensity()) == 0
-                && !(getName() != null ? !getName().equals(emotion.getName()) : emotion.getName() != null);
+
+        if (Double.compare(emotion.getIntensity(), getIntensity()) != 0) return false;
+        return !(getName() != null ? !getName().equals(emotion.getName()) : emotion.getName() != null);
     }
 }

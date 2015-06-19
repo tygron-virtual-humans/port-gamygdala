@@ -129,9 +129,7 @@ public final class PADMap {
         if (agent == null) {
             throw new IllegalArgumentException("Agent is null.");
         }
-//        return PADMap.getPadState(agent.getInternalState().getEmotionalState(gain), gain);
-        // TODO: Kijk hier na!
-        return null;
+        return PADMap.getPadState(agent.getInternalState().getState(gain), gain);
     }
 
     /**
@@ -144,7 +142,7 @@ public final class PADMap {
      */
     public static List<Emotion> determineEmotions(double utility, double deltaLikelihood, double likelihood) {
         double intensity = Math.abs(utility * deltaLikelihood);
-        if (intensity != 0) {
+        if (intensity == 0) {
             return null;
         }
 

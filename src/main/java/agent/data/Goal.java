@@ -144,17 +144,16 @@ public class Goal {
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Goal)) {
-            return false;
-        }
+        if (this == o) return true;
+        if (!(o instanceof Goal)) return false;
+
         Goal goal = (Goal) o;
-        return !(Double.compare(goal.getUtility(), getUtility()) != 0
-                && Double.compare(goal.getLikelihood(), getLikelihood()) != 0)
-                && isMaintenanceGoal() == goal.isMaintenanceGoal()
-                && !(getName() != null ? !getName().equals(goal.getName()) : goal.getName() != null);
+
+        if (Double.compare(goal.getUtility(), getUtility()) != 0) return false;
+        if (Double.compare(goal.getLikelihood(), getLikelihood()) != 0) return false;
+        if (isMaintenanceGoal() != goal.isMaintenanceGoal()) return false;
+        return !(getName() != null ? !getName().equals(goal.getName()) : goal.getName() != null);
+
     }
 
     /**
