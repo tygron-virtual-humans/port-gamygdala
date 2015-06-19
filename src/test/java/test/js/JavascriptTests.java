@@ -1,13 +1,12 @@
 package test.js;
 
-import static org.junit.Assert.fail;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
+import static org.junit.Assert.fail;
 
 /**
  * Runs tests for Javascript-Gamygdala in Java.
@@ -51,7 +50,7 @@ public class JavascriptTests {
             // Run tests
             ba.runTests();
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
 
         // Load test results

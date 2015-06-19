@@ -29,7 +29,7 @@ TUDelft.Gamygdala = function () {
 * @return {TUDelft.Gamygdala.Agent} An agent reference to the newly created agent
 */
 TUDelft.Gamygdala.prototype.createAgent = function(agentName){
-	temp=new TUDelft.Gamygdala.Agent(agentName);
+	temp = new TUDelft.Gamygdala.Agent(agentName);
 	this.registerAgent(temp);
 	return temp;
 };
