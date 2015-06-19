@@ -1,11 +1,14 @@
 package agent;
 
-import agent.data.Emotion;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import agent.data.Emotion;
+import agent.strategy.DetermineStrategy;
+import agent.strategy.LikelihoodBetweenStrategy;
+import agent.strategy.LikelihoodOneStrategy;
+import agent.strategy.LikelihoodZeroStrategy;
 
 /**
  * Pleasure Arousal Dominance mapping of the emotional states.
@@ -48,8 +51,8 @@ public final class PADMap {
     }
 
     /**
-     *
-     * @return
+     * Get PADMap.
+     * @return Map with PAD values
      */
     public static Map<String, double[]> getMapPad() {
         return mapPad;
@@ -127,6 +130,27 @@ public final class PADMap {
             throw new IllegalArgumentException("Agent is null.");
         }
         return getPadState(agent.getEmotionalState(gain), gain);
+    }
+
+    /**
+     * Determine emotions based on three Goal parameters.
+     *
+     * @param utility         The goal utility.
+     * @param deltaLikelihood The goal delta likelihood.
+     * @param likelihood      The goal likelihood.
+     * @return List of emotion names.
+     */
+    public static List<String> determineEmotions(double utility, double deltaLikelihood, double likelihood) {
+        DetermineStrategy determineStrategy;
+        if (likelihood == 1) {
+            determineStrategy = new LikelihoodOneStrategy();
+        } else if (likelihood == 0) {
+            determineStrategy = new LikelihoodZeroStrategy();
+        } else {
+            determineStrategy = new LikelihoodBetweenStrategy();
+        }
+
+        return determineStrategy.getEmotion(utility, deltaLikelihood);
     }
 
 }

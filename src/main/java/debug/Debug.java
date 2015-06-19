@@ -6,12 +6,19 @@ import java.util.logging.Logger;
 /**
  * Debug class.
  */
-public class Debug {
+public final class Debug {
 
     /**
      * Debug flag.
      */
     private static final boolean DEBUG = true;
+
+    /**
+     * Made constructor private so the Object can be constructed.
+     */
+    private Debug() {
+
+    }
 
     /**
      * Logger.

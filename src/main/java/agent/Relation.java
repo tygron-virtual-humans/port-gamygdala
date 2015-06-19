@@ -1,10 +1,10 @@
 package agent;
 
-import agent.data.Emotion;
-import decayfunction.DecayFunction;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import agent.data.Emotion;
+import decayfunction.DecayFunction;
 
 /**
  * Describes a Relation between two Agents.

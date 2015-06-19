@@ -1,9 +1,9 @@
 package agent.data.map;
 
+import java.util.HashMap;
+
 import agent.data.Goal;
 import debug.Debug;
-
-import java.util.HashMap;
 
 /**
  * HashMap to store Goals. Extended with add / remove / has goal methods for
@@ -86,17 +86,17 @@ public class GoalMap extends HashMap<String, Goal> {
     }
 
     /**
-     *
-     * @param name
-     * @param goal
-     * @return
+     * Add element to the GoalMap.
+     * @param name Name of the Goal
+     * @param goal The New Goal
+     * @return Goal created Goal
      */
     @Override
     public Goal put(String name, Goal goal) {
-        if (!this.containsKey(goal.getName())) {
-            return super.put(goal.getName(), goal);
+        if (!this.containsKey(name)) {
+            return super.put(name, goal);
         } else {
-            Debug.debug("Warning: failed adding a second goal with the same name: " + goal.getName());
+            Debug.debug("Warning: failed adding a second goal with the same name: " + name);
         }
         return null;
     }

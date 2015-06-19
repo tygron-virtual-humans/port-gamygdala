@@ -1,8 +1,5 @@
 package agent.data;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Data structure to store an Emotion. Emotions have a name and intensity.
  */
@@ -60,33 +57,6 @@ public class Emotion {
     }
 
     /**
-     * Determine emotions based on three Goal parameters.
-     *
-     * @param utility         The goal utility.
-     * @param deltaLikelihood The goal delta likelihood.
-     * @param likelihood      The goal likelihood.
-     * @return List of emotion names.
-     */
-    public static List<String> determineEmotions(double utility, double deltaLikelihood, double likelihood) {
-        ArrayList<String> emotion = new ArrayList<String>();
-
-        if (likelihood > 0 && likelihood < 1) {
-            emotion.add((utility >= 0 && deltaLikelihood >= 0 || utility < 0 && deltaLikelihood < 0) ? "hope" : "fear");
-        } else if (likelihood == 1) {
-            if (deltaLikelihood < 0.5) {
-                emotion.add(utility >= 0 ? "satisfaction" : "fear-confirmed");
-            }
-            emotion.add(utility >= 0 ? "joy" : "distress");
-        } else if (likelihood == 0) {
-            if (deltaLikelihood > 0.5) {
-                emotion.add(utility >= 0 ? "disappointment" : "relief");
-            }
-            emotion.add(utility >= 0 ? "distress" : "joy");
-        }
-        return emotion;
-    }
-
-    /**
      * String representation of Emotion.
      */
     @Override
@@ -115,12 +85,14 @@ public class Emotion {
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Emotion)) return false;
-
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Emotion)) {
+            return false;
+        }
         Emotion emotion = (Emotion) o;
-
-        if (Double.compare(emotion.getIntensity(), getIntensity()) != 0) return false;
-        return !(getName() != null ? !getName().equals(emotion.getName()) : emotion.getName() != null);
+        return Double.compare(emotion.getIntensity(), getIntensity()) == 0
+                && !(getName() != null ? !getName().equals(emotion.getName()) : emotion.getName() != null);
     }
 }

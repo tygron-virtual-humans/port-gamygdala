@@ -1,5 +1,7 @@
 package gamygdala;
 
+import java.util.Map;
+
 import agent.Agent;
 import agent.data.Belief;
 import agent.data.Goal;
@@ -8,8 +10,6 @@ import agent.data.map.GoalMap;
 import debug.Debug;
 import decayfunction.DecayFunction;
 import decayfunction.LinearDecay;
-
-import java.util.Map;
 
 /**
  * This is the main appraisal engine class taking care of interpreting a
@@ -60,16 +60,16 @@ public class Gamygdala {
     }
 
     /**
-     *
-     * @return
+     * Get GoalMap with all the Goals of all the Agents.
+     * @return GoalMap Map of Goals
      */
     public GoalMap getGoalMap() {
         return goalMap;
     }
 
     /**
-     *
-     * @return
+     * Get AgentMap with all the Agent registered in Gamygdala.
+     * @return AgentMap Map of Agents
      */
     public AgentMap getAgentMap() {
         return agentMap;

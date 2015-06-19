@@ -1,10 +1,10 @@
 package agent.data.map;
 
-import agent.Agent;
-import debug.Debug;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import agent.Agent;
+import debug.Debug;
 
 /**
  * HashMap containing Agents.

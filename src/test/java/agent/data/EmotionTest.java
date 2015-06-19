@@ -1,5 +1,6 @@
 package agent.data;
 
+import agent.PADMap;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,7 +27,7 @@ public class EmotionTest {
         ArrayList<String> expected = new ArrayList<String>() {{
             add("hope");
         }};
-        stringArray = Emotion.determineEmotions(-.1, -.1, 0.1);
+        stringArray = PADMap.determineEmotions(-.1, -.1, 0.1);
         assertEquals(expected, stringArray);
     }
 
@@ -35,7 +36,7 @@ public class EmotionTest {
         ArrayList<String> expected = new ArrayList<String>() {{
             add("fear");
         }};
-        stringArray = Emotion.determineEmotions(-.1, .0, 0.1);
+        stringArray = PADMap.determineEmotions(-.1, .0, 0.1);
         assertEquals(expected, stringArray);
     }
 
@@ -45,7 +46,7 @@ public class EmotionTest {
             add("satisfaction");
             add("joy");
         }};
-        stringArray = Emotion.determineEmotions(.6, 0.49, 1.d);
+        stringArray = PADMap.determineEmotions(.6, 0.49, 1.d);
         assertEquals(expected, stringArray);
     }
 
@@ -55,7 +56,7 @@ public class EmotionTest {
             add("fear-confirmed");
             add("distress");
         }};
-        stringArray = Emotion.determineEmotions(-.1, 0.49, 1.d);
+        stringArray = PADMap.determineEmotions(-.1, 0.49, 1.d);
         assertEquals(expected, stringArray);
     }
 
@@ -65,7 +66,7 @@ public class EmotionTest {
             add("disappointment");
             add("distress");
         }};
-        stringArray = Emotion.determineEmotions(0.1, 0.51, 0.d);
+        stringArray = PADMap.determineEmotions(0.1, 0.51, 0.d);
         assertEquals(expected, stringArray);
     }
 
@@ -75,7 +76,7 @@ public class EmotionTest {
             add("relief");
             add("joy");
         }};
-        stringArray = Emotion.determineEmotions(-.1, 0.51, 0.d);
+        stringArray = PADMap.determineEmotions(-.1, 0.51, 0.d);
         assertEquals(expected, stringArray);
     }
 

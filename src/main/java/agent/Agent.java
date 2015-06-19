@@ -1,12 +1,11 @@
 package agent;
 
+import java.util.List;
+
 import agent.data.Emotion;
 import agent.data.Goal;
 import agent.data.map.GoalMap;
 import debug.Debug;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The main interacting character in the Gamygdala engine.
@@ -62,24 +61,24 @@ public class Agent {
     }
 
     /**
-     *
-     * @return
+     * Get gain of Agent.
+     * @return double the gain of the Agent
      */
     public double getGain() {
         return gain;
     }
 
     /**
-     *
-     * @return
+     * Get Goals of the Agent.
+     * @return GoalMap map of all the goal for the Agent
      */
     public GoalMap getGoals() {
         return goals;
     }
 
     /**
-     *
-     * @return
+     * Get InternalState of the Agent.
+     * @return AgentInternalState List of Emotions of the Agent
      */
     public AgentInternalState getInternalState() {
         return internalState;
@@ -322,7 +321,7 @@ public class Agent {
      * @param likelihood      the likelihood.
      */
     public void evaluateInternalEmotion(double utility, double deltaLikelihood, double likelihood) {
-        List<String> emotion = Emotion.determineEmotions(utility, deltaLikelihood, likelihood);
+        List<String> emotion = PADMap.determineEmotions(utility, deltaLikelihood, likelihood);
         Debug.debug("   evaluateInternalEmotion: " + emotion);
 
         double intensity = Math.abs(utility * deltaLikelihood);

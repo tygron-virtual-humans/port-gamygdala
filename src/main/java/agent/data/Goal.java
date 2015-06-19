@@ -30,7 +30,7 @@ public class Goal {
     /**
      * Construct new Goal.
      *
-     * @param name Name of the goal.
+     * @param conName Name of the goal.
      * @param conUtility Goal utility.
      * @param conIsMaintenanceGoal Whether or not this goal is a maintenance goal.
      */
@@ -144,15 +144,17 @@ public class Goal {
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Goal)) return false;
-
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Goal)) {
+            return false;
+        }
         Goal goal = (Goal) o;
-
-        if (Double.compare(goal.getUtility(), getUtility()) != 0) return false;
-        if (Double.compare(goal.getLikelihood(), getLikelihood()) != 0) return false;
-        if (isMaintenanceGoal() != goal.isMaintenanceGoal()) return false;
-        return !(getName() != null ? !getName().equals(goal.getName()) : goal.getName() != null);
+        return !(Double.compare(goal.getUtility(), getUtility()) != 0
+                && Double.compare(goal.getLikelihood(), getLikelihood()) != 0)
+                && isMaintenanceGoal() == goal.isMaintenanceGoal()
+                && !(getName() != null ? !getName().equals(goal.getName()) : goal.getName() != null);
     }
 
     /**
