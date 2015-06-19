@@ -122,5 +122,4 @@ public class PADMapTest {
 
         assertEquals(expected, emotionList);
     }
-
 }
