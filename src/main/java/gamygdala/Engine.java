@@ -189,4 +189,22 @@ public final class Engine {
         return true;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Engine)) return false;
+
+        Engine engine = (Engine) o;
+
+        if (lastMillis != engine.lastMillis) return false;
+        return !(getGamygdala() != null ? !getGamygdala().equals(engine.getGamygdala()) : engine.getGamygdala() != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getGamygdala() != null ? getGamygdala().hashCode() : 0;
+        result = 31 * result + (int) (lastMillis ^ (lastMillis >>> 32));
+        return result;
+    }
 }
