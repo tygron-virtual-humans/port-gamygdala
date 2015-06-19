@@ -53,10 +53,10 @@ public class Gamygdala {
     }
 
     /**
-     * @param decayFunction the decayFunction to set
+     * @param newDecayFunction the decayFunction to set
      */
-    public void setDecayFunction(DecayFunction decayFunction) {
-        this.decayFunction = decayFunction;
+    public void setDecayFunction(DecayFunction newDecayFunction) {
+        this.decayFunction = newDecayFunction;
     }
 
     /**

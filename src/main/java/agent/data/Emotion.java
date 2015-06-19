@@ -21,12 +21,12 @@ public class Emotion {
     /**
      * Construct a new Emotion.
      *
-     * @param name      Name of the emotion.
-     * @param intensity Intensity of the emotion.
+     * @param conName      Name of the emotion.
+     * @param conIntensity Intensity of the emotion.
      */
-    public Emotion(String name, double intensity) {
-        this.name = name;
-        this.intensity = intensity;
+    public Emotion(String conName, double conIntensity) {
+        this.name = conName;
+        this.intensity = conIntensity;
     }
 
     /**
@@ -40,8 +40,8 @@ public class Emotion {
     /**
      * Sets name of the Emotion.
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String newName) {
+        this.name = newName;
     }
 
     /**
@@ -55,8 +55,8 @@ public class Emotion {
     /**
      * Sets intensity of the Emotion.
      */
-    public void setIntensity(double intensity) {
-        this.intensity = intensity;
+    public void setIntensity(double newIntensity) {
+        this.intensity = newIntensity;
     }
 
     /**

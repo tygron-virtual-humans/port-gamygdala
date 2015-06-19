@@ -39,24 +39,24 @@ public class Belief {
      * is created and fed into a Gamygdala instance (method
      * Gamygdala.appraise()) for evaluation
      *
-     * @param likelihood The likelihood of this belief to be true.
+     * @param conLikelihood The likelihood of this belief to be true.
      * @param agent The Agent object of the causal agent of this belief.
      * @param affectedGoals An array of affected goals.
      * @param goalCongruences An array of the affected goals' congruences (i.e.,
      *            the extend to which this event is good or bad for a goal
      *            [-1,1]).
-     * @param isIncremental Incremental evidence enforces gamygdala to see this
+     * @param conIsIncremental Incremental evidence enforces gamygdala to see this
      *            event as incremental evidence for (or against) the list of
      *            goals provided, i.e, it will add or subtract this belief's
      *            likelihood*congruence from the goal likelihood instead of
      *            using the belief as "state" defining the absolute likelihood
      * @throws GoalCongruenceMapException
      */
-    public Belief(double likelihood, Agent agent, List<Goal> affectedGoals, List<Double> goalCongruences,
-            boolean isIncremental) throws GoalCongruenceMapException {
-        this.isIncremental = isIncremental;
+    public Belief(double conLikelihood, Agent agent, List<Goal> affectedGoals, List<Double> goalCongruences,
+            boolean conIsIncremental) throws GoalCongruenceMapException {
+        this.isIncremental = conIsIncremental;
 
-        this.likelihood = Math.min(1, Math.max(-1, likelihood));
+        this.likelihood = Math.min(1, Math.max(-1, conLikelihood));
         this.causalAgent = agent;
 
         if (affectedGoals.size() != goalCongruences.size()) {

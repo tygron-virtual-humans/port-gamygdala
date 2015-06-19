@@ -31,19 +31,19 @@ public class Goal {
      * Construct new Goal.
      *
      * @param name Name of the goal.
-     * @param utility Goal utility.
-     * @param isMaintenanceGoal Whether or not this goal is a maintenance goal.
+     * @param conUtility Goal utility.
+     * @param conIsMaintenanceGoal Whether or not this goal is a maintenance goal.
      */
-    public Goal(String name, double utility, boolean isMaintenanceGoal) {
+    public Goal(String conName, double conUtility, boolean conIsMaintenanceGoal) {
 
-        this.name = name;
-        this.utility = utility;
+        this.name = conName;
+        this.utility = conUtility;
 
         // Initialize the likelihood in the middle between disconfirmed (0) and
         // confirmed (1).
         this.likelihood = 0.5;
 
-        this.isMaintenanceGoal = isMaintenanceGoal;
+        this.isMaintenanceGoal = conIsMaintenanceGoal;
 
     }
 
@@ -53,10 +53,10 @@ public class Goal {
      * @param goal Other Goal object.
      */
     public Goal(Goal goal) {
-        this.name = goal.name;
-        this.utility = goal.utility;
-        this.likelihood = goal.likelihood;
-        this.isMaintenanceGoal = goal.isMaintenanceGoal;
+        this.name = goal.getName();
+        this.utility = goal.getUtility();
+        this.likelihood = goal.getLikelihood();
+        this.isMaintenanceGoal = goal.isMaintenanceGoal();
     }
 
     /**
@@ -71,10 +71,10 @@ public class Goal {
     /**
      * Set the name of the goal.
      *
-     * @param name the name to set
+     * @param newName the name to set
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String newName) {
+        this.name = newName;
     }
 
     /**
@@ -89,10 +89,10 @@ public class Goal {
     /**
      * Set the utility value of this goal.
      *
-     * @param utility the utility to set
+     * @param newUtility the utility to set
      */
-    public void setUtility(double utility) {
-        this.utility = utility;
+    public void setUtility(double newUtility) {
+        this.utility = newUtility;
     }
 
     /**
@@ -107,10 +107,10 @@ public class Goal {
     /**
      * Set the likelihood value of this goal.
      *
-     * @param likelihood the likelihood to set
+     * @param newLikelihood the likelihood to set
      */
-    public void setLikelihood(double likelihood) {
-        this.likelihood = likelihood;
+    public void setLikelihood(double newLikelihood) {
+        this.likelihood = newLikelihood;
     }
 
     /**
@@ -125,10 +125,10 @@ public class Goal {
     /**
      * Set whether or not the goal is a maintenance goal.
      *
-     * @param isMaintenanceGoal the isMaintenanceGoal to set
+     * @param newIsMaintenanceGoal the isMaintenanceGoal to set
      */
-    public void setMaintenanceGoal(boolean isMaintenanceGoal) {
-        this.isMaintenanceGoal = isMaintenanceGoal;
+    public void setMaintenanceGoal(boolean newIsMaintenanceGoal) {
+        this.isMaintenanceGoal = newIsMaintenanceGoal;
     }
 
     /**

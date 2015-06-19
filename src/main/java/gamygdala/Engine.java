@@ -45,10 +45,10 @@ public final class Engine {
     /**
      * Set a new Gamygdala instance for this Engine.
      *
-     * @param gamygdala The Gamygdala instance.
+     * @param newGamygdala The Gamygdala instance.
      */
-    public void setGamygdala(Gamygdala gamygdala) {
-        this.gamygdala = gamygdala;
+    public void setGamygdala(Gamygdala newGamygdala) {
+        this.gamygdala = newGamygdala;
     }
 
     /**

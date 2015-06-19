@@ -13,10 +13,10 @@ public abstract class DecayFunction {
     /**
      * Construct new DecayFunction object.
      *
-     * @param decayFactor The decay factor used. A factor of 1 means no decay.
+     * @param conDecayFactor The decay factor used. A factor of 1 means no decay.
      */
-    public DecayFunction(double decayFactor) {
-        this.decayFactor = decayFactor;
+    public DecayFunction(double conDecayFactor) {
+        this.decayFactor = conDecayFactor;
     }
 
     /**
@@ -31,10 +31,10 @@ public abstract class DecayFunction {
     /**
      * Get decay factor.
      * 
-     * @param decayFactor The decay factor.
+     * @param newDecayFactor The decay factor.
      */
-    public void setDecayFactor(double decayFactor) {
-        this.decayFactor = decayFactor;
+    public void setDecayFactor(double newDecayFactor) {
+        this.decayFactor = newDecayFactor;
     }
 
     /**
