@@ -19,12 +19,12 @@ var Mapper = function(scenario) {
     var EngineClass = Java.type("gamygdala.Engine");
     EngineClass.getInstance();
     this.emotionEngine = EngineClass.resetEngine();
-    this.BeliefClass = Java.type("data.Belief");
-    this.ArrayListClass = Java.type('java.util.ArrayList');
     this.agentSelf = this.emotionEngine.createAgent('self');
     this.agentAffected = this.emotionEngine.createAgent('affected');
     this.agentCausal = this.emotionEngine.createAgent('causal');
     this.agentNone = this.emotionEngine.createAgent('none');
+    this.BeliefClass = Java.type("agent.data.Belief");
+    this.ArrayListClass = Java.type('java.util.ArrayList');
 
     if (affectedAgent === 'self') {
         this.goal = this.emotionEngine.createGoalForAgent(this.agentSelf, 'goal', utility, false)
@@ -99,7 +99,7 @@ Mapper.prototype.evaluateEmotion = function(){
     //We are ALWAYS interested in the emotions of SELF. No other!!! 
     var agent = this.agentSelf;
     //console.log(agent);
-    var emotionalState = agent.getEmotionalState(false);
+    var emotionalState = agent.getInternalState().getState(false);
     var emotions = [];
     for(var i = 0; i < emotionalState.size(); i++){
         emotions.push(emotionalState.get(i).name);
@@ -109,13 +109,13 @@ Mapper.prototype.evaluateEmotion = function(){
     var relation;
     if(agent.getCurrentRelations().size() > 0){
         if(agent.hasRelationWith(this.agentAffected)){
-            relation = agent.getRelation(this.agentAffected);
+            relation = agent.getCurrentRelations().getRelation(this.agentAffected);
             for(var i = 0; i < relation.getEmotions().size();i++){
                 emotions.push(relation.getEmotions().get(i).name);
             }
         }
         if(agent.hasRelationWith(this.agentCausal)){
-            relation = agent.getRelation(this.agentCausal);
+            relation = agent.getCurrentRelations().getRelation(this.agentCausal);
             for(var i = 0; i < relation.getEmotions().size();i++){
                 emotions.push(relation.getEmotions().get(i).name);
             }   

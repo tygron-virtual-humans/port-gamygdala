@@ -1,99 +1,88 @@
 package agent;
 
-import data.Emotion;
+import decayfunction.DecayFunction;
+import decayfunction.LinearDecay;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 /**
- * Unit tests for AgentRelation.
+ * Created by svenpopping on 19/06/15.
  */
 public class AgentRelationsTest {
 
-    AgentRelations ar;
-    Agent testAgent;
-    
+    Relation relation;
+    AgentRelations agentRelations;
+    Agent agent;
+
     @Before
-    public void setUp() {
-        ar = new AgentRelations();
-        testAgent = new Agent("TestAgent");
+    public void setUp() throws Exception {
+        agentRelations = new AgentRelations();
+        relation = mock(Relation.class);
+        agent = mock(Agent.class);
+
+        agentRelations.updateRelation(agent, 0.5);
+
+        when(agent.toString()).thenReturn("agent");
     }
-    
+
     @After
-    public void tearDown() {
-        ar = null;
-        testAgent = null;
-    }
-    
-    @Test
-    public void testUpdateRelationEmpty() {
-        
-        assertEquals(0, ar.size());
-        
-        // Create new relation
-        ar.updateRelation(testAgent, 1);
-        assertEquals(1, ar.size());
-    }
-    
-    @Test
-    public void testUpdateRelationExisting() {
-        
-        ar.updateRelation(testAgent, 0);
-        
-        // Update existing relation
-        ar.updateRelation(testAgent, 59);
-        assertEquals(59, ar.get(0).getLike(), 10E-15);
-
-        
+    public void tearDown() throws Exception {
+        agentRelations = null;
+        relation = null;
+        agent = null;
     }
 
     @Test
-    public void testHasRelationWith() {
-        
-        assertFalse(ar.hasRelationWith(testAgent));
-        
-        ar.updateRelation(testAgent, 10);
-        
-        assertTrue(ar.hasRelationWith(testAgent));
-        
+    public void testUpdateRelation() throws Exception {
+        assertEquals(agent, agentRelations.get(0).getAgent());
     }
 
     @Test
-    public void testGetRelation() {
-        
-        assertNull(ar.getRelation(testAgent));
-        
-        ar.updateRelation(testAgent, 10);
-        assertNotNull(ar.getRelation(testAgent));
-        assertEquals(testAgent, ar.getRelation(testAgent).getAgent());
-        assertEquals(10d, ar.getRelation(testAgent).getLike(), 10E-15);
-        
+    public void testHasRelationWith() throws Exception {
+        Agent otherAgent = mock(Agent.class);
+        assertFalse(agentRelations.hasRelationWith(otherAgent));
+
+        agentRelations.updateRelation(otherAgent, 10);
+        assertTrue(agentRelations.hasRelationWith(otherAgent));
     }
 
     @Test
-    public void testPrintRelations() {
-        
-        // Empty Agent, empty Relations
-        assertEquals("", ar.getRelationsString(null));
-        
-        // Non-empty Agent, empty Relations
-        assertEquals("", ar.getRelationsString(testAgent));
-        
-        // Non-empty Agent, non-empty Relations
-        ar.updateRelation(testAgent, 1);
-        
-        Emotion testEmotion = new Emotion("TestEmotion", 10);
-        ar.getRelation(testAgent).addEmotion(testEmotion);
-        
-        String expected = "TestEmotion(10.0) for <Agent[TestAgent]>";
-        assertEquals(expected, ar.getRelationsString(testAgent));
-        
-        // Multiple relations
-        ar.getRelation(testAgent).addEmotion(new Emotion("TestEmotion2", 2));
-        expected = "TestEmotion(10.0), and TestEmotion2(2.0) for <Agent[TestAgent]>";
-        assertEquals(expected, ar.getRelationsString(testAgent));
+    public void testGetRelation() throws Exception {
+        Agent otherAgent = mock(Agent.class);
+        assertNull(agentRelations.getRelation(otherAgent));
+
+        agentRelations.updateRelation(otherAgent, 10);
+        assertNotNull(agentRelations.getRelation(otherAgent));
+        assertEquals(otherAgent, agentRelations.getRelation(otherAgent).getAgent());
+        assertEquals(10d, agentRelations.getRelation(otherAgent).getLike(), 10E-15);
     }
 
+    @Test
+    public void testDecay() throws Exception {
+        DecayFunction function = new LinearDecay(0.5);
+        agentRelations.decay(function, 1000);
+    }
+
+    @Test
+    public void testGetRelationsString() throws Exception {
+        assertEquals(" for agent", agentRelations.getRelationsString(agent));
+    }
+
+    @Test
+    public void testEvaluateSocialEmotion() throws Exception {
+
+    }
+
+    @Test
+    public void testUpdateEmotionAsCausalAgent() throws Exception {
+
+    }
+
+    @Test
+    public void testUpdateEmotionAsAffectedAgent() throws Exception {
+
+    }
 }

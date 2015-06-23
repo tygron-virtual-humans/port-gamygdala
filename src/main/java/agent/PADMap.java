@@ -1,14 +1,19 @@
 package agent;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import data.Emotion;
+import agent.data.Emotion;
+import agent.strategy.DetermineStrategy;
+import agent.strategy.LikelihoodBetweenStrategy;
+import agent.strategy.LikelihoodOneStrategy;
+import agent.strategy.LikelihoodZeroStrategy;
 
 /**
  * Pleasure Arousal Dominance mapping of the emotional states.
  */
-public class PADMap {
+public final class PADMap {
 
     /**
      * Singleton Engine object.
@@ -18,7 +23,7 @@ public class PADMap {
     /**
      * Emotion map.
      */
-    static HashMap<String, double[]> mapPad;
+    private static Map<String, double[]> mapPad;
 
     /**
      * Empty constructor to prevent instantiating. Use PADMap.getInstance()
@@ -80,10 +85,12 @@ public class PADMap {
      * frequency and/or large appraisals, so that the effect of these is
      * dampened.
      *
+     * @param emotions ArrayList<Emotion> list of emotions
+     * @param gain the gain factor
      * @return An array of doubles with Pleasure at index [0], Arousal at index
      *         [1] and Dominance at index [2].
      */
-    public static double[] getPadState(ArrayList<Emotion> emotions, Double gain) {
+    public static double[] getPadState(List<Emotion> emotions, Double gain) {
         if (emotions == null) {
             throw new IllegalArgumentException("Agent does not have emotional state.");
         }
@@ -98,7 +105,6 @@ public class PADMap {
                 }
             }
         }
-
         return pad;
     }
 
@@ -115,8 +121,33 @@ public class PADMap {
         if (agent == null) {
             throw new IllegalArgumentException("Agent is null.");
         }
+        return PADMap.getPadState(agent.getInternalState().getState(gain), gain);
+    }
 
-        return getPadState(agent.getEmotionalState(gain), gain);
+    /**
+     * Determine emotions based on three Goal parameters.
+     *
+     * @param utility         The goal utility.
+     * @param deltaLikelihood The goal delta likelihood.
+     * @param likelihood      The goal likelihood.
+     * @return List of emotion names.
+     */
+    public static List<Emotion> determineEmotions(double utility, double deltaLikelihood, double likelihood) {
+        double intensity = Math.abs(utility * deltaLikelihood);
+        if (intensity == 0.0 || likelihood < 0 && likelihood > 1) {
+            return null;
+        }
+
+        DetermineStrategy determineStrategy;
+        if (likelihood == 1) {
+            determineStrategy = new LikelihoodOneStrategy();
+        } else if (likelihood == 0) {
+            determineStrategy = new LikelihoodZeroStrategy();
+        } else {
+            determineStrategy = new LikelihoodBetweenStrategy();
+        }
+
+        return determineStrategy.getEmotion(utility, deltaLikelihood, intensity);
     }
 
 }

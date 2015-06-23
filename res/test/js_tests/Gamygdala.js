@@ -29,7 +29,7 @@ TUDelft.Gamygdala = function () {
 * @return {TUDelft.Gamygdala.Agent} An agent reference to the newly created agent
 */
 TUDelft.Gamygdala.prototype.createAgent = function(agentName){
-	temp=new TUDelft.Gamygdala.Agent(agentName);
+	temp = new TUDelft.Gamygdala.Agent(agentName);
 	this.registerAgent(temp);
 	return temp;
 };
@@ -879,7 +879,7 @@ TUDelft.Gamygdala.Relation.prototype.decay = function(gamygdalaInstance){
 
 
 /**
-* This class is a data structure to store one Belief for an agent
+* This class is a agent.data structure to store one Belief for an agent
 * A belief is created and fed into a Gamygdala instance (method Gamygdala.appraise()) for evaluation
 * @class  TUDelft.Gamygdala.Belief
 * @constructor
@@ -918,7 +918,7 @@ TUDelft.Gamygdala.Belief = function(likelihood, causalAgentName, affectedGoalNam
 
 
 /**
-* This class is mainly a data structure to store an emotion with its intensity
+* This class is mainly a agent.data structure to store an emotion with its intensity
 * @class TUDelft.Gamygdala.Emotion
 * @constructor
 * @param {String} name The string ref of the emotion
@@ -939,7 +939,7 @@ TUDelft.Gamygdala.Emotion = function (name, intensity) {
 
 
 /**
-* This class is mainly a data structure to store a goal with it's utility and likelihood of being achieved
+* This class is mainly a agent.data structure to store a goal with it's utility and likelihood of being achieved
 * This is used as basis for interpreting Beliefs
 * @class TUDelft.Gamygdala.Goal
 * @constructor

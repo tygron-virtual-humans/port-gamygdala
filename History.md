@@ -50,12 +50,12 @@ n.n.n / 2015-06-02
   * Delete never used method
   * Add test to MapPad to improve line-coverage
   * Add tests for Agent
-  * Test all classes in the data package
+  * Test all classes in the agent.data package
   * Add two test so GoalMap lines is 100% covered
   * Delete never used method
   * Add test to MapPad to improve line-coverage
   * Add tests for Agent
-  * Test all classes in the data package
+  * Test all classes in the agent.data package
   * Add two test so GoalMap lines is 100% covered
   * Merge pull request #48 from tygron-virtual-humans/javascript_tests
   * Fixed random enter
@@ -71,6 +71,6 @@ n.n.n / 2015-06-02
   * Add tests for Agent
   * Merge pull request #40 from tygron-virtual-humans/setup-automatic-deployment
   * Initial work for JS test adapter.
-  * Test all classes in the data package
+  * Test all classes in the agent.data package
   * Add two test so GoalMap lines is 100% covered
   * Set up automatic deployment to port-mvn-repo

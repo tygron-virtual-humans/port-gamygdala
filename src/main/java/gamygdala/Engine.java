@@ -1,15 +1,14 @@
 package gamygdala;
 
 import agent.Agent;
-import data.Belief;
-import data.Goal;
+import agent.data.Belief;
+import agent.data.Goal;
 import debug.Debug;
-import decayfunction.DecayFunction;
 
 /**
  * Gaming Engine adapter for Gamygdala.
  */
-public class Engine {
+public final class Engine {
 
     /**
      * Singleton Engine object.
@@ -35,6 +34,24 @@ public class Engine {
     }
 
     /**
+     * Get the Gamygdala instance for this Engine.
+     *
+     * @return The Gamygdala instance.
+     */
+    public Gamygdala getGamygdala() {
+        return this.gamygdala;
+    }
+
+    /**
+     * Set a new Gamygdala instance for this Engine.
+     *
+     * @param newGamygdala The Gamygdala instance.
+     */
+    public void setGamygdala(Gamygdala newGamygdala) {
+        this.gamygdala = newGamygdala;
+    }
+
+    /**
      * Get the Engine object. If no Engine has been instantiated,
      * create a new Engine with a fresh Gamygdala instance.
      *
@@ -56,15 +73,10 @@ public class Engine {
      *
      * @return Engine
      */
-    public static Engine resetEngine() {
+    public static synchronized Engine resetEngine() {
         if (engineInstance != null) {
-            synchronized (Engine.class) {
-                if (engineInstance != null) {
-                    engineInstance = new Engine();
-                }
-            }
+            engineInstance = new Engine();
         }
-
         return engineInstance;
     }
 
@@ -90,7 +102,6 @@ public class Engine {
     public Goal createGoalForAgent(Agent agent, String goalName, double goalUtility,
                                    boolean isMaintenanceGoal) {
         return this.gamygdala.createGoalForAgent(agent, goalName, goalUtility, isMaintenanceGoal);
-
     }
 
     /**
@@ -113,13 +124,12 @@ public class Engine {
      * keeping track of the millis passed since the last call, and will (try to)
      * keep the decay close to the desired decay factor, regardless the time
      * passed So you can call this any time you want (or, e.g., have the game
-     * loop call it, or have e.g., Phaser call it in the plugin update, which is
+     * loop call it, or have e.g., Phaser call it in the plugin updateState, which is
      * default now). Further, if you want to tweak the emotional intensity decay
      * of individual agents, you should tweak the decayFactor per agent not the
      * "frame rate" of the decay (as this doesn't change the rate).
      */
     public void decayAll() {
-
         Debug.debug("\n=====\nDecaying all emotions\n=====\n");
 
         // Record current time
@@ -130,7 +140,6 @@ public class Engine {
 
         // Store time of last decay.
         this.lastMillis = now;
-
     }
 
     /**
@@ -176,48 +185,26 @@ public class Engine {
                     + "gain factor for appraisal integration must be between 0 and 20.");
             return false;
         }
-
         this.gamygdala.setAgentsGain(gain);
-
         return true;
     }
 
-    /**
-     * Sets the decay factor and type for emotional decay, so that an emotion
-     * will slowly get lower in intensity. Whenever decayAll is called, all
-     * emotions for all agents are decayed according to the factor and function
-     * set here.
-     *
-     * @param decayFactor   The decay factor. A factor of 1 means no decay.
-     * @param decayFunction The decay function to be used.
-     */
-    public void setDecay(double decayFactor, DecayFunction decayFunction) {
-        this.gamygdala.setDecayFactor(decayFactor);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Engine)) return false;
 
-        if (decayFunction != null) {
-            this.gamygdala.setDecayFunction(decayFunction);
-        } else {
-            Debug.debug("[Engine.setDecay] DecayFunction is null.");
-        }
+        Engine engine = (Engine) o;
+
+        if (lastMillis != engine.lastMillis) return false;
+        return !(getGamygdala() != null ? !getGamygdala().equals(engine.getGamygdala()) : engine.getGamygdala() != null);
 
     }
 
-    /**
-     * Get the Gamygdala instance for this Engine.
-     *
-     * @return The Gamygdala instance.
-     */
-    public Gamygdala getGamygdala() {
-        return this.gamygdala;
+    @Override
+    public int hashCode() {
+        int result = getGamygdala() != null ? getGamygdala().hashCode() : 0;
+        result = 31 * result + (int) (lastMillis ^ (lastMillis >>> 32));
+        return result;
     }
-
-    /**
-     * Set a new Gamygdala instance for this Engine.
-     *
-     * @param gamygdala The Gamygdala instance.
-     */
-    public void setGamygdala(Gamygdala gamygdala) {
-        this.gamygdala = gamygdala;
-    }
-
 }

@@ -1,8 +1,8 @@
-package data.map;
+package agent.data.map;
 
 import java.util.HashMap;
 
-import data.Goal;
+import agent.data.Goal;
 import debug.Debug;
 
 /**
@@ -17,39 +17,13 @@ public class GoalMap extends HashMap<String, Goal> {
     private static final long serialVersionUID = 8089487457530836847L;
 
     /**
-     * Add Goal.
-     *
-     * @param goal Goal to add.
-     * @return True if goal was added successfully, false if not.
-     */
-    public boolean addGoal(Goal goal) {
-
-        // Check for empty Goal
-        if (goal == null) {
-            Debug.debug("[GoalMap.addGoal] Goal is null ");
-            return false;
-        }
-
-        // Check for duplicate Goal
-        if (containsKey(goal.getName())) {
-            Debug.debug("[GoalMap.addGoal] Goal already exists for Agent.");
-            return false;
-        }
-
-        // Add goal to GoalMap.
-        put(goal.getName(), goal);
-        return true;
-
-    }
-
-    /**
      * Remove Goal.
      *
      * @param goal Goal to remove.
      * @return True if goal was removed successfully, false if not.
      */
     public boolean removeGoal(Goal goal) {
-        return goal != null && remove(goal.getName()) != null;
+        return goal != null && this.remove(goal.getName()) != null;
     }
 
     /**
@@ -59,7 +33,7 @@ public class GoalMap extends HashMap<String, Goal> {
      * @return True if Agent has goal, false if not.
      */
     public boolean hasGoal(Goal goal) {
-        return goal != null && hasGoal(goal.getName());
+        return goal != null && this.hasGoal(goal.getName());
     }
 
     /**
@@ -69,7 +43,7 @@ public class GoalMap extends HashMap<String, Goal> {
      * @return True if Agent has goal, false if not.
      */
     private boolean hasGoal(String goalName) {
-        return containsKey(goalName) && get(goalName) != null;
+        return this.containsKey(goalName) && this.get(goalName) != null;
     }
 
     /**
@@ -87,12 +61,24 @@ public class GoalMap extends HashMap<String, Goal> {
         return null;
     }
 
+    /**
+     * Add element to the GoalMap.
+     * @param name Name of the Goal
+     * @param goal The New Goal
+     * @return Goal created Goal
+     */
     @Override
     public Goal put(String name, Goal goal) {
-        if (!this.containsKey(goal.getName())) {
-            return super.put(goal.getName(), goal);
+        // Check for empty Goal
+        if (goal == null) {
+            Debug.debug("[GoalMap.out] Goal is null ");
+            return null;
+        }
+
+        if (!this.containsKey(name)) {
+            return super.put(name, goal);
         } else {
-            Debug.debug("Warning: failed adding a second goal with the same name: " + goal.getName());
+            Debug.debug("Warning: failed adding a second goal with the same name: " + name);
         }
         return null;
     }

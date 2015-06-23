@@ -1,56 +1,46 @@
 package decayfunction;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 
 /**
- * Test exponential DecayFunction.
+ * Created by svenpopping on 19/06/15.
  */
 public class ExponentialDecayTest {
 
-    @Test
-    public void testDecay_1() {
+    DecayFunction decayFunction;
 
-        ExponentialDecay ed = new ExponentialDecay(.5);
+    @Before
+    public void setUp() throws Exception {
+        decayFunction = new ExponentialDecay(0.4);
+    }
 
-        // Test after one second (decay is .5 ==> 50 decay)
-        double oneSec = ed.decay(100, 1000);
-        assertEquals(50, oneSec, 10E-15);
-
+    @After
+    public void tearDown() throws Exception {
+        decayFunction = null;
     }
 
     @Test
-    public void testDecay_2() {
-
-        ExponentialDecay ed = new ExponentialDecay(.5);
-
-        // Test after 3 seconds (decay is .5 per second ==> 87.5 decay)
-        double threeSec = ed.decay(100, 3000);
-        assertEquals(12.5, threeSec, 10E-15);
-
+    public void testGetDecayFactor() throws Exception {
+        assertEquals(0.4, decayFunction.getDecayFactor(), 1E-15);
     }
 
     @Test
-    public void testDecay_3() {
-        ExponentialDecay ed2 = new ExponentialDecay(.8);
+    public void testSetDecayFactor() throws Exception {
+        decayFunction.setDecayFactor(0.6);
 
-        // Test after 10 seconds with different decay and initial value (decay
-        // is .8 ==> 22 decay)
-        double diffDecay = ed2.decay(222, 10000);
-        assertEquals(23.837068492800014, diffDecay, 10E-15);
-
+        assertEquals(0.6, decayFunction.getDecayFactor(), 1E-15);
     }
 
     @Test
-    public void testDecay_4() {
-        ExponentialDecay ed2 = new ExponentialDecay(.8);
-
-        // Test a decay value which is not a multiple of 1000.
-        double diffDecay = ed2.decay(100, 59);
-        assertNotEquals(100, diffDecay, 10E-15);
-        assertEquals(98.69208161873428, diffDecay, 10E-15);
+    public void testDecay() throws Exception {
+        assertEquals(4.0, decayFunction.decay(10, 1000), 1E-15);
     }
 
+    @Test
+    public void testDecayLater() throws Exception {
+        assertEquals(1.6, decayFunction.decay(10, 2000), 1E-15);
+    }
 }

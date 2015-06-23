@@ -1,140 +1,129 @@
 package agent;
 
-import data.Emotion;
-import decayfunction.DecayFunction;
+import java.util.ArrayList;
+import java.util.List;
+
+import agent.data.Emotion;
+import decayfunction.LinearDecay;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
- * Test Relation class.
+ * Created by svenpopping on 19/06/15.
  */
 public class RelationTest {
 
-    private Agent agent;
-    private Relation rel;
+    Relation relation;
+    Agent agent;
+    Agent target;
 
     @Before
-    public void setUp() {
-        agent = new Agent("TestAgent");
-        rel = new Relation(agent, 0);
+    public void setUp() throws Exception {
+        target = mock(Agent.class);
+        relation = new Relation(target, 0.5);
+
+        when(target.toString()).thenReturn("agent");
     }
 
     @After
-    public void cleanUp() {
-        rel = null;
+    public void tearDown() throws Exception {
+        target = null;
+        relation = null;
     }
 
     @Test
-    public void testRelation() {
-
-        assertEquals(agent, rel.getAgent());
-        assertEquals(0, rel.getLike(), 10E-15);
-        assertNotNull(rel.getEmotions());
+    public void testGetAgent() throws Exception {
+        assertEquals(target, relation.getAgent());
     }
 
     @Test
-    public void testAddEmotion1() {
-
-        Emotion emo = new Emotion("TestEmotion", 10);
-
-        rel.addEmotion(emo);
-        assertTrue(rel.getEmotions().contains(emo));
+    public void testGetLike() throws Exception {
+        assertEquals(0.5, relation.getLike(), 1E-15);
     }
 
     @Test
-    public void testAddEmotion2() {
+    public void testSetLike() throws Exception {
+        assertEquals(0.5, relation.getLike(), 1E-15);
 
-        Emotion e1 = new Emotion("TestEmotion", 10);
-        Emotion e2 = new Emotion("TestEmotion", 20);
-
-        rel.addEmotion(e1);
-        rel.addEmotion(e2);
-
-        assertEquals(1, rel.getEmotions().size());
-
-        Emotion e3 = rel.getEmotions().get(0);
-        assertEquals("TestEmotion", e3.getName());
-        assertEquals(30, e3.getIntensity(), 10E-15);
-
+        relation.setLike(0.4);
+        assertEquals(0.4, relation.getLike(), 1E-15);
     }
 
     @Test
-    public void testDecay() {
-
-        // Add emotion to relation
-        Emotion e1 = new Emotion("TestEmotion", 10);
-        rel.addEmotion(e1);
-
-        // Mock DecayFunction
-        DecayFunction df = mock(DecayFunction.class);
-        when(df.decay(any(Double.class), any(Long.class))).thenReturn(59d);
-
-        // Decay emotions (1sec passed)
-        rel.decay(df, 1000);
-
-        // Verify the DecayFunction has been invoked
-        verify(df).decay(e1.getIntensity(), 1000);
-
-        // Emotions are copied, so first retrieve the new emotion,
-        // and then check the new intensity value
-
-        // Check copy on keep
-        assertNotEquals(59d, e1.getIntensity(), 10E-15);
-
-        // Check new emotion value
-        Emotion e2 = rel.getEmotions().get(0);
-        assertEquals(59d, e2.getIntensity(), 10E-15);
+    public void testGetEmotions() throws Exception {
+        assertEquals(new ArrayList<Emotion>(), relation.getEmotions());
     }
 
     @Test
-    public void testDecayRemove() {
+    public void testAddEmotion() throws Exception {
+        Emotion emotion = new Emotion("henk", .5);
 
-        // Add emotion to relation
-        Emotion e1 = new Emotion("TestEmotion", 10);
-        rel.addEmotion(e1);
-
-        // Mock DecayFunction
-        DecayFunction df = mock(DecayFunction.class);
-        when(df.decay(any(Double.class), any(Long.class))).thenReturn(-.59);
-
-        // Decay emotions (1sec passed)
-        rel.decay(df, 1000);
-
-        // Verify the emotion has gone
-        assertEquals(0, rel.getEmotions().size());
-
+        relation.addEmotion(emotion);
+        List<Emotion> list = new ArrayList<Emotion>(){{ add(new Emotion("henk", 0.5)); }};
+        assertEquals(list, relation.getEmotions());
     }
 
     @Test
-    public void testEquals() {
+    public void testAddEmotionTwice() throws Exception {
+        Emotion emotion = new Emotion("henk", .5);
+        relation.addEmotion(emotion);
+        relation.addEmotion(emotion);
 
-        // Same Agent object
-        Relation equalRelation = new Relation(agent, 0);
-        assertEquals(equalRelation, rel);
-
-        // Similar Agent objects (but not equal)
-        Agent similarAgent = new Agent("TestAgent");
-        Relation similarRelation = new Relation(similarAgent, 0);
-
-        assertEquals(true, rel.equals(similarRelation));
-
-        // Null
-        assertEquals(false, rel.equals(null));
-
-        assertEquals(false, rel.equals(new Object()));
+        List<Emotion> list = new ArrayList<Emotion>(){{ add(new Emotion("henk", 1.0)); }};
+        assertEquals(list, relation.getEmotions());
     }
 
     @Test
-    public void testToString() {
+    public void testDecay() throws Exception {
+        Emotion emotion = new Emotion("henk", .5);
+        relation.addEmotion(emotion);
 
-        String expected = "<Relation[causalAgent=" + agent + ", like=" + rel.getLike() + "]>";
-        assertEquals(expected, rel.toString());
-
+        relation.decay(new LinearDecay(0.3), 1000);
+        List<Emotion> list = new ArrayList<Emotion>(){{ add(new Emotion("henk", .2)); }};
+        assertEquals(list, relation.getEmotions());
     }
 
+    @Test
+    public void testDecayTwice() throws Exception {
+        Emotion emotion = new Emotion("henk", .5);
+        relation.addEmotion(emotion);
+
+        relation.decay(new LinearDecay(0.3), 2000);
+        List<Emotion> list = new ArrayList<Emotion>();
+        assertEquals(list, relation.getEmotions());
+    }
+
+    @Test
+    public void testGetRelationString() throws Exception {
+        Emotion emotion = new Emotion("henk", .5);
+        relation.addEmotion(emotion);
+
+        assertEquals("henk(0.5)", relation.getRelationString());
+    }
+
+    @Test
+    public void testEquals() throws Exception {
+        // Other = null
+        assertEquals(false, relation.equals(null));
+
+        // Other.name is different
+        relation.setLike(0.2);
+        assertEquals(false, relation.equals(new Relation(target, 0.5)));
+
+        // Other.utility is different
+        relation.addEmotion(new Emotion("pizza", 0.5));
+        assertEquals(false, relation.equals(new Relation(target, 0.5)));
+
+        // Other is this
+        assertEquals(true, relation.equals(relation));
+    }
+
+    @Test
+    public void testToString() throws Exception {
+        assertEquals("<Relation[causalAgent=agent, like=0.5]>", relation.toString());
+    }
 }

@@ -1,153 +1,125 @@
 package agent;
 
-import data.Emotion;
+import java.util.ArrayList;
+import java.util.List;
+
+import agent.data.Emotion;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.ArrayList;
-
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
- * Tests for PADMap.
+ * Created by svenpopping on 19/06/15.
  */
 public class PADMapTest {
 
-    PADMap pad;
+    PADMap padMap;
 
     @Before
-    public void setUp() {
-        pad = PADMap.getInstance();
+    public void setUp() throws Exception {
+        padMap = PADMap.getInstance();
     }
 
     @After
-    public void tearDown() {
-        pad = null;
+    public void tearDown() throws Exception {
+        padMap = null;
     }
 
     @Test
-    public void testGetInstance() {
+    public void testGetPadState() throws Exception {
+        List<Emotion> emotions = new ArrayList<Emotion>();
+        emotions.add(new Emotion("disappointment", 1));
 
-        assertNotNull(pad);
-        assertNotNull(PADMap.getInstance());
+        double[] pad = PADMap.getPadState(emotions, 0.9);
+        double[] expected = new double[] {
+                -0.3544222078760491,
+                -0.11894273127753305,
+                -0.20697858842188738
+        };
 
+        for (int i = 0; i < pad.length; i++) {
+            assertEquals(expected[i], pad[i]);
+        }
     }
 
     @Test
-    public void testInitialSetup() {
-
-        // Since there's no constructor, verify that the initial emotions are
-        // added to the PADMap at the appropriate time.
-        assertNotNull(PADMap.mapPad);
-
-        // 16 initial emotions
-        assertEquals(16, PADMap.mapPad.size());
-
-    }
-
-    @Test
-    public void testSingleton() {
-
-        PADMap otherPad = PADMap.getInstance();
-
-        assertNotNull(otherPad);
-        assertTrue(pad == otherPad);
-
-    }
-
-    @Test
-    public void testThreadSafe() {
-
-        // TODO(Sven): Test thread safety.
-
-    }
-
-    @Test
-    public void testGetPadState() {
-
-        double[] padState;
-        ArrayList<Emotion> emotions = new ArrayList<Emotion>();
-
-        // No emotions, so no result on PAD scale.
-        padState = PADMap.getPadState(emotions, null);
-        assertEquals(0, padState[0], 10E-15);
-        assertEquals(0, padState[1], 10E-15);
-        assertEquals(0, padState[2], 10E-15);
-
-        // Add hope and gratitude
-        emotions.add(new Emotion("hope", 1.59));
-        emotions.add(new Emotion("gratitude", 1.59));
-
-        padState = PADMap.getPadState(emotions, null);
-
-        // Check calculations
-        assertEquals(1.8285, padState[0], 10E-15);
-        assertEquals(0.6201, padState[1], 10E-15);
-        assertEquals(-0.1113, padState[2], 10E-15);
-
-    }
-
-    @Test
-    public void testGetPadStateGain() {
-
-        // TODO(anyone): Find out how gain works for the PAD map and write test.
-
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testGetPadStateAgentDoubleNull() {
-
-        // Test NPE
-        Agent agent = null;
-        PADMap.getPadState(agent, 59.2);
-
-    }
-    
-    @Test(expected = IllegalArgumentException.class)
-    public void testGetPadStateArrayListDoubleNull() {
-
-        // Test NPE
-        ArrayList<Emotion> emotions = null;
-        PADMap.getPadState(emotions, 59.2);
-
-    }
-
-    @Test
-    public void testGetPadStateAgentDouble() {
+    public void testGetPadStateAgent() throws Exception {
+        AgentInternalState emotions = new AgentInternalState();
+        emotions.add(new Emotion("disappointment", 1));
 
         Agent agent = mock(Agent.class);
-        when(agent.getEmotionalState(any(Double.class))).thenReturn(new AgentInternalState());
-        PADMap.getPadState(agent, 59.2);
+        AgentInternalState agentInternal = mock(AgentInternalState.class);
 
-        verify(agent).getEmotionalState(59.2);
+        when(agent.getInternalState()).thenReturn(agentInternal);
+        when(agentInternal.getState(0.9)).thenReturn(emotions);
 
-    }
 
-    @Test
-    public void testGetPadStateNormal() throws Exception {
-        ArrayList<Emotion> emotions = new ArrayList<Emotion>();
-        Emotion emotion = new Emotion("joy", 0.5);
-        emotions.add(emotion);
+        double[] pad = PADMap.getPadState(agent, 0.9);
+        double[] expected = new double[] {
+                -0.3544222078760491,
+                -0.11894273127753305,
+                -0.20697858842188738
+        };
 
-        double[] expected = new double[]{0.38, 0.24, 0.175};
-        for (int i = 0; i < expected.length; i++) {
-            assertEquals(expected[i], PADMap.getPadState(emotions, null)[i], 0.001);
+        for (int i = 0; i < pad.length; i++) {
+            assertEquals(expected[i], pad[i]);
         }
     }
 
     @Test
-    public void testGetPadStateWithGain() throws Exception {
-        ArrayList<Emotion> emotions = new ArrayList<Emotion>();
-        Emotion emotion = new Emotion("remorse", 0.5);
-        emotions.add(emotion);
+    public void testGetInstance() throws Exception {
+        assertNotNull(PADMap.getInstance());
 
-        double[] expected = new double[]{-.0277, .0138, -.0167};
-        for (int i = 0; i < expected.length; i++) {
-            assertEquals(expected[i], PADMap.getPadState(emotions, 0.1)[i], 0.001);
-        }
+        assertEquals(padMap, PADMap.getInstance());
     }
 
+    @Test
+    public void testDetermineEmotionNull() {
+        List<Emotion> emotionList = PADMap.determineEmotions(0.0, 0, 0);
+
+        assertEquals(null, emotionList);
+    }
+
+    @Test
+    public void testDetermineEmotionElse() {
+        List<Emotion> emotionList = PADMap.determineEmotions(0.0, 0.0, 1.2);
+
+        assertEquals(null, emotionList);
+    }
+
+    @Test
+    public void testDetermineEmotionOne() {
+        List<Emotion> emotionList = PADMap.determineEmotions(1, 1, 0);
+
+        List<Emotion> expected = new ArrayList<Emotion>();
+        expected.add(new Emotion("disappointment", 1));
+        expected.add(new Emotion("distress", 1));
+
+        assertEquals(expected, emotionList);
+    }
+
+    @Test
+    public void testDetermineEmotionZero() {
+        List<Emotion> emotionList = PADMap.determineEmotions(1, 1, 0);
+
+        List<Emotion> expected = new ArrayList<Emotion>();
+        expected.add(new Emotion("disappointment", 1));
+        expected.add(new Emotion("distress", 1));
+
+        assertEquals(expected, emotionList);
+    }
+
+    @Test
+    public void testDetermineEmotionBetween() {
+        List<Emotion> emotionList = PADMap.determineEmotions(1, 1, 0.5);
+
+        List<Emotion> expected = new ArrayList<Emotion>();
+        expected.add(new Emotion("hope", 1));
+
+        assertEquals(expected, emotionList);
+    }
 }

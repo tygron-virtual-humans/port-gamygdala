@@ -3,11 +3,10 @@ package gamygdala;
 import java.util.Map;
 
 import agent.Agent;
-import data.Belief;
-import data.Goal;
-import data.map.AgentMap;
-import data.map.GamygdalaMap;
-import data.map.GoalMap;
+import agent.data.Belief;
+import agent.data.Goal;
+import agent.data.map.AgentMap;
+import agent.data.map.GoalMap;
 import debug.Debug;
 import decayfunction.DecayFunction;
 import decayfunction.LinearDecay;
@@ -22,7 +21,12 @@ public class Gamygdala {
     /**
      * The collection of agents in this Gamygdala instance.
      */
-    private final GamygdalaMap gamygdalaMap;
+    private final GoalMap goalMap;
+
+    /**
+     * The collection of agents in this Gamygdala instance.
+     */
+    private final AgentMap agentMap;
 
     /**
      * The decay function used to calculate emotion intensity.
@@ -30,33 +34,15 @@ public class Gamygdala {
     private DecayFunction decayFunction;
 
     /**
-     * The decay factor used in the DecayFunction.
-     */
-    private double decayFactor;
-
-    /**
      * Constructor for Gamygdala Emotion Engine.
      */
     public Gamygdala() {
-
         // Init agent and goal maps
-        this.gamygdalaMap = new GamygdalaMap();
-
-        // Set default decay factor
-        this.decayFactor = .8;
+        this.goalMap = new GoalMap();
+        this.agentMap = new AgentMap();
 
         // Set default decay function
-        this.decayFunction = new LinearDecay(this.decayFactor);
-
-    }
-
-    /**
-     * Get the GamygdalaMap containing all Agents and Goals.
-     *
-     * @return GamygdalaMap
-     */
-    public GamygdalaMap getGamygdalaMap() {
-        return gamygdalaMap;
+        this.decayFunction = new LinearDecay(.8);
     }
 
     /**
@@ -67,24 +53,26 @@ public class Gamygdala {
     }
 
     /**
-     * @param decayFunction the decayFunction to set
+     * @param newDecayFunction the decayFunction to set
      */
-    public void setDecayFunction(DecayFunction decayFunction) {
-        this.decayFunction = decayFunction;
+    public void setDecayFunction(DecayFunction newDecayFunction) {
+        this.decayFunction = newDecayFunction;
     }
 
     /**
-     * @return the decayFactor
+     * Get GoalMap with all the Goals of all the Agents.
+     * @return GoalMap Map of Goals
      */
-    public double getDecayFactor() {
-        return decayFactor;
+    public GoalMap getGoalMap() {
+        return goalMap;
     }
 
     /**
-     * @param decayFactor the decayFactor to set
+     * Get AgentMap with all the Agent registered in Gamygdala.
+     * @return AgentMap Map of Agents
      */
-    public void setDecayFactor(double decayFactor) {
-        this.decayFactor = decayFactor;
+    public AgentMap getAgentMap() {
+        return agentMap;
     }
 
     /**
@@ -103,7 +91,7 @@ public class Gamygdala {
             return false;
         }
 
-        if (this.gamygdalaMap.getGoalMap().size() == 0) {
+        if (this.goalMap.size() == 0) {
             Debug.debug("Warning: no goals registered to Gamygdala.");
             return true;
         }
@@ -137,7 +125,7 @@ public class Gamygdala {
     private void evaluateEmotions(Agent affectedAgent, Goal goal, Belief belief, double deltaLikelihood) {
         // if affectedAgent is null, calculate emotions for all agents.
         if (affectedAgent == null) {
-            for (Map.Entry<String, Agent> pair : gamygdalaMap.getAgentSet()) {
+            for (Map.Entry<String, Agent> pair : this.agentMap.entrySet()) {
                 Agent owner = pair.getValue();
 
                 if (owner != null && owner.hasGoal(goal)) {
@@ -172,9 +160,9 @@ public class Gamygdala {
         // (i.e., agent did something bad/good for owner)
         owner.agentActions(owner, belief.getCausalAgent(), utility * deltaLikelihood);
 
-        // Now check if anyone has a relation with this goal owner, and update
+        // Now check if anyone has a relation with this goal owner, and updateState
         // the social emotions accordingly.
-        for (Map.Entry<String, Agent> pair : gamygdalaMap.getAgentSet()) {
+        for (Map.Entry<String, Agent> pair : this.agentMap.entrySet()) {
             owner.evaluateRelationWithAgent(pair.getValue(), belief.getCausalAgent(), desirability);
         }
     }
@@ -186,13 +174,35 @@ public class Gamygdala {
         long millisPassed = currentMillis - lastMillis;
 
         Agent agent;
-        for (Map.Entry<String, Agent> pair : gamygdalaMap.getAgentSet()) {
+        for (Map.Entry<String, Agent> pair : this.agentMap.entrySet()) {
             agent = pair.getValue();
 
             if (agent != null) {
-                agent.decay(decayFunction, millisPassed);
+                this.decay(agent, this.decayFunction, millisPassed);
             }
         }
+    }
+
+    /**
+     * This method decays the emotional state and relations according to the
+     * decay factor and function defined in gamygdala. Typically this is called
+     * automatically when you use startDecay() in Gamygdala, but you can use it
+     * yourself if you want to manage the timing. This function is keeping track
+     * of the millis passed since the last call, and will (try to) keep the
+     * decay close to the desired decay factor, regardless the time passed So
+     * you can call this any time you want (or, e.g., have the game loop call
+     * it, or have e.g., Phaser call it in the plugin updateState, which is default
+     * now). Further, if you want to tweak the emotional intensity decay of
+     * individual agents, you should tweak the decayFactor per agent not the
+     * "frame rate" of the decay (as this doesn't change the rate).
+     *
+     * @param function        The Decay Function used to decay emotions and relations.
+     * @param millisPassed The time passed (in milliseconds) since the last
+     *                     decay.
+     */
+    private void decay(Agent agent, DecayFunction function, long millisPassed) {
+        agent.getInternalState().decay(function, millisPassed);
+        agent.getCurrentRelations().decay(function, millisPassed);
     }
 
     /**
@@ -226,86 +236,49 @@ public class Gamygdala {
     }
 
     /**
-     * Get the AgentMap containing all Agents.
-     * @return AgentMap
-     */
-    public AgentMap getAgentMap() {
-        return this.gamygdalaMap.getAgentMap();
-    }
-
-    /**
-     * Get the GoalMap containing all Goals.
-     * @return GoalMap
-     */
-    public GoalMap getGoalMap() {
-        return this.gamygdalaMap.getGoalMap();
-    }
-
-    /**
-     * Facilitator method to print all emotional states to the console.
-     *
-     * @param gain Whether you want to print the gained (true) emotional states
-     *             or non-gained (false).
-     */
-    public void printAllEmotions(boolean gain) {
-        Agent agent;
-        for (Map.Entry<String, Agent> stringAgentEntry : this.getGamygdalaMap().getAgentMap().entrySet()) {
-            agent = stringAgentEntry.getValue();
-
-            agent.printEmotionalState(gain);
-            agent.printRelations(null);
-        }
-    }
-
-    /**
-     *
-     * @param gain
+     * Sets the gain for each Agent.
+     * @param gain Double the gain for an Agent
      */
     public void setAgentsGain(double gain) {
-        for (Map.Entry<String, Agent> stringAgentEntry : this.getAgentMap().entrySet()) {
+        for (Map.Entry<String, Agent> stringAgentEntry : this.agentMap.entrySet()) {
             if (stringAgentEntry.getValue() != null) {
                 stringAgentEntry.getValue().setGain(gain);
             } else {
-                this.getAgentMap().remove(stringAgentEntry.getKey());
+                this.agentMap.remove(stringAgentEntry.getKey());
             }
         }
     }
 
     /**
-     *
-     * @param name
-     * @return
+     * Creates a new Agent.
+     * @param name String the name of the new Agent
+     * @return Agent the newly created Agent
      */
     public Agent createAgent(String name) {
-        Agent agent = new Agent(name);
-        this.getGamygdalaMap().registerAgent(agent);
-
-        return agent;
+        return this.agentMap.put(name, new Agent(name));
     }
 
     /**
-     *
-     * @param agent
-     * @param goalName
-     * @param goalUtility
-     * @param isMaintenanceGoal
-     * @return
+     * Create a Goal for an Agent.
+     * @param agent Agent the Agent which the Goal is for
+     * @param goalName String the name of the Goal
+     * @param goalUtility Double Goal utility
+     * @param isMaintenanceGoal Whether or not this goal is a maintenance goal.
+     * @return Goal The newly created Goal
      */
     public Goal createGoalForAgent(Agent agent, String goalName, double goalUtility, boolean isMaintenanceGoal) {
         Goal goal = new Goal(goalName, goalUtility, isMaintenanceGoal);
 
-        agent.addGoal(goal);
-
-        this.getGamygdalaMap().registerGoal(goal);
-
+        agent.getGoals().put(goal.getName(), goal);
+        this.goalMap.put(goal.getName(), goal);
         return goal;
     }
 
     /**
-     *
-     * @param source
-     * @param target
-     * @param relation
+     * Create a Relation between two Agents.
+     * @param source Agent The source Agent
+     * @param target Agent The target Agent
+     * @param relation Relation the relation (between -1 and 1).
      */
     public void createRelation(Agent source, Agent target, double relation) {
         source.updateRelation(target, relation);

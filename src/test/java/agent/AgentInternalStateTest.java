@@ -1,6 +1,6 @@
 package agent;
 
-import data.Emotion;
+import agent.data.Emotion;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +20,7 @@ public class AgentInternalStateTest {
 
         // Add initial emotion
         Emotion emo = new Emotion("TestEmotion", 1);
-        ais.updateEmotionalState(emo);
+        ais.updateState(emo);
 
     }
 
@@ -35,7 +35,7 @@ public class AgentInternalStateTest {
         Emotion newEmo = new Emotion("OtherEmotion", 2);
 
         // Add new emotion
-        ais.updateEmotionalState(newEmo);
+        ais.updateState(newEmo);
 
         // Check intensities
         assertEquals(1d, ais.get(0).getIntensity(), 10E-15);
@@ -52,7 +52,7 @@ public class AgentInternalStateTest {
         assertEquals(1d, ais.get(0).getIntensity(), 10E-15);
 
         // Add new emotion with same name, but new intensity
-        ais.updateEmotionalState(update);
+        ais.updateState(update);
 
         // Check intensity
         assertEquals(3d, ais.get(0).getIntensity(), 10E-15);
@@ -63,7 +63,7 @@ public class AgentInternalStateTest {
     public void testGetEmotionalStateGain() {
 
         // Check empty gain factor
-        AgentInternalState test = ais.getEmotionalState(1d);
+        AgentInternalState test = ais.getState(1d);
 
         assertEquals(.5, test.get(0).getIntensity(), 10E-15);
 
@@ -73,21 +73,21 @@ public class AgentInternalStateTest {
     public void testGetEmotionalStateNoGain() {
 
         // Check empty gain factor
-        AgentInternalState test = ais.getEmotionalState(null);
+        AgentInternalState test = ais.getState(null);
         assertEquals(ais, test);
 
     }
 
     @Test
     public void testPrintEmotionalState() {
-        
-        System.out.println(ais.getEmotionalStateString(null));
-        
+
+        System.out.println(ais.toString(null));
+
         String expectedNoGain = "TestEmotion: 1.0, ";
         String expectedGain = "TestEmotion: 0.5, ";
-        
-        assertEquals(expectedNoGain, ais.getEmotionalStateString(null));
-        assertEquals(expectedGain, ais.getEmotionalStateString(1d));
+
+        assertEquals(expectedNoGain, ais.toString(null));
+        assertEquals(expectedGain, ais.toString(1d));
     }
 
 }

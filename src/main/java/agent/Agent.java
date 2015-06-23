@@ -1,47 +1,48 @@
 package agent;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import data.Emotion;
-import data.Goal;
-import data.map.GoalMap;
+import agent.data.Emotion;
+import agent.data.Goal;
+import agent.data.map.GoalMap;
 import debug.Debug;
-import decayfunction.DecayFunction;
 
 /**
  * The main interacting character in the Gamygdala engine.
  */
 public class Agent {
 
+    /**
+     * Default gain.
+     */
     public static final double DEFAULT_GAIN = 1;
     /**
      * The name of this Agent.
      */
-    public final String name;
+    private final String name;
     /**
      * The gain for this agent. Must be between 0 and 20 inclusive.
      */
-    public double gain;
+    private double gain;
     /**
      * Collection of goals for this Agent.
      */
-    GoalMap goals;
+    private final GoalMap goals;
     /**
      * Collection of relations for this Agent.
      */
-    AgentRelations currentRelations;
+    private AgentRelations currentRelations;
     /**
      * Collection of emotions for this Agent.
      */
-    AgentInternalState internalState;
+    private AgentInternalState internalState;
 
     /**
      * Create new Agent.
-     *
-     * @param name Agent name.
+     * @param agentName Agent name.
      */
-    public Agent(final String name) {
-        this.name = name;
+    public Agent(String agentName) {
+        this.name = agentName;
 
         this.goals = new GoalMap();
 
@@ -49,6 +50,38 @@ public class Agent {
         this.internalState = new AgentInternalState();
 
         this.gain = Agent.DEFAULT_GAIN;
+    }
+
+    /**
+     * Get name of Agent.
+     * @return String The name of the Agent
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Get gain of Agent.
+     * @return double the gain of the Agent
+     */
+    public double getGain() {
+        return gain;
+    }
+
+    /**
+     * Get Goals of the Agent.
+     * @return GoalMap map of all the goal for the Agent
+     */
+    public GoalMap getGoals() {
+        return goals;
+    }
+
+    /**
+     * Get InternalState of the Agent.
+     * @return AgentInternalState List of Emotions of the Agent
+     */
+    public AgentInternalState getInternalState() {
+        return internalState;
     }
 
     /**
@@ -60,13 +93,19 @@ public class Agent {
     }
 
     /**
-     * Add Goal.
-     *
-     * @param goal Goal to add.
-     * @return True if goal was added successfully, false if not.
+     * Sets AgentRelation.
+     * @param currentRelations AgentRelation
      */
-    public boolean addGoal(Goal goal) {
-        return this.goals.addGoal(goal);
+    public void setCurrentRelations(AgentRelations currentRelations) {
+        this.currentRelations = currentRelations;
+    }
+
+    /**
+     * Sets AgentInternalState.
+     * @param internalState AgentInternalState.
+     */
+    public void setInternalState(AgentInternalState internalState) {
+        this.internalState = internalState;
     }
 
     /**
@@ -102,33 +141,14 @@ public class Agent {
     /**
      * Sets the gain for this agent.
      *
-     * @param gain The gain value [0 and 20].
+     * @param newGain The gain value [0 and 20].
      */
-    public void setGain(double gain) {
-        if (gain > 0 && gain <= 20) {
-            this.gain = gain;
+    public void setGain(double newGain) {
+        if (newGain > 0 && newGain <= 20) {
+            this.gain = newGain;
         } else {
             Debug.debug("Error: gain factor for appraisal integration must be between 0 and 20.");
         }
-    }
-
-    /**
-     * Pass through function to AgentInternalState.
-     *
-     * @param emotion The emotion with which this Agent should be updated.
-     */
-    public void updateEmotionalState(Emotion emotion) {
-        this.internalState.updateEmotionalState(emotion);
-    }
-
-    /**
-     * Pass through function to AgentInternalState.
-     *
-     * @param gain The gain factor. Leave blank (null) to ignore gain.
-     * @return An array of emotions.
-     */
-    public AgentInternalState getEmotionalState(Double gain) {
-        return this.internalState.getEmotionalState(gain);
     }
 
     /**
@@ -136,14 +156,15 @@ public class Agent {
      * the relation does not exist, it will be created, otherwise it will be
      * updated.
      *
-     * @param agent    The agent who is the target of the relation.
+     * @param other    The agent who is the target of the relation.
      * @param relation The relation (between -1 and 1).
+     * @return Relation the relation between this and other
      */
-    public Relation updateRelation(Agent agent, double relation) {
+    public Relation updateRelation(Agent other, double relation) {
         if (relation >= -1 && relation <= 1) {
-            return this.currentRelations.updateRelation(agent, relation);
+            return this.currentRelations.updateRelation(other, relation);
         } else {
-            Debug.debug("Error: cannot relate " + this + " to " + agent + " with intensity " + relation);
+            Debug.debug("Error: cannot relate " + this + " to " + other + " with intensity " + relation);
         }
         return null;
     }
@@ -151,22 +172,11 @@ public class Agent {
     /**
      * Checks if this agent has a relation with the agent defined by agentName.
      *
-     * @param agent The agent who is the target of the relation.
+     * @param other The agent who is the target of the relation.
      * @return Boolean if the relation exists, otherwise false.
      */
-    public boolean hasRelationWith(Agent agent) {
-        return this.currentRelations.hasRelationWith(agent);
-    }
-
-    /**
-     * Returns the relation object this agent has with the agent defined by
-     * agentName.
-     *
-     * @param agent The agent who is the target of the relation.
-     * @return Relation The relation object or null if non existing.
-     */
-    public Relation getRelation(Agent agent) {
-        return this.currentRelations.getRelation(agent);
+    public boolean hasRelationWith(Agent other) {
+        return this.getCurrentRelations().hasRelationWith(other);
     }
 
     /**
@@ -200,19 +210,9 @@ public class Agent {
      * @return The Emotion arising from the action
      */
     private Emotion updateEmotionAsCausalAgent(Agent causalAgent, double desirability) {
-        Debug.debug("      Entering CASE 1.");
-        Emotion emotion = new Emotion(desirability >= 0 ? "gratitude" : "anger",
-                Math.abs(desirability));
-        Debug.debug("      Emotion: " + emotion);
+        Emotion emotion = this.getCurrentRelations().updateEmotionAsCausalAgent(causalAgent, desirability);
 
-        Relation relation = this.getRelation(causalAgent);
-        if (relation == null) {
-            relation = this.updateRelation(causalAgent, .0);
-        }
-
-        relation.addEmotion(emotion);
-        this.updateEmotionalState(emotion);
-
+        this.getInternalState().updateState(emotion);
         return emotion;
     }
 
@@ -226,47 +226,9 @@ public class Agent {
      * @return The Emotion arising from the action.
      */
     private Emotion updateEmotionAsAffectedAgent(Agent affectedAgent, double desirability) {
-        Debug.debug("      Entering CASE 3.");
-        Relation relation = this.getRelation(affectedAgent);
-        if (relation == null) {
-            return null;
-        }
-        Emotion emotion = null;
-        if (relation.getLike() >= 0) {
-            emotion = new Emotion(desirability >= 0 ? "gratification" : "remorse",
-                    Math.abs(desirability * relation.getLike()));
-        }
+        Emotion emotion = this.getCurrentRelations().updateEmotionAsAffectedAgent(affectedAgent, desirability);
 
-        relation.addEmotion(emotion);
-        this.updateEmotionalState(emotion);
-
-        return emotion;
-    }
-
-    /**
-     * This function is used to evaluate happy-for, pity, gloating or
-     * resentment. Emotions that arise when we evaluate events that affect goals
-     * of others.
-     *
-     * @param desirability The desirability is the desirability from the goal
-     *                     owner's perspective.
-     * @param relation     A relation object between the agent being evaluated and
-     *                     the goal owner of the affected goal.
-     */
-    public Emotion evaluateSocialEmotion(double desirability, Relation relation) {
-        Emotion emotion = new Emotion(null, 0);
-        if (desirability >= 0) {
-            emotion.setName(relation.getLike() >= 0 ? "happy-for" : "resentment");
-        } else {
-            emotion.setName(relation.getLike() >= 0 ? "pity" : "gloating");
-        }
-        emotion.setIntensity(Math.abs(desirability * relation.getLike()));
-
-        if (emotion.getIntensity() != 0) {
-            relation.addEmotion(emotion);
-            this.updateEmotionalState(emotion);
-        }
-
+        this.getInternalState().updateState(emotion);
         return emotion;
     }
 
@@ -279,13 +241,12 @@ public class Agent {
      * @param likelihood      the likelihood.
      */
     public void evaluateInternalEmotion(double utility, double deltaLikelihood, double likelihood) {
-        ArrayList<String> emotion = Emotion.determineEmotions(utility, deltaLikelihood, likelihood);
-        Debug.debug("   evaluateInternalEmotion: " + emotion);
+        List<Emotion> emotions = PADMap.determineEmotions(utility, deltaLikelihood, likelihood);
+        Debug.debug("   evaluateInternalEmotion: " + emotions);
 
-        double intensity = Math.abs(utility * deltaLikelihood);
-        if (intensity != 0) {
-            for (String emo : emotion) {
-                updateEmotionalState(new Emotion(emo, intensity));
+        if (emotions != null) {
+            for (Emotion emotion : emotions) {
+                this.getInternalState().updateState(emotion);
             }
         }
     }
@@ -300,36 +261,14 @@ public class Agent {
      * @param desirability the desirability of the goal
      */
     public void evaluateRelationWithAgent(Agent agent, Agent causalAgent, double desirability) {
-        Relation relation = agent.getRelation(this);
+        Relation relation = agent.currentRelations.getRelation(this);
         if (relation != null) {
             Debug.debug("   Processing relation: " + relation);
 
-            agent.evaluateSocialEmotion(desirability, relation);
+            Emotion emotion = agent.getCurrentRelations().evaluateSocialEmotion(relation, desirability);
+            this.getInternalState().updateState(emotion);
             agent.agentActions(this, causalAgent, desirability);
-
         }
-    }
-
-    /**
-     * This method decays the emotional state and relations according to the
-     * decay factor and function defined in gamygdala. Typically this is called
-     * automatically when you use startDecay() in Gamygdala, but you can use it
-     * yourself if you want to manage the timing. This function is keeping track
-     * of the millis passed since the last call, and will (try to) keep the
-     * decay close to the desired decay factor, regardless the time passed So
-     * you can call this any time you want (or, e.g., have the game loop call
-     * it, or have e.g., Phaser call it in the plugin update, which is default
-     * now). Further, if you want to tweak the emotional intensity decay of
-     * individual agents, you should tweak the decayFactor per agent not the
-     * "frame rate" of the decay (as this doesn't change the rate).
-     *
-     * @param function        The Decay Function used to decay emotions and relations.
-     * @param millisPassed The time passed (in milliseconds) since the last
-     *                     decay.
-     */
-    public void decay(DecayFunction function, long millisPassed) {
-        this.internalState.decay(function, millisPassed);
-        this.currentRelations.decay(function, millisPassed);
     }
 
     /**
@@ -338,11 +277,11 @@ public class Agent {
      * @param agent The agent who is the target of the relation. When omitted,
      *              all relations are printed.
      */
-    public void printRelations(Agent agent) {
+    public String toStringRelations(Agent agent) {
         String output = this.name + " has the following sentiments:\n   ";
-        output += this.currentRelations.getRelationsString(agent);
+        output += this.getCurrentRelations().getRelationsString(agent);
 
-        System.out.println(output);
+        return output;
     }
 
     /**
@@ -356,11 +295,11 @@ public class Agent {
      *
      * @param gained Print only gained emotions or not.
      */
-    public void printEmotionalState(boolean gained) {
+    public String toStringEmotionalState(boolean gained) {
         String output = this.name + " feels ";
-        output += this.internalState.getEmotionalStateString(gained ? this.gain : null);
+        output += this.getInternalState().toString(gained ? this.gain : null);
 
-        System.out.println(output);
+        return output;
     }
 
     /**
@@ -373,31 +312,16 @@ public class Agent {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Agent)) {
-            return false;
-        }
-        Agent agent = (Agent) o;
+        if ((o instanceof Agent)) {
+            Agent agent = (Agent) o;
 
-        if (Double.compare(agent.gain, gain) != 0) {
-            return false;
+            return Double.compare(agent.gain, gain) == 0
+                    && !(name != null ? !name.equals(agent.name) : agent.name != null)
+                    && goals.equals(agent.goals)
+                    && getCurrentRelations().equals(agent.getCurrentRelations())
+                    && internalState.equals(agent.internalState);
         }
-        if (name != null ? !name.equals(agent.name) : agent.name != null) {
-            return false;
-        }
-        if (!goals.equals(agent.goals)) {
-            return false;
-        }
-        if (getCurrentRelations() != null) {
-            if (!getCurrentRelations().equals(agent.getCurrentRelations())) {
-                return false;
-            }
-        } else {
-            if (agent.getCurrentRelations() != null) {
-                return false;
-            }
-        }
-        return !(internalState != null ? !internalState.equals(agent.internalState) : agent.internalState != null);
-
+        return false;
     }
 
     /**
@@ -411,9 +335,9 @@ public class Agent {
         result = name != null ? name.hashCode() : 0;
         temp = Double.doubleToLongBits(gain);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + (goals.hashCode());
-        result = 31 * result + (getCurrentRelations() != null ? getCurrentRelations().hashCode() : 0);
-        result = 31 * result + (internalState != null ? internalState.hashCode() : 0);
+        result = 31 * result + goals.hashCode();
+        result = 31 * result + getCurrentRelations().hashCode();
+        result = 31 * result + internalState.hashCode();
         return result;
     }
 
@@ -422,7 +346,7 @@ public class Agent {
      */
     @Override
     public String toString() {
-        return "<Agent[" + this.name + "]>";
+        return "<Agent[" + this.name + ", " + this.gain + "]>";
     }
 
 }

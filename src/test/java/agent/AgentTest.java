@@ -1,14 +1,10 @@
 package agent;
 
-import data.Emotion;
-import data.Goal;
-import decayfunction.DecayFunction;
+import agent.data.Emotion;
+import agent.data.Goal;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.ArrayList;
-
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -34,15 +30,15 @@ public class AgentTest {
     public void testAgent() {
 
         // Verify name
-        assertEquals("TestAgent", agent.name);
+        assertEquals("TestAgent", agent.getName());
 
         // Verify maps / collections instantiated
-        assertNotNull(agent.goals);
-        assertNotNull(agent.currentRelations);
-        assertNotNull(agent.internalState);
+        assertNotNull(agent.getGoals());
+        assertNotNull(agent.getCurrentRelations());
+        assertNotNull(agent.getInternalState());
 
         // Check initial gain
-        assertEquals(1, agent.gain, 10E-15);
+        assertEquals(1, agent.getGain(), 10E-15);
     }
 
     @Test
@@ -54,11 +50,10 @@ public class AgentTest {
         assertFalse(agent.hasGoal(goal));
 
         // Add / Remove goals
-        agent.addGoal(goal);
+        agent.getGoals().put(goal.getName(), goal);
         assertTrue(agent.hasGoal(goal));
         agent.removeGoal(goal);
         assertFalse(agent.hasGoal(goal));
-
     }
 
     @Test
@@ -68,7 +63,8 @@ public class AgentTest {
 
         // Assert that no NPE's are thrown
         assertFalse(agent.hasGoal(g2));
-        assertFalse(agent.addGoal(g2));
+
+        agent.getGoals().put(null, g2);
         assertFalse(agent.removeGoal(g2));
     }
 
@@ -83,8 +79,8 @@ public class AgentTest {
         assertFalse(agent.hasGoal(g2));
 
         // Add goal1, then verify goal2 cannot be added because it's the same
-        agent.addGoal(g1);
-        assertFalse(agent.addGoal(g2));
+        agent.getGoals().put(g1.getName(), g1);
+        assertEquals(null, agent.getGoals().put(g1.getName(), g1));
 
         // Verify no goals remain
         agent.removeGoal(g1);
@@ -97,10 +93,10 @@ public class AgentTest {
     public void testGetGoalByName() {
 
         Goal goal = new Goal("TestGoal", 1, true);
-        agent.addGoal(goal);
+        agent.getGoals().put(goal.getName(), goal);
 
-        assertNotNull(agent.goals.get(goal.getName()));
-        assertEquals(goal, agent.goals.get(goal.getName()));
+        assertNotNull(agent.getGoals().get(goal.getName()));
+        assertEquals(goal, agent.getGoals().get(goal.getName()));
 
         assertEquals(goal, agent.getGoalByName("TestGoal"));
 
@@ -108,70 +104,55 @@ public class AgentTest {
 
     @Test
     public void testSetGain() {
-
         // Verify default gain is set
-        assertEquals(Agent.DEFAULT_GAIN, agent.gain, 10E-15);
+        assertEquals(Agent.DEFAULT_GAIN, agent.getGain(), 10E-15);
 
         // Set gain to allowed value and verify
         agent.setGain(2);
-        assertEquals(2, agent.gain, 10E-15);
+        assertEquals(2, agent.getGain(), 10E-15);
 
         // Set gain to disallowed value and verify the gain has not been changed
         agent.setGain(0);
         agent.setGain(20.01);
-        assertEquals(2, agent.gain, 10E-15);
-
+        assertEquals(2, agent.getGain(), 10E-15);
     }
 
     @Test
     public void testUpdateEmotionalState() {
-
-        // Mock internalstate
-        agent.internalState = mock(AgentInternalState.class);
-
         // Update emotional state
-        agent.updateEmotionalState(mock(Emotion.class));
+        AgentInternalState agentInternalState = mock(AgentInternalState.class);
+        agent.setInternalState(agentInternalState);
 
-        // Verify the right method is called on AgentInternalState.
-        verify(agent.internalState).updateEmotionalState(any(Emotion.class));
+        Emotion emotion = mock(Emotion.class);
 
+        agent.getInternalState().updateState(emotion);
+        verify(agentInternalState).updateState(emotion);
     }
 
     @Test
     public void testGetEmotionalState() {
-
-        // Mock internalstate
-        agent.internalState = mock(AgentInternalState.class);
-
         // Get emotional state
-        agent.getEmotionalState(null);
+        AgentInternalState agentInternalState = mock(AgentInternalState.class);
+        agent.setInternalState(agentInternalState);
+
+        agent.getInternalState().getState(null);
 
         // Verify the right method is called on AgentInternalState.
-        verify(agent.internalState).getEmotionalState(null);
+        verify(agentInternalState).getState(null);
 
     }
 
     @Test
-    public void testPrintEmotionalState() {
-
-        // Mock internalstate
-        agent.internalState = mock(AgentInternalState.class);
-
+    public void testToStringEmotionalState() {
         // GAIN = FALSE
 
         // Print emotional state
-        agent.printEmotionalState(false);
-
-        // Verify the right method is called on AgentInternalState.
-        verify(agent.internalState).getEmotionalStateString(null);
+        assertEquals("TestAgent feels ", agent.toStringEmotionalState(false));
 
         // GAIN = TRUE
 
         // Print emotional state (gain = true)
-        agent.printEmotionalState(true);
-
-        // Verify the right method is called on AgentInternalState.
-        verify(agent.internalState).getEmotionalStateString(agent.gain);
+        assertEquals("TestAgent feels ", agent.toStringEmotionalState(true));
 
     }
 
@@ -179,60 +160,33 @@ public class AgentTest {
     public void testUpdateRelation() {
 
         // Mock currentRelations
-        agent.currentRelations = mock(AgentRelations.class);
+        AgentRelations relations = mock(AgentRelations.class);
+        agent.setCurrentRelations(relations);
 
         // Invalid relation factor
         agent.updateRelation(mock(Agent.class), 100);
 
-        verifyZeroInteractions(agent.currentRelations);
+        verifyZeroInteractions(relations);
 
         // Correct relation factor
         agent.updateRelation(mock(Agent.class), -1);
 
         // Verify iteraction with currentRelations
-        verify(agent.currentRelations).updateRelation(any(Agent.class), any(Double.class));
+        verify(relations, times(1)).updateRelation(any(Agent.class), any(Double.class));
 
     }
 
     @Test
     public void testHasRelationWith() {
-
-        // Mock currentRelations
-        agent.currentRelations = mock(AgentRelations.class);
-
-        // Invalid relation factor
-        agent.hasRelationWith(mock(Agent.class));
-
-        // Verify iteraction with currentRelations
-        verify(agent.currentRelations).hasRelationWith(any(Agent.class));
-
-    }
-
-    @Test
-    public void testGetRelation() {
-
-        // Mock currentRelations
-        agent.currentRelations = mock(AgentRelations.class);
+        AgentRelations agentRelations = mock(AgentRelations.class);
+        agent.setCurrentRelations(agentRelations);
 
         // Invalid relation factor
-        agent.getRelation(mock(Agent.class));
+        Agent agent1 = mock(Agent.class);
+        agent.hasRelationWith(agent1);
 
         // Verify iteraction with currentRelations
-        verify(agent.currentRelations).getRelation(any(Agent.class));
-
-    }
-
-    @Test
-    public void testPrintRelations() {
-
-        // Mock currentRelations
-        agent.currentRelations = mock(AgentRelations.class);
-
-        // Invalid relation factor
-        agent.printRelations(mock(Agent.class));
-
-        // Verify iteraction with currentRelations
-        verify(agent.currentRelations).getRelationsString(any(Agent.class));
+        verify(agentRelations).hasRelationWith(agent1);
 
     }
 
@@ -264,9 +218,9 @@ public class AgentTest {
         Emotion result = agent.agentActions(agent, causalAgent, .25);
         Emotion expected = new Emotion("gratitude", .25);
         assertEquals(expected, result);
-        
+
         // Verify added to relation
-        assertEquals(expected, agent.currentRelations.get(0).getEmotions().get(0));
+        assertEquals(expected, agent.getCurrentRelations().get(0).getEmotions().get(0));
     }
 
     @Test
@@ -282,7 +236,7 @@ public class AgentTest {
         // CASE 3
         assertNull(agent.agentActions(causalAgent, agent, .25));
     }
-    
+
     @Test
     public void testAgentActionsCaseThree_HasRelation() {
 
@@ -295,75 +249,35 @@ public class AgentTest {
         Emotion result = agent.agentActions(causalAgent, agent, -.25);
         Emotion expected = new Emotion("remorse", .25);
         assertEquals(expected, result);
-        
+
         // Verify added to relation
-        assertEquals(expected, agent.currentRelations.get(0).getEmotions().get(0));
+        assertEquals(expected, agent.getCurrentRelations().get(0).getEmotions().get(0));
     }
-    
+
 
     @Test
     public void testEvaluateSocialEmotion() {
-        
+
         Relation relation = mock(Relation.class);
-        
+
         // Test four emotions
         when(relation.getLike()).thenReturn(0d);
-        assertEquals("happy-for", agent.evaluateSocialEmotion(1, relation).getName());
-        
+        assertEquals("happy-for", agent.getCurrentRelations().evaluateSocialEmotion(relation, 1).getName());
+
         when(relation.getLike()).thenReturn(-.1d);
-        assertEquals("resentment", agent.evaluateSocialEmotion(1, relation).getName());
-        
+        assertEquals("resentment", agent.getCurrentRelations().evaluateSocialEmotion(relation, 1).getName());
+
         when(relation.getLike()).thenReturn(0d);
-        assertEquals("pity", agent.evaluateSocialEmotion(-1, relation).getName());
-        
+        assertEquals("pity", agent.getCurrentRelations().evaluateSocialEmotion(relation, -1).getName());
+
         when(relation.getLike()).thenReturn(-.1d);
-        assertEquals("gloating", agent.evaluateSocialEmotion(-1, relation).getName());
-        
+        assertEquals("gloating", agent.getCurrentRelations().evaluateSocialEmotion(relation, -1).getName());
+
     }
-
-    @Test
-    public void testDecayInternalEmotion() {
-        DecayFunction decayFunction = mock(DecayFunction.class);
-        agent.updateEmotionalState(mock(Emotion.class));
-
-        agent.decay(decayFunction, 1);
-
-        verify(decayFunction, times(1)).decay(0.0, 1);
-    }
-
-    @Test
-    public void testDecayInternalEmotionTwo() {
-        DecayFunction decayFunction = mock(DecayFunction.class);
-        when(decayFunction.decay(0.6, 1000)).thenReturn(0.2);
-
-        agent.updateEmotionalState(new Emotion("name", 0.6));
-        agent.decay(decayFunction, 1000);
-        verify(decayFunction, times(1)).decay(0.6, 1000);
-
-        agent.decay(decayFunction, 2000);
-        verify(decayFunction, times(1)).decay(0.2, 2000);
-
-        ArrayList<Emotion> expected = new ArrayList<Emotion>(){{ add(new Emotion("name", 0.0)); }};
-        assertEquals(expected, agent.getEmotionalState(0.2));
-    }
-
-//    @Test
-//    public void testDecayRelationState() {
-//        DecayFunction decayFunction = mock(DecayFunction.class);
-//        Relation relation = mock(Relation.class);
-//
-//        when(decayFunction.decay(0.6, 1000)).thenReturn(0.4);
-//        agent.decay(decayFunction, 1000);
-//
-//        agent.updateRelation(mock(Agent.class), 0.5);
-//
-//        when(agent.updateRelation(mock(Agent.class), 0.5)).thenReturn(relation);
-//        verify(agent.currentRelations.get(0), times(1)).decay(decayFunction, 1000);
-//    }
 
     @Test
     public void testToString() {
-        assertEquals("<Agent[TestAgent]>", agent.toString());
+        assertEquals("<Agent[TestAgent, 1.0]>", agent.toString());
     }
 
 
@@ -382,12 +296,11 @@ public class AgentTest {
         assertFalse(agent.equals(expected));
 
         // Equals with different goals
-        agent.addGoal(new Goal("Save Peace", 0.5, true));
+        agent.getGoals().put("Save Peace", new Goal("Save Peace", 0.5, true));
         Agent goals = new Agent("TestAgent");
-        goals.addGoal(new Goal("Kill mario", 0.4, false));
-        assertFalse(agent.equals(goals));
 
-        //
+        agent.getGoals().put("Kill mario", new Goal("Kill mario", 0.4, false));
+        assertFalse(agent.equals(goals));
     }
 
 }

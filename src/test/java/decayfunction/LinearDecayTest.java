@@ -1,34 +1,46 @@
 package decayfunction;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 
 /**
- * Test linear DecayFunction.
+ * Created by svenpopping on 19/06/15.
  */
 public class LinearDecayTest {
 
-  @Test
-  public void testDecay() {
+    DecayFunction decayFunction;
 
-    LinearDecay ld = new LinearDecay(.5);
+    @Before
+    public void setUp() throws Exception {
+        decayFunction = new LinearDecay(0.4);
+    }
 
-    // Test after one second (decay is .5 per second ==> .5 decay)
-    double oneSec = ld.decay(100, 1000);
-    assertEquals(99.5, oneSec, 10E-15);
+    @After
+    public void tearDown() throws Exception {
+        decayFunction = null;
+    }
 
-    // Test after 100 seconds (decay is .5 per second ==> 50 decay)
-    double hundredSec = ld.decay(100, 100000);
-    assertEquals(50, hundredSec, 10E-15);
+    @Test
+    public void testGetDecayFactor() throws Exception {
+        assertEquals(0.4, decayFunction.getDecayFactor(), 1E-15);
+    }
 
-    LinearDecay ld2 = new LinearDecay(.22);
+    @Test
+    public void testSetDecayFactor() throws Exception {
+        decayFunction.setDecayFactor(0.6);
 
-    // Test after 100 seconds with different decay and
-    // different initial value (decay is .22 per second ==> 22 decay)
-    double diffDecay = ld2.decay(222, 100000);
-    assertEquals(200, diffDecay, 10E-15);
+        assertEquals(0.6, decayFunction.getDecayFactor(), 1E-15);
+    }
 
-  }
+    @Test
+    public void testDecay() throws Exception {
+        assertEquals(9.6, decayFunction.decay(10, 1000), 1E-15);
+    }
 
+    @Test
+    public void testDecayLater() throws Exception {
+        assertEquals(9.2, decayFunction.decay(10, 2000), 1E-15);
+    }
 }

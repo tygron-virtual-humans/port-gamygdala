@@ -1,7 +1,6 @@
-package data.map;
+package agent.data.map;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import agent.Agent;
@@ -31,14 +30,6 @@ public class AgentMap extends HashMap<String, Agent> {
         Debug.debug("Warning: agent \"" + agentName + "\" not found.");
         return null;
     }
-    
-    /**
-     * Get the EntrySet iterator.
-     * @return Iterator
-     */
-    public Iterator<Map.Entry<String, Agent>> getIterator() {
-        return this.entrySet().iterator();
-    }
 
     /**
      * Print all emotional states to the console.
@@ -46,16 +37,29 @@ public class AgentMap extends HashMap<String, Agent> {
      * @param gain Whether you want to print the gained (true) emotional states or
      *             non-gained (false).
      */
-    public void printAllEmotions(boolean gain) {
-        Agent agent;
-
+    public String toStringAllEmotions(boolean gain) {
+        StringBuilder output = new StringBuilder();
         for (Map.Entry<String, Agent> pair : this.entrySet()) {
-            agent = pair.getValue();
+            Agent agent = pair.getValue();
 
-            agent.printEmotionalState(gain);
-            agent.printRelations(null);
+            output.append(agent.toStringEmotionalState(gain));
+            output.append(" ");
+            output.append(agent.toStringRelations(null));
         }
+        return output.toString();
     }
 
-
+    /**
+     *
+     */
+    @Override
+    public Agent put(String name, Agent agent) {
+        if (!this.containsKey(agent.getName())) {
+            super.put(agent.getName(), agent);
+            return agent;
+        } else {
+            Debug.debug("Warning: failed adding a second goal with the same name: " + agent.getName());
+        }
+        return null;
+    }
 }

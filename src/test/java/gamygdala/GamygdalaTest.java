@@ -1,101 +1,78 @@
 package gamygdala;
 
 import agent.Agent;
-import data.Belief;
-import data.Goal;
+import agent.data.Belief;
+import agent.data.Goal;
+import agent.data.map.AgentMap;
+import agent.data.map.GoalMap;
 import decayfunction.DecayFunction;
-import decayfunction.ExponentialDecay;
-import exception.GoalCongruenceMapException;
+import decayfunction.LinearDecay;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.ArrayList;
-
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 /**
- * Tests for the core Gamygdala functionality.
+ * Created by svenpopping on 19/06/15.
  */
 public class GamygdalaTest {
 
-    private Gamygdala engine;
+    Gamygdala gamygdala;
+    DecayFunction decayFunction;
 
     @Before
-    public void setUp() {
-        engine = new Gamygdala();
+    public void setUp() throws Exception {
+        gamygdala = new Gamygdala();
+        decayFunction = mock(DecayFunction.class);
+
+        gamygdala.setDecayFunction(decayFunction);
     }
 
     @After
-    public void tearDown() {
-        engine = null;
+    public void tearDown() throws Exception {
+        gamygdala = null;
     }
 
     @Test
-    public void testGamygdala() {
-
-        // Verify that constructor properly initializes attributes
-        assertNotNull(engine.getGamygdalaMap());
-        assertEquals(.8, engine.getDecayFactor(), 10E-15);
-        assertNotNull(engine.getDecayFunction());
-
-    }
-
-    @Test
-    public void testAppraiseAssertions() {
-
-        // Empty Belief
-        assertFalse(engine.appraise(null, mock(Agent.class)));
-
-        // No Goals
-        assertTrue(engine.appraise(mock(Belief.class), mock(Agent.class)));
-    }
-
-    @Test
-    public void testAppraiseAffectedAgent() throws GoalCongruenceMapException {
-
-        // Set-up environment (two agents with one goal)
-        Agent agent1 = new Agent("TestAgent_1");
-        Agent agent2 = new Agent("TestAgent_2");
-        engine.getGamygdalaMap().registerAgent(agent1);
-        engine.getGamygdalaMap().registerAgent(agent1);
-
-        Goal goal = new Goal("TestGoal", .59, false);
-        engine.getGamygdalaMap().registerGoal(goal);
-        agent1.addGoal(goal);
-        agent2.addGoal(goal);
-        
-        // Create a belief
-        ArrayList<Goal> affectedGoals = new ArrayList<Goal>(1);
-        affectedGoals.add(goal);
-        ArrayList<Double> goalCongruences = new ArrayList<Double>(1);
-        goalCongruences.add(2d);
-        Belief belief = null;
-        try {
-            belief = new Belief(-1, agent2, affectedGoals, goalCongruences, false);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        assertTrue(engine.appraise(belief, agent1));
-        
+    public void testGetDecayFunction() throws Exception {
+        assertEquals(decayFunction, gamygdala.getDecayFunction());
     }
 
     @Test
     public void testSetDecayFunction() throws Exception {
-        DecayFunction decayFunction = new ExponentialDecay(0.5);
-        engine.setDecayFunction(decayFunction);
+        assertEquals(decayFunction, gamygdala.getDecayFunction());
+        decayFunction = new LinearDecay(0.4);
 
-        assertEquals(decayFunction, engine.getDecayFunction());
+        gamygdala.setDecayFunction(decayFunction);
+        assertEquals(decayFunction, gamygdala.getDecayFunction());
     }
 
     @Test
-    public void testSetDecayFactor() throws Exception {
-        Double decayFactor = 0.3;
-        engine.setDecayFactor(decayFactor);
+    public void testGetGoalMap() throws Exception {
+        assertEquals(new GoalMap(), gamygdala.getGoalMap());
+    }
 
-        assertEquals(decayFactor, engine.getDecayFactor(), 0.0001);
+    @Test
+    public void testGetAgentMap() throws Exception {
+        assertEquals(new AgentMap(), gamygdala.getAgentMap());
+    }
+
+    @Test
+    public void testAppraiseExceptions() throws Exception {
+        assertFalse(gamygdala.appraise(null, null));
+
+        assertTrue(gamygdala.appraise(mock(Belief.class), null));
+    }
+
+    @Test
+    public void testAppraise() throws Exception {
+        Agent agent = mock(Agent.class);
+        when(agent.getGoals()).thenReturn(mock(GoalMap.class));
+
+        gamygdala.createGoalForAgent(agent, "happy", .5, false);
+        assertFalse(gamygdala.appraise(null, null));
+        assertTrue(gamygdala.appraise(mock(Belief.class), null));
     }
 
     @Test
@@ -104,38 +81,28 @@ public class GamygdalaTest {
     }
 
     @Test
-    public void testGetAgentMap() throws Exception {
-
-    }
-
-    @Test
-    public void testGetGoalMap() throws Exception {
-
-    }
-
-    @Test
-    public void testDebug() throws Exception {
-
-    }
-
-    @Test
-    public void testPrintAllEmotions() throws Exception {
-
-    }
-
-    @Test
     public void testSetAgentsGain() throws Exception {
+        gamygdala.getAgentMap().put("henk", new Agent("henk"));
 
+        gamygdala.setAgentsGain(0.5);
+        assertEquals(0.5, gamygdala.getAgentMap().get("henk").getGain(), 1E-15);
     }
 
     @Test
     public void testCreateAgent() throws Exception {
-
+        assertEquals(new Agent("henk"), gamygdala.createAgent("henk"));
     }
 
     @Test
     public void testCreateGoalForAgent() throws Exception {
+        Agent agent = mock(Agent.class);
+        GoalMap goalMap = mock(GoalMap.class);
 
+        when(agent.getGoals()).thenReturn(goalMap);
+        when(goalMap.put("happy", new Goal("happy", .5, false))).thenReturn(new Goal("happy", .5, false));
+
+        assertEquals(new Goal("happy", .5, false), gamygdala.createGoalForAgent(agent, "happy", .5, false));
+        verify(agent.getGoals(), times(1)).put("happy", new Goal("happy", .5, false));
     }
 
     @Test

@@ -1,7 +1,8 @@
-package data;
+package agent.data;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import agent.Agent;
 import exception.GoalCongruenceMapException;
@@ -25,7 +26,7 @@ public class Belief {
     /**
      * A Map of Goals and their congruence.
      */
-    private final HashMap<Goal, Double> goalCongruenceMap;
+    private final Map<Goal, Double> goalCongruenceMap;
 
     /**
      * Whether or not this Belief is incremental.
@@ -33,40 +34,39 @@ public class Belief {
     private final boolean isIncremental;
 
     /**
-     * This class is a data structure to store one Belief for an agent. A belief
+     * This class is a agent.data structure to store one Belief for an agent. A belief
      * is created and fed into a Gamygdala instance (method
      * Gamygdala.appraise()) for evaluation
      *
-     * @param likelihood The likelihood of this belief to be true.
+     * @param conLikelihood The likelihood of this belief to be true.
      * @param agent The Agent object of the causal agent of this belief.
      * @param affectedGoals An array of affected goals.
      * @param goalCongruences An array of the affected goals' congruences (i.e.,
      *            the extend to which this event is good or bad for a goal
      *            [-1,1]).
-     * @param isIncremental Incremental evidence enforces gamygdala to see this
+     * @param conIsIncremental Incremental evidence enforces gamygdala to see this
      *            event as incremental evidence for (or against) the list of
      *            goals provided, i.e, it will add or subtract this belief's
      *            likelihood*congruence from the goal likelihood instead of
      *            using the belief as "state" defining the absolute likelihood
      * @throws GoalCongruenceMapException
      */
-    public Belief(double likelihood, Agent agent, ArrayList<Goal> affectedGoals, ArrayList<Double> goalCongruences,
-            boolean isIncremental) throws GoalCongruenceMapException {
-        this.isIncremental = isIncremental;
+    public Belief(double conLikelihood, Agent agent, List<Goal> affectedGoals, List<Double> goalCongruences,
+            boolean conIsIncremental) throws GoalCongruenceMapException {
+        this.isIncremental = conIsIncremental;
 
-        this.likelihood = Math.min(1, Math.max(-1, likelihood));
+        this.likelihood = Math.min(1, Math.max(-1, conLikelihood));
         this.causalAgent = agent;
 
         if (affectedGoals.size() != goalCongruences.size()) {
-            throw new GoalCongruenceMapException(
-                    "Error: the congruence list does not have the same size as the affected goal list.");
+            throw new GoalCongruenceMapException();
         }
 
         this.goalCongruenceMap = new HashMap<Goal, Double>();
 
         // Add goals and congruences to Map.
         for (int i = 0; i < affectedGoals.size(); i++) {
-            double congruence = Math.min(1, Math.max(-1, goalCongruences.get(i)));
+            double congruence = Math.min(1.d, Math.max(-1.d, goalCongruences.get(i)));
             this.goalCongruenceMap.put(affectedGoals.get(i), congruence);
         }
     }
@@ -85,7 +85,7 @@ public class Belief {
      *
      * @return The names of the goals affected and their congruences.
      */
-    public HashMap<Goal, Double> getGoalCongruenceMap() {
+    public Map<Goal, Double> getGoalCongruenceMap() {
         return goalCongruenceMap;
     }
 
