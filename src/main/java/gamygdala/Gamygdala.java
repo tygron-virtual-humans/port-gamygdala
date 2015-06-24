@@ -108,6 +108,12 @@ public class Gamygdala {
         return true;
     }
 
+    /**
+     *
+     * @param goalPair
+     * @param belief
+     * @param affectedAgent
+     */
     private void processGoal(Map.Entry<Goal, Double> goalPair, Belief belief, Agent affectedAgent) {
         Goal goal = goalPair.getKey();
         Double congruence = goalPair.getValue();
@@ -122,6 +128,13 @@ public class Gamygdala {
         this.evaluateEmotions(affectedAgent, goal, belief, deltaLikelihood);
     }
 
+    /**
+     *
+     * @param affectedAgent
+     * @param goal
+     * @param belief
+     * @param deltaLikelihood
+     */
     private void evaluateEmotions(Agent affectedAgent, Goal goal, Belief belief, double deltaLikelihood) {
         // if affectedAgent is null, calculate emotions for all agents.
         if (affectedAgent == null) {
