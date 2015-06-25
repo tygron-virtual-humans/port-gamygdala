@@ -1,11 +1,12 @@
 package agent;
 
-import agent.data.Emotion;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import agent.data.Emotion;
 
 /**
  * Tests for AgentInternalState.

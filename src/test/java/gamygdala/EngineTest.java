@@ -1,16 +1,18 @@
 package gamygdala;
 
-import agent.Agent;
-import agent.data.Belief;
-import agent.data.Goal;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import agent.Agent;
+import agent.data.Belief;
+import agent.data.Goal;
+
 /**
- * Created by svenpopping on 19/06/15.
+ * Tests for Engine.
  */
 public class EngineTest {
 
@@ -111,5 +113,5 @@ public class EngineTest {
 
         assertFalse(engine.setGain(-.1));
     }
-
+    
 }

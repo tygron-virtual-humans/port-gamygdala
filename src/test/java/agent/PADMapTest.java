@@ -1,19 +1,22 @@
 package agent;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import agent.data.Emotion;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
- * Created by svenpopping on 19/06/15.
+ * Tests for Pleasure-Arousal-Dominance Map.
  */
 public class PADMapTest {
 
@@ -42,7 +45,7 @@ public class PADMapTest {
         };
 
         for (int i = 0; i < pad.length; i++) {
-            assertEquals(expected[i], pad[i]);
+            assertEquals(expected[i], pad[i], 10E-15d);
         }
     }
 
@@ -66,7 +69,7 @@ public class PADMapTest {
         };
 
         for (int i = 0; i < pad.length; i++) {
-            assertEquals(expected[i], pad[i]);
+            assertEquals(expected[i], pad[i], 10E-15);
         }
     }
 
@@ -74,21 +77,21 @@ public class PADMapTest {
     public void testGetInstance() throws Exception {
         assertNotNull(PADMap.getInstance());
 
-        assertEquals(padMap, PADMap.getInstance());
+        assertTrue(padMap.equals(PADMap.getInstance()));
     }
 
     @Test
     public void testDetermineEmotionNull() {
         List<Emotion> emotionList = PADMap.determineEmotions(0.0, 0, 0);
 
-        assertEquals(null, emotionList);
+        assertTrue(emotionList == null);
     }
 
     @Test
     public void testDetermineEmotionElse() {
         List<Emotion> emotionList = PADMap.determineEmotions(0.0, 0.0, 1.2);
 
-        assertEquals(null, emotionList);
+        assertTrue(emotionList == null);
     }
 
     @Test
@@ -99,7 +102,7 @@ public class PADMapTest {
         expected.add(new Emotion("disappointment", 1));
         expected.add(new Emotion("distress", 1));
 
-        assertEquals(expected, emotionList);
+        assertTrue(expected.equals(emotionList));
     }
 
     @Test
@@ -110,7 +113,7 @@ public class PADMapTest {
         expected.add(new Emotion("disappointment", 1));
         expected.add(new Emotion("distress", 1));
 
-        assertEquals(expected, emotionList);
+        assertTrue(expected.equals(emotionList));
     }
 
     @Test
@@ -120,6 +123,6 @@ public class PADMapTest {
         List<Emotion> expected = new ArrayList<Emotion>();
         expected.add(new Emotion("hope", 1));
 
-        assertEquals(expected, emotionList);
+        assertTrue(expected.equals(emotionList));
     }
 }

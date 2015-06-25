@@ -1,10 +1,10 @@
 package test.js;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 
 import debug.Debug;
 
@@ -65,7 +65,7 @@ public class BenchmarkAdapter {
             // Benchmark
             scriptEngine.eval("benchmark()");
         } catch (ScriptException e) {
-
+            e.printStackTrace();
         }
     }
 }
