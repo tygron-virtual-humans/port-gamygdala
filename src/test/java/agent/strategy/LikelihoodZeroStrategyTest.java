@@ -1,16 +1,18 @@
 package agent.strategy;
 
+import static junit.framework.TestCase.assertEquals;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import agent.data.Emotion;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static junit.framework.TestCase.assertEquals;
 
 /**
- * Created by svenpopping on 19/06/15.
+ * Tests for strategy LikelihoodZero.
  */
 public class LikelihoodZeroStrategyTest {
 

@@ -1,19 +1,21 @@
 package agent;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import agent.data.Emotion;
 import decayfunction.LinearDecay;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
- * Created by svenpopping on 19/06/15.
+ * Tests for Relation.
  */
 public class RelationTest {
 
@@ -58,6 +60,7 @@ public class RelationTest {
         assertEquals(new ArrayList<Emotion>(), relation.getEmotions());
     }
 
+    @SuppressWarnings("serial")
     @Test
     public void testAddEmotion() throws Exception {
         Emotion emotion = new Emotion("henk", .5);
@@ -67,6 +70,7 @@ public class RelationTest {
         assertEquals(list, relation.getEmotions());
     }
 
+    @SuppressWarnings("serial")
     @Test
     public void testAddEmotionTwice() throws Exception {
         Emotion emotion = new Emotion("henk", .5);
@@ -77,6 +81,7 @@ public class RelationTest {
         assertEquals(list, relation.getEmotions());
     }
 
+    @SuppressWarnings("serial")
     @Test
     public void testDecay() throws Exception {
         Emotion emotion = new Emotion("henk", .5);

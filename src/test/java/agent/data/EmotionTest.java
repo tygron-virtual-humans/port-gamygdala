@@ -1,11 +1,12 @@
 package agent.data;
 
-import org.junit.Before;
-import org.junit.Test;
 import static junit.framework.TestCase.assertEquals;
 
+import org.junit.Before;
+import org.junit.Test;
+
 /**
- * Created by svenpopping on 19/06/15.
+ * Tests for Emotion.
  */
 public class EmotionTest {
 

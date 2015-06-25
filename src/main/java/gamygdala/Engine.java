@@ -191,14 +191,9 @@ public final class Engine {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Engine)) return false;
-
-        Engine engine = (Engine) o;
-
-        if (lastMillis != engine.lastMillis) return false;
-        return !(getGamygdala() != null ? !getGamygdala().equals(engine.getGamygdala()) : engine.getGamygdala() != null);
-
+        // Engine implements the Singleton pattern, therefore:
+        // If an object is not - exactly - the same, it is not equal.
+        return this == o;
     }
 
     @Override

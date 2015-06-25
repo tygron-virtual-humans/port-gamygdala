@@ -1,13 +1,18 @@
 package agent.data.map;
 
-import agent.data.Goal;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import static junit.framework.TestCase.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import agent.data.Goal;
+
+/**
+ * Tests for GoalMap.
+ */
 public class GoalMapTest {
 
     GoalMap goalMap;
@@ -37,7 +42,7 @@ public class GoalMapTest {
     }
 
     /**
-     * Remove Goal when it is in the GoalMap
+     * Remove Goal when it is in the GoalMap.
      * @throws Exception
      */
     @Test
@@ -46,7 +51,7 @@ public class GoalMapTest {
     }
 
     /**
-     * Remove Goal when it isn't in the GoalMap
+     * Remove Goal when it isn't in the GoalMap.
      * @throws Exception
      */
     @Test
@@ -56,7 +61,7 @@ public class GoalMapTest {
     }
 
     /**
-     * HasGoal when GoalMap has the Goal
+     * HasGoal when GoalMap has the Goal.
      * @throws Exception
      */
     @Test
@@ -65,7 +70,7 @@ public class GoalMapTest {
     }
 
     /**
-     * HasGoal when GoalMap hasn't the Goal
+     * HasGoal when GoalMap hasn't the Goal.
      * @throws Exception
      */
     @Test
@@ -74,7 +79,7 @@ public class GoalMapTest {
     }
 
     /**
-     * Get Goal when Name exists
+     * Get Goal when Name exists.
      * @throws Exception
      */
     @Test
@@ -92,7 +97,7 @@ public class GoalMapTest {
     }
 
     /**
-     * Add null to Map
+     * Add null to Map.
      * @throws Exception
      */
     @Test
@@ -101,7 +106,7 @@ public class GoalMapTest {
     }
 
     /**
-     * Add Goal to the Map twice
+     * Add Goal to the Map twice.
      * @throws Exception
      */
     @Test

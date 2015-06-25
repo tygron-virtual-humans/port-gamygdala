@@ -1,13 +1,15 @@
 package agent;
 
-import agent.data.Emotion;
-import agent.data.Goal;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import agent.data.Emotion;
+import agent.data.Goal;
 
 /**
  * Test Agent class.

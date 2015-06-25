@@ -1,15 +1,17 @@
 package agent;
 
-import decayfunction.DecayFunction;
-import decayfunction.LinearDecay;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import decayfunction.DecayFunction;
+import decayfunction.LinearDecay;
+
 /**
- * Created by svenpopping on 19/06/15.
+ * Tests for AgentRelations.
  */
 public class AgentRelationsTest {
 

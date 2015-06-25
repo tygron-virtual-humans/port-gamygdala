@@ -1,12 +1,13 @@
 package agent.data;
 
+import static junit.framework.TestCase.assertEquals;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static junit.framework.TestCase.assertEquals;
 
 /**
- * Created by svenpopping on 19/06/15.
+ * Tests for Goal.
  */
 public class GoalTest {
 

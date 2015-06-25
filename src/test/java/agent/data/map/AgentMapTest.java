@@ -1,15 +1,17 @@
 package agent.data.map;
 
-import agent.Agent;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import static junit.framework.TestCase.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import agent.Agent;
+
 /**
- * Created by svenpopping on 19/06/15.
+ * Tests for AgentMap.
  */
 public class AgentMapTest {
 
@@ -58,7 +60,7 @@ public class AgentMapTest {
     }
 
     /**
-     * ToStringAllEmotions with mock of Agent
+     * ToStringAllEmotions with mock of Agent.
      * @throws Exception
      */
     @Test
@@ -67,7 +69,7 @@ public class AgentMapTest {
     }
 
     /**
-     * Add Agent to the Map twice
+     * Add Agent to the Map twice.
      * @throws Exception
      */
     @Test

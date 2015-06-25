@@ -1,12 +1,13 @@
 package decayfunction;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
 
 /**
- * Created by svenpopping on 19/06/15.
+ * Tests for LinearDecay.
  */
 public class LinearDecayTest {
 
